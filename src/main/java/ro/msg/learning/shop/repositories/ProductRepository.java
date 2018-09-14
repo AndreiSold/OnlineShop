@@ -10,16 +10,16 @@ import java.util.List;
 //At use you just need to autowire it
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    //Spring way
-    List<Product> findAllBySuppliersLessThanEqualAndSuppliersGreaterThanEqualAndProductCategoriesLessThanEqualAndProductCategoriesGreaterThanEqual(int supplierLessThanEqual, int supplierGreaterThanEqual, int productCatLessThanEqual, int productCatGreaterThanEqual);
-
-    //Put the spring query in a method with a shorter name
-    default List<Product> findAllBySupplierCountAndProductCategoryCount(int supplierCount, int productCategoryCount) {
-        return this.findAllBySuppliersLessThanEqualAndSuppliersGreaterThanEqualAndProductCategoriesLessThanEqualAndProductCategoriesGreaterThanEqual(supplierCount, supplierCount, productCategoryCount, productCategoryCount);
-    }
+//    Spring way ( not working this way )
+//    List<Product> findAllBySuppliersLessThanEqualAndSuppliersGreaterThanEqualAndProductCategoriesLessThanEqualAndProductCategoriesGreaterThanEqual(int supplierLessThanEqual, int supplierGreaterThanEqual, int productCatLessThanEqual, int productCatGreaterThanEqual);
+//
+//    Put the spring query in a method with a shorter name
+//    default List<Product> findAllBySupplierCountAndProductCategoryCount(int supplierCount, int productCategoryCount) {
+//        return this.findAllBySuppliersLessThanEqualAndSuppliersGreaterThanEqualAndProductCategoriesLessThanEqualAndProductCategoriesGreaterThanEqual(supplierCount, supplierCount, productCategoryCount, productCategoryCount);
+//    }
 
     //JPQL way
-    @Query("select product from Product product where count(product.suppliers) = :supplierCount and count(product.productCategories) = :productCategoryCount")
+    @Query("select product from Product product where size(product.suppliers) = :supplierCount and size(product.productCategories) = :productCategoryCount")
     List<Product> findAllBySupplierCountAndProductCategoryCount2(@Param("supplierCount") int supplierCount, @Param("productCategoryCount") int productCategoryCount);
 
     //Implement needed queries here

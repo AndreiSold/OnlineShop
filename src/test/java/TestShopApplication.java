@@ -5,11 +5,12 @@ import org.springframework.context.annotation.ComponentScan;
 
 @Slf4j
 @SpringBootApplication
-@ComponentScan({"ro.msg.learning.shop.embeddables"})
+@ComponentScan({"ro.msg.learning.shop", "ro.msg.learning.shop.tests"})
 public class TestShopApplication {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(TestShopApplication.class);
         app.run(args);
     }
+
 }

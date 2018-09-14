@@ -1,6 +1,8 @@
 package ro.msg.learning.shop.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -8,35 +10,36 @@ import java.util.List;
 
 @Entity
 @Data
+@ToString(exclude = {"productCategories", "suppliers"})
+@AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     private String name;
 
     private String description;
 
-    private BigInteger price;
+    private Double price;
 
     private Double weight;
 
-    @ManyToMany
-    @JoinTable(name = "products_categories",
-        joinColumns = {@JoinColumn(name = "productId")},
-        inverseJoinColumns = {@JoinColumn(name = "productCategoryId")})
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     private List<ProductCategory> productCategories;
 
-    @ManyToMany
-    @JoinTable(name = "products_suppliers",
-        joinColumns = {@JoinColumn(name = "productId")},
-        inverseJoinColumns = {@JoinColumn(name = "supplierId")})
+    @JsonIgnore
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     private List<Supplier> suppliers;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<Stock> stocks;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderDetail> orderDetails;
 }
