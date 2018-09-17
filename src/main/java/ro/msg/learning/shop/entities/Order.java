@@ -1,6 +1,7 @@
 package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import ro.msg.learning.shop.embeddables.Address;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @Table(name = "order_")
 @ToString(exclude = "shippedFrom")
+@Builder
 public class Order {
 
     @Id
@@ -25,7 +27,7 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 

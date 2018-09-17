@@ -1,11 +1,13 @@
 package ro.msg.learning.shop.entities;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@Builder
 public class OrderDetail {
 
     @Id
