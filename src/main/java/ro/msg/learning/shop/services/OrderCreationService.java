@@ -1,33 +1,40 @@
 package ro.msg.learning.shop.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
+import ro.msg.learning.shop.mappers.OrderDetailMapper;
+import ro.msg.learning.shop.repositories.OrderDetailRepository;
+import ro.msg.learning.shop.repositories.OrderRepository;
+import ro.msg.learning.shop.wrappers.StrategyWrapper;
 import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.exceptions.NegativeQuantityException;
 import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
 import ro.msg.learning.shop.exceptions.ShippingAdressNotInRomaniaException;
+import ro.msg.learning.shop.strategies.SelectionStrategy;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 public class OrderCreationService {
 
+    @Autowired
+    private SelectionStrategy selectionStrategy;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
+    @Autowired
+    private OrderRepository orderRepository;
+
     public Order createOrder(OrderDto orderDto) {
 
-        //Checking if any product quantity is less than 1 + throwing an exception if so
-
-//        orderDto.getOrderDetails().parallelStream()
-//            .filter(dto -> dto.getQuantity() < 1)
-//            .peek(dto -> log.error("Quantity should be strictly positive. Given OrderDetailsDto looks like: " + dto))
-//            .map(OrderDetailDto::getQuantity)
-//            .forEach(NegativeQuantityException::new);
-
+        //Checking if any product quantity is less than 1 and throwing an exception if there is
         for (OrderDetailDto orderDetailDtoInstance : orderDto.getOrderDetails()) {
             Integer quantity = orderDetailDtoInstance.getQuantity();
 
@@ -46,28 +53,34 @@ public class OrderCreationService {
         }
 
         //Checking if the shipping address is in Romania
-        String country = orderDto.getAdress().getCountry();
+        String country = orderDto.getAddress().getCountry();
 
-        if (!(country.equals("Romania") || country.equals("ROMANIA"))) {
-            log.error("We only ship in Romania. Encountered an OrderDto with: " + orderDto.getAdress());
+        if (!("Romania".equals(country) || "ROMANIA".equals(country))) {
+            log.error("We only ship in Romania. Encountered an OrderDto with: " + orderDto.getAddress());
             throw new ShippingAdressNotInRomaniaException(country);
         }
 
         //Here everything is fine so we create the Order instance and return it
-        List<OrderDetail> orderDetailList = new ArrayList<>();
+        List<OrderDetail> orderDetailList = orderDetailMapper.orderDetailDtoListToOrderDetailList(orderDto.getOrderDetails());
 
-        for (OrderDetailDto orderDetailDto : orderDto.getOrderDetails()) {
-            OrderDetail orderDetail = OrderDetail.builder().id(orderDetailDto.getProductId())
-                .quantity(orderDetailDto.getQuantity())
-                .build();
+        //Retrieving strategy wrapper list from currently selected strategy
+        List<StrategyWrapper> strategyWrapperList = selectionStrategy.getStrategyResult(orderDetailList);
 
-            orderDetailList.add(orderDetail);
-        }
-
-        //TODO should I add a TIMESTAMP field for the Order entity?
-        return Order.builder().address(orderDto.getAdress())
-            .orderDetails(orderDetailList)
+        //Here we must convert the strategy result into a orderDetail list
+        Order finalOrder = Order.builder()
+            .address(orderDto.getAddress())
+            .timestamp(orderDto.getOrderTimestamp())
             .build();
+
+        List<OrderDetail> orderDetailFinalList = orderDetailMapper.strategyWrapperListToOrderDetailList(strategyWrapperList, finalOrder);
+        orderDetailRepository.saveAll(orderDetailFinalList);
+
+        finalOrder.setOrderDetails(orderDetailFinalList);
+        orderRepository.save(finalOrder);
+
+        //TODO Customer still not tied to order here
+
+        return finalOrder;
     }
 
 }

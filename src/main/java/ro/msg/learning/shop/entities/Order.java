@@ -1,12 +1,11 @@
 package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import ro.msg.learning.shop.embeddables.Address;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -14,6 +13,8 @@ import java.util.List;
 @Table(name = "order_")
 @ToString(exclude = "shippedFrom")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -33,4 +34,6 @@ public class Order {
 
     @Embedded
     private Address address;
+
+    private LocalDate timestamp;
 }

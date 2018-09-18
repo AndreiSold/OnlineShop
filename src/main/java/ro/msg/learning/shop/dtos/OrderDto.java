@@ -10,6 +10,6 @@ import java.util.List;
 public class OrderDto {
 
     private LocalDate orderTimestamp;
-    private Address adress;
+    private Address address;
     private List<OrderDetailDto> orderDetails;
 }

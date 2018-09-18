@@ -2,10 +2,8 @@ package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -42,4 +40,5 @@ public class Product {
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderDetail> orderDetails;
+
 }

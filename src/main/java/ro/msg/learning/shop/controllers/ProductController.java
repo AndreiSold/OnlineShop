@@ -23,6 +23,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private OrderCreationService orderCreationService;
+
     @GetMapping
     List<Product> productList() {
         return productService.getAllProducts();
@@ -49,35 +52,36 @@ public class ProductController {
     }
 
     @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+    public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
         model.addAttribute("name", name);
         return "greeting";
     }
 
     //testing order creation service
 
-    @Autowired
-    private OrderCreationService orderCreationService;
-
     @PostMapping("/bla")
-    public Order bla(){
+    public Order bla() {
 
-        OrderDto orderDto=new OrderDto();
-        OrderDetailDto orderDetailDto=new OrderDetailDto();
-        //at -2 hits exception
-        orderDetailDto.setQuantity(2);
-        List<OrderDetailDto> orderDetailDtoList=new ArrayList<>();
-        orderDetailDtoList.add(orderDetailDto);
+        //TODO get orderDto instance from request body
+        OrderDto orderDto = new OrderDto();
+
+        orderDto.setOrderTimestamp(LocalDate.now());
+        orderDto.setAddress(new Address("Romania", "Arad", "Arad", "Clujului"));
+
+        List<OrderDetailDto> orderDetailDtoList = new ArrayList<>();
+        OrderDetailDto odd1 = new OrderDetailDto();
+        odd1.setProductId(4);
+        odd1.setQuantity(200);
+        orderDetailDtoList.add(odd1);
+
+        OrderDetailDto odd2 = new OrderDetailDto();
+        odd2.setProductId(13); //forced it to have the same location
+        odd2.setQuantity(300);
+        orderDetailDtoList.add(odd2);
 
         orderDto.setOrderDetails(orderDetailDtoList);
-        //at 2020 12 12 hits exception
-        orderDto.setOrderTimestamp(LocalDate.of(2017,12,12));
-
-        Address address=new Address();
-        //at other country that romania hits exception
-        address.setCountry("Romania");
-        orderDto.setAdress(address);
 
         return orderCreationService.createOrder(orderDto);
     }
+
 }
