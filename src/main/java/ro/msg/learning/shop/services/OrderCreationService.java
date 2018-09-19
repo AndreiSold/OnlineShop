@@ -1,7 +1,7 @@
 package ro.msg.learning.shop.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
@@ -16,21 +16,18 @@ import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
 import ro.msg.learning.shop.exceptions.ShippingAdressNotInRomaniaException;
 import ro.msg.learning.shop.strategies.SelectionStrategy;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OrderCreationService {
 
-    @Autowired
-    private SelectionStrategy selectionStrategy;
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-    @Autowired
-    private OrderDetailMapper orderDetailMapper;
-    @Autowired
-    private OrderRepository orderRepository;
+    private final SelectionStrategy selectionStrategy;
+    private final OrderDetailRepository orderDetailRepository;
+    private final OrderDetailMapper orderDetailMapper;
+    private final OrderRepository orderRepository;
 
     public Order createOrder(OrderDto orderDto) {
 
@@ -45,9 +42,9 @@ public class OrderCreationService {
         }
 
         //Checking if the order timestamp is not in the future
-        LocalDate timestamp = orderDto.getOrderTimestamp();
+        LocalDateTime timestamp = orderDto.getOrderTimestamp();
 
-        if (timestamp.isAfter(LocalDate.now())) {
+        if (timestamp.isAfter(LocalDateTime.now())) {
             log.error("The order's timestamp is in future. Encountered an OrderDto with: " + orderDto);
             throw new OrderTimestampInFutureException(timestamp);
         }
