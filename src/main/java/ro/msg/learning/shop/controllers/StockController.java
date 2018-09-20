@@ -23,7 +23,7 @@ public class StockController {
 //        return exportStocksService.getAllStocksByLocationId(locationId);
 //    }
 
-//    Csv response
+    //    Csv response
     @GetMapping(value = "/export-stocks-from-location/{locationId}", produces = "text/csv")
     public List<Stock> exportStocks(@PathVariable int locationId) {
         return exportStocksService.getAllStocksByLocationId(locationId);

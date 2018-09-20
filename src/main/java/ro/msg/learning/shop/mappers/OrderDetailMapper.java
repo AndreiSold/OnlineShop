@@ -16,15 +16,18 @@ import java.util.Optional;
 @Component
 public class OrderDetailMapper {
 
-    @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    public OrderDetailMapper(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     public List<OrderDetail> orderDetailDtoListToOrderDetailList(List<OrderDetailDto> orderDetailDtoList) {
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
         for (OrderDetailDto orderDetailDto : orderDetailDtoList) {
-
             Optional<Product> currentProduct = productRepository.findById(orderDetailDto.getProductId());
 
             if (currentProduct.isPresent()) {

@@ -4,20 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
-import ro.msg.learning.shop.dtos.OrderDto;
-import ro.msg.learning.shop.embeddables.Address;
-import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.entities.Product;
 import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.services.ExportStocksService;
 import ro.msg.learning.shop.services.OrderCreationService;
 import ro.msg.learning.shop.services.ProductService;
-import ro.msg.learning.shop.utilities.CsvConverter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +60,7 @@ public class TestController {
     public String bla() {
 
         //TODO get orderDto instance from request body
-        OrderDto orderDto = new OrderDto();
+      /*  OrderDto orderDto = new OrderDto();
 
         orderDto.setOrderTimestamp(LocalDateTime.now());
         orderDto.setAddress(new Address("Romania", "Arad", "Arad", "Clujului"));
@@ -86,15 +78,15 @@ public class TestController {
 
         orderDto.setOrderDetails(orderDetailDtoList);
 
-        CsvConverter<OrderDto> csvConverter=new CsvConverter<>();
-        List<OrderDto> orderDtoList=new ArrayList<>();
+        CsvConverter<OrderDto> csvConverter = new CsvConverter<>();
+        List<OrderDto> orderDtoList = new ArrayList<>();
         orderDtoList.add(orderDto);
-        OutputStream outputStream=new ByteArrayOutputStream();
+        OutputStream outputStream = new ByteArrayOutputStream();
 //        try {
 //            return csvConverter.toCsv( orderDto,OrderDto.class,orderDtoList,outputStream );
 //        } catch (IOException e) {
 //            e.printStackTrace();
-//        }
+//        }*/
         return null;
 //        return orderCreationService.createOrder(orderDto);
     }
@@ -102,6 +94,44 @@ public class TestController {
     @PostMapping("/bla2")
     public List<Stock> bla2() {
         return exportStocksService.getAllStocksByLocationId(10);
+    }
+
+    @GetMapping(path = "/csv-try-write", produces = "text/csv")
+    public List<OrderDetailDto> csvCreatedString() {
+
+        OrderDetailDto orderDetailDto1 = new OrderDetailDto();
+        orderDetailDto1.setQuantity(1234);
+        orderDetailDto1.setProductId(12);
+
+        OrderDetailDto orderDetailDto2 = new OrderDetailDto();
+        orderDetailDto2.setQuantity(4321);
+        orderDetailDto2.setProductId(21);
+
+        OrderDetailDto orderDetailDto3 = new OrderDetailDto();
+        orderDetailDto3.setQuantity(3333);
+        orderDetailDto3.setProductId(33);
+
+        List<OrderDetailDto> orderDetailDtoList = new ArrayList<>();
+        orderDetailDtoList.add(orderDetailDto1);
+        orderDetailDtoList.add(orderDetailDto2);
+        orderDetailDtoList.add(orderDetailDto3);
+/*
+        OrderDetailDto plainOdd=new OrderDetailDto();
+
+        OutputStream outputStream=new ByteArrayOutputStream();
+        try {
+            return csvConverter.toCsv(plainOdd, OrderDetailDto.class, orderDetailDtoList, outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+*/
+
+        return orderDetailDtoList;
+    }
+
+    @PostMapping(path = "/csv-try-read", consumes = "text/csv")
+    public List<OrderDetailDto> csvCreatedList(@RequestBody List<OrderDetailDto> orderDetailDtoList) {
+        return orderDetailDtoList;
     }
 
 }
