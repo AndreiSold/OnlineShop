@@ -17,13 +17,6 @@ public class StockController {
 
     private final ExportStocksService exportStocksService;
 
-//    Json response
-//    @GetMapping(value = "/export-stocks-from-location/{locationId}")
-//    public List<Stock> exportStocks(@PathVariable int locationId) {
-//        return exportStocksService.getAllStocksByLocationId(locationId);
-//    }
-
-    //    Csv response
     @GetMapping(value = "/export-stocks-from-location/{locationId}", produces = "text/csv")
     public List<Stock> exportStocks(@PathVariable int locationId) {
         return exportStocksService.getAllStocksByLocationId(locationId);

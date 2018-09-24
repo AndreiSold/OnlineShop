@@ -17,6 +17,7 @@ public class Stock {
     @ManyToOne(cascade = CascadeType.ALL)
     private Product product;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 

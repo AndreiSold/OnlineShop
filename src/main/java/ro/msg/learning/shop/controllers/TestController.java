@@ -1,15 +1,20 @@
 package ro.msg.learning.shop.controllers;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
 import ro.msg.learning.shop.entities.Product;
 import ro.msg.learning.shop.entities.Stock;
+import ro.msg.learning.shop.exceptions.FileTypeMismatchException;
 import ro.msg.learning.shop.services.ExportStocksService;
 import ro.msg.learning.shop.services.OrderCreationService;
 import ro.msg.learning.shop.services.ProductService;
+import ro.msg.learning.shop.utilities.CsvConverter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestController {
 
+    private final CsvConverter csvConverter;
     private final ProductService productService;
     private final OrderCreationService orderCreationService;
     private final ExportStocksService exportStocksService;
@@ -129,9 +135,26 @@ public class TestController {
         return orderDetailDtoList;
     }
 
+    @SneakyThrows
+    @PostMapping(value = "/csv-from-file")
+    public List<OrderDetailDto> csvFromFile(@RequestParam("file") MultipartFile file) {
+
+        if (!file.getOriginalFilename().endsWith(".csv"))
+            throw new FileTypeMismatchException("Expected: .csv file, received: " + file.getOriginalFilename());
+
+        try {
+            return csvConverter.fromCsv(OrderDetailDto.class, file.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     @PostMapping(path = "/csv-try-read", consumes = "text/csv")
     public List<OrderDetailDto> csvCreatedList(@RequestBody List<OrderDetailDto> orderDetailDtoList) {
         return orderDetailDtoList;
     }
+
 
 }
