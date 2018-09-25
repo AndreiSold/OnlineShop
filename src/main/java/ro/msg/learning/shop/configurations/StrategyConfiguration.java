@@ -29,7 +29,7 @@ public class StrategyConfiguration {
                 return new MultipleLocationsStrategy();
             default:
                 log.error("Given selection strategy does not exist! Given strategy: " + initialStrategy);
-                throw new StrategyInexistentException(initialStrategy);
+                throw new StrategyInexistentException(initialStrategy, "Existing strategies for the moment: singleLocation, multipleLocation");
         }
     }
 }

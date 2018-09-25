@@ -1,7 +1,8 @@
 package ro.msg.learning.shop.services;
 
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.constrains.OrderDtoConstrains;
 import ro.msg.learning.shop.dtos.OrderDto;
@@ -17,14 +18,24 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class OrderCreationService {
 
-    private final SelectionStrategy selectionStrategy;
-    private final OrderDetailRepository orderDetailRepository;
-    private final OrderDetailMapper orderDetailMapper;
-    private final OrderRepository orderRepository;
-    private final OrderDtoConstrains orderDtoConstrains;
+    private SelectionStrategy selectionStrategy;
+    private OrderDetailRepository orderDetailRepository;
+    private OrderDetailMapper orderDetailMapper;
+    private OrderRepository orderRepository;
+    private OrderDtoConstrains orderDtoConstrains;
+
+    @Autowired
+    public OrderCreationService(SelectionStrategy selectionStrategy, OrderDetailRepository orderDetailRepository, OrderDetailMapper orderDetailMapper,
+                                OrderRepository orderRepository, OrderDtoConstrains orderDtoConstrains) {
+        this.selectionStrategy = selectionStrategy;
+        this.orderDetailRepository = orderDetailRepository;
+        this.orderDetailMapper = orderDetailMapper;
+        this.orderRepository = orderRepository;
+        this.orderDtoConstrains = orderDtoConstrains;
+    }
 
     public Order createOrder(OrderDto orderDto) {
 

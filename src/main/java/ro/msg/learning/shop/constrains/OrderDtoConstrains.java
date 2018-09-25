@@ -16,13 +16,21 @@ public class OrderDtoConstrains {
 
     public void checkIfOrderDtoCorrectlyFormatted(OrderDto orderDto) {
 
+        //Checking if the shipping address is in Romania
+        String country = orderDto.getAddress().getCountry();
+
+        if (!("Romania".equals(country) || "ROMANIA".equals(country))) {
+            log.error("We only ship in Romania. Encountered an OrderDto with: " + orderDto.getAddress());
+            throw new ShippingAdressNotInRomaniaException(country, orderDto.getAddress().toString());
+        }
+
         //Checking if any product quantity is less than 1 and throwing an exception if there is
         for (OrderDetailDto orderDetailDtoInstance : orderDto.getOrderDetails()) {
             Integer quantity = orderDetailDtoInstance.getQuantity();
 
             if (quantity < 1) {
                 log.error("All quantities should be strictly positive. Encountered an OrderDetailDto with: " + orderDetailDtoInstance);
-                throw new NegativeQuantityException(quantity);
+                throw new NegativeQuantityException(quantity, orderDetailDtoInstance.toString());
             }
         }
 
@@ -31,16 +39,10 @@ public class OrderDtoConstrains {
 
         if (timestamp.isAfter(LocalDateTime.now())) {
             log.error("The order's timestamp is in future. Encountered an OrderDto with: " + orderDto);
-            throw new OrderTimestampInFutureException(timestamp);
+            throw new OrderTimestampInFutureException(timestamp, orderDto.toString());
         }
 
-        //Checking if the shipping address is in Romania
-        String country = orderDto.getAddress().getCountry();
 
-        if (!("Romania".equals(country) || "ROMANIA".equals(country))) {
-            log.error("We only ship in Romania. Encountered an OrderDto with: " + orderDto.getAddress());
-            throw new ShippingAdressNotInRomaniaException(country);
-        }
     }
 
 }

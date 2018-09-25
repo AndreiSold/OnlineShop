@@ -27,6 +27,6 @@ public class ExportStocksService {
         }
 
         log.error("Given location id does not exist. This is the given value: " + locationId);
-        throw new LocationIdDoesNotExistException(locationId);
+        throw new LocationIdDoesNotExistException(locationId, "Try another location id!");
     }
 }

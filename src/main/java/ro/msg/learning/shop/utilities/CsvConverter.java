@@ -28,7 +28,8 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
     @Override
     @SneakyThrows
     public boolean canRead(Type type, Class<?> contextClass, MediaType mediaType) {
-        return Class.forName(((ParameterizedTypeImpl) type).getRawType().getName()).equals(List.class) &&
+        return type instanceof ParameterizedType &&
+            Class.forName(((ParameterizedTypeImpl) type).getRawType().getName()).equals(List.class) &&
             mediaType != null &&
             mediaType.getType().equals("text") &&
             mediaType.getSubtype().equals("csv");
@@ -37,7 +38,8 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
     @Override
     @SneakyThrows
     public boolean canWrite(Type type, Class<?> clazz, MediaType mediaType) {
-        return Class.forName(((ParameterizedTypeImpl) type).getRawType().getName()).equals(List.class) &&
+        return type instanceof ParameterizedType &&
+            Class.forName(((ParameterizedTypeImpl) type).getRawType().getName()).equals(List.class) &&
             mediaType != null &&
             mediaType.getType().equals("text") &&
             mediaType.getSubtype().equals("csv");

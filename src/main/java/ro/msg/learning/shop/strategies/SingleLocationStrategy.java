@@ -35,7 +35,7 @@ public class SingleLocationStrategy implements SelectionStrategy {
 
         if (shippedFrom.isEmpty()) {
             log.error("There isn't any location having all the products the customer ordered!");
-            throw new SuitableLocationInexistentException();
+            throw new SuitableLocationInexistentException("No more details available!");
         }
 
         saveOrderDetails(shippedFrom.get(0), orderDetailList);
