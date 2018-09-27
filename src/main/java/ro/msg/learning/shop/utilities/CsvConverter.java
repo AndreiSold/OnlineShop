@@ -107,18 +107,6 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
         CsvMapper mapper = new CsvMapper();
         CsvSchema schema = mapper.schemaFor(clazz).withHeader().withColumnReordering(false);
 
-
-//        --- If you want to also add the field names as column headers ---
-//        List<Field> fieldList = Arrays.asList(clazz.getDeclaredFields());
-//
-//        for (Field field : fieldList)
-//            if (fieldList.get(0).equals(field))
-//                csv += field.getName();
-//            else
-//                csv += "," + field.getName();
-//
-//        csv += "\n";
-
         String csv = mapper.writer(schema).writeValueAsString(pojosWritten);
 
         PrintStream printStream = new PrintStream(outputStream);

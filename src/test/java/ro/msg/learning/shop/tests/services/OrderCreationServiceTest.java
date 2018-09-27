@@ -1,7 +1,7 @@
 package ro.msg.learning.shop.tests.services;
 
 
-import org.flywaydb.core.Flyway;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +26,6 @@ import java.util.List;
 public class OrderCreationServiceTest {
 
     @Autowired
-    private Flyway flyway;
-
-    //    @After
-    public void resetDB() {
-        flyway.clean();
-        flyway.migrate();
-    }
-
-    @Autowired
     private OrderCreationService orderCreationService;
 
     @Test(expected = ShippingAdressNotInRomaniaException.class)
@@ -46,6 +37,7 @@ public class OrderCreationServiceTest {
         orderDto.setOrderDetails(Collections.emptyList());
 
         orderCreationService.createOrder(orderDto);
+        Assert.assertFalse(true);
     }
 
     @Test(expected = NegativeQuantityException.class)
@@ -63,6 +55,7 @@ public class OrderCreationServiceTest {
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
         orderCreationService.createOrder(orderDto);
+        Assert.assertFalse(true);
     }
 
     @Test(expected = OrderTimestampInFutureException.class)
@@ -80,6 +73,7 @@ public class OrderCreationServiceTest {
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
         orderCreationService.createOrder(orderDto);
+        Assert.assertFalse(true);
     }
 
 }

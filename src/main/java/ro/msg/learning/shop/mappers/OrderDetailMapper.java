@@ -27,19 +27,16 @@ public class OrderDetailMapper {
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
-        for (OrderDetailDto orderDetailDto : orderDetailDtoList) {
+        orderDetailDtoList.stream().forEach(orderDetailDto -> {
             Optional<Product> currentProduct = productRepository.findById(orderDetailDto.getProductId());
-
             if (currentProduct.isPresent()) {
                 Product existentProduct = currentProduct.get();
-
                 OrderDetail orderDetail = OrderDetail.builder().product(existentProduct)
                     .quantity(orderDetailDto.getQuantity())
                     .build();
-
                 orderDetailList.add(orderDetail);
             }
-        }
+        });
 
         return orderDetailList;
     }
@@ -48,16 +45,14 @@ public class OrderDetailMapper {
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
-        for (StrategyWrapper strategyWrapper : strategyWrapperList) {
-
+        strategyWrapperList.stream().forEach(strategyWrapper -> {
             OrderDetail orderDetail = OrderDetail.builder()
                 .quantity(strategyWrapper.getQuantity())
                 .product(strategyWrapper.getProduct())
                 .order(order)
                 .build();
-
             orderDetailList.add(orderDetail);
-        }
+        });
 
         return orderDetailList;
     }
