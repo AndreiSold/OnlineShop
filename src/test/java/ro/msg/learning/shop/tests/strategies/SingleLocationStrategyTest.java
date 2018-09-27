@@ -40,7 +40,6 @@ public class SingleLocationStrategyTest {
 
     @Test(expected = NoSuchElementException.class)
     public void productIdNotInDatabaseTest() {
-        List<OrderDetail> orderDetailList = new ArrayList<>();
 
         Optional<Product> mockProductOptional = productRepository.findById(999999999);
 
@@ -57,8 +56,7 @@ public class SingleLocationStrategyTest {
             singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)));
             Assert.assertFalse(true);
         } else
-            throw new NullPointerException("You chose an inexistent product for this test! Bad bad dev");
-
+            Assert.assertFalse("You chose an inexistent product for this test! Bad bad dev", true);
     }
 
     @Test(expected = OrderDetailsListEmptyException.class)

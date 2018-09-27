@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.exceptionHandlers;
+package ro.msg.learning.shop.exceptions.handlers;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
