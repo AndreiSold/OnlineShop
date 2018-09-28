@@ -1,14 +1,15 @@
 package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Data
+@Setter
+@Getter
+@ToString
 @Builder
 @AllArgsConstructor
 public class OrderDetail {
@@ -25,4 +26,23 @@ public class OrderDetail {
     private Order order;
 
     private Integer quantity;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderDetail that = (OrderDetail) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, quantity);
+    }
 }

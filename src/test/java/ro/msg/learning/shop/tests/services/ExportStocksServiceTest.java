@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.msg.learning.shop.entities.Stock;
-import ro.msg.learning.shop.exceptions.LocationIdDoesNotExistException;
+import ro.msg.learning.shop.exceptions.LocationNotFoundException;
+import ro.msg.learning.shop.exceptions.ResultedStockListEmptyException;
 import ro.msg.learning.shop.services.ExportStocksService;
 
 import java.util.Collections;
@@ -20,13 +21,12 @@ public class ExportStocksServiceTest {
     @Autowired
     private ExportStocksService exportStocksService;
 
-    @Test(expected = LocationIdDoesNotExistException.class)
+    @Test(expected = LocationNotFoundException.class)
     public void locationIdNotFoundTest() {
-        exportStocksService.getAllStocksByLocationId(345215122);
-        Assert.assertFalse(true);
+        exportStocksService.getAllStocksByLocationId(-1);
     }
 
-    @Test
+    @Test(expected = ResultedStockListEmptyException.class)
     public void noStocksFoundInLocationTest() {
         List<Stock> stockListReceived = exportStocksService.getAllStocksByLocationId(3);
         Assert.assertEquals(Collections.emptyList(), stockListReceived);
@@ -39,7 +39,7 @@ public class ExportStocksServiceTest {
     }
 
     @Test
-    public void moreThanOneStocksFoundInLocationTest() {
+    public void moreThanOneStockFoundInLocationTest() {
         List<Stock> stockListReceived = exportStocksService.getAllStocksByLocationId(8);
         Assert.assertTrue(stockListReceived.size() > 1);
     }

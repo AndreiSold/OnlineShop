@@ -5,6 +5,4 @@ import ro.msg.learning.shop.entities.ProductCategory;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
 
-    //Implement needed queries here
-
 }

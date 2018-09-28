@@ -1,6 +1,6 @@
 package ro.msg.learning.shop.mappers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
 import ro.msg.learning.shop.entities.Order;
@@ -14,14 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class OrderDetailMapper {
 
-    private ProductRepository productRepository;
-
-    @Autowired
-    public OrderDetailMapper(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductRepository productRepository;
 
     public List<OrderDetail> orderDetailDtoListToOrderDetailList(List<OrderDetailDto> orderDetailDtoList) {
 

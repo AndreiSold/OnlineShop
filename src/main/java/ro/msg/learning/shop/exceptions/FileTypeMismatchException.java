@@ -1,14 +1,10 @@
 package ro.msg.learning.shop.exceptions;
 
-import lombok.Data;
+import ro.msg.learning.shop.exceptions.superexceptions.MySuperException;
 
-@Data
-public class FileTypeMismatchException extends RuntimeException {
+public class FileTypeMismatchException extends MySuperException {
 
-    private String details;
-
-    public FileTypeMismatchException(String message, String details) {
-        super(message);
-        this.details = details;
+    public FileTypeMismatchException(String fileName, String details) {
+        super("Expected: .csv file, received: " + fileName, details);
     }
 }

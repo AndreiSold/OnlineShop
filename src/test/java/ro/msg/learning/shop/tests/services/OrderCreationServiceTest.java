@@ -1,7 +1,5 @@
 package ro.msg.learning.shop.tests.services;
 
-
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,7 @@ import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.embeddables.Address;
 import ro.msg.learning.shop.exceptions.NegativeQuantityException;
 import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
-import ro.msg.learning.shop.exceptions.ShippingAdressNotInRomaniaException;
+import ro.msg.learning.shop.exceptions.ShippingAddressNotInRomaniaException;
 import ro.msg.learning.shop.services.OrderCreationService;
 
 import java.time.LocalDateTime;
@@ -28,7 +26,7 @@ public class OrderCreationServiceTest {
     @Autowired
     private OrderCreationService orderCreationService;
 
-    @Test(expected = ShippingAdressNotInRomaniaException.class)
+    @Test(expected = ShippingAddressNotInRomaniaException.class)
     public void countryNotRomaniaExceptionTest() {
 
         OrderDto orderDto = new OrderDto();
@@ -37,7 +35,6 @@ public class OrderCreationServiceTest {
         orderDto.setOrderDetails(Collections.emptyList());
 
         orderCreationService.createOrder(orderDto);
-        Assert.assertFalse(true);
     }
 
     @Test(expected = NegativeQuantityException.class)
@@ -55,7 +52,6 @@ public class OrderCreationServiceTest {
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
         orderCreationService.createOrder(orderDto);
-        Assert.assertFalse(true);
     }
 
     @Test(expected = OrderTimestampInFutureException.class)
@@ -73,7 +69,6 @@ public class OrderCreationServiceTest {
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
         orderCreationService.createOrder(orderDto);
-        Assert.assertFalse(true);
     }
 
 }

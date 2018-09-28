@@ -6,6 +6,5 @@ import ro.msg.learning.shop.wrappers.StrategyWrapper;
 import java.util.List;
 
 public interface SelectionStrategy {
-
     List<StrategyWrapper> getStrategyResult(List<OrderDetail> orderDetailList);
 }

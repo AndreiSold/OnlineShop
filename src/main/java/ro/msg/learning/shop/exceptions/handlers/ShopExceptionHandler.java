@@ -7,61 +7,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ro.msg.learning.shop.exceptions.*;
+import ro.msg.learning.shop.exceptions.superexceptions.MySuperException;
 
 @RestControllerAdvice
 public class ShopExceptionHandler {
 
-    @ExceptionHandler(FileTypeMismatchException.class)
+    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected Response fileTypeMismatchException(FileTypeMismatchException e) {
+    protected Response badRequestExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());
     }
 
-    @ExceptionHandler(LocationIdDoesNotExistException.class)
+    @ExceptionHandler({LocationNotFoundException.class, StrategyNonexistentException.class, SuitableLocationNonexistentException.class, ResultedStockListEmptyException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected Response locationIdDoesNotExistException(LocationIdDoesNotExistException e) {
-        return new Response(e.getMessage(), e.getDetails());
-    }
-
-    @ExceptionHandler(NegativeQuantityException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected Response negativeQuantityException(NegativeQuantityException e) {
-        return new Response(e.getMessage(), e.getDetails());
-    }
-
-    @ExceptionHandler(OrderTimestampInFutureException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected Response orderTimeStampInFutureException(OrderTimestampInFutureException e) {
-        return new Response(e.getMessage(), e.getDetails());
-    }
-
-    @ExceptionHandler(ShippingAdressNotInRomaniaException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected Response shippingAddressNotInRomaniaException(ShippingAdressNotInRomaniaException e) {
-        return new Response(e.getMessage(), e.getDetails());
-    }
-
-    @ExceptionHandler(StrategyInexistentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected Response strategyInexistendException(StrategyInexistentException e) {
-        return new Response(e.getMessage(), e.getDetails());
-    }
-
-    @ExceptionHandler(SuitableLocationInexistentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected Response suitableLocationInexistenException(SuitableLocationInexistentException e) {
-        return new Response(e.getMessage(), e.getDetails());
-    }
-
-    @ExceptionHandler(StockResultListEmptyException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected Response stockResultListEmptyException(StockResultListEmptyException e) {
+    protected Response notFoundExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());
     }
 
     @Data
     @AllArgsConstructor
-    class Response {
+    private class Response {
         private String message;
         private String details;
     }

@@ -1,14 +1,10 @@
 package ro.msg.learning.shop.exceptions;
 
-import lombok.Data;
+import ro.msg.learning.shop.exceptions.superexceptions.MySuperException;
 
-@Data
-public class OrderDetailsListEmptyException extends RuntimeException {
-
-    private String details;
+public class OrderDetailsListEmptyException extends MySuperException {
 
     public OrderDetailsListEmptyException(String details) {
-        super("The order details list is empty!");
-        this.details = details;
+        super("The order details list is empty!", details);
     }
 }

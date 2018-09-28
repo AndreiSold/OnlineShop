@@ -1,16 +1,12 @@
 package ro.msg.learning.shop.exceptions;
 
-import lombok.Data;
+import ro.msg.learning.shop.exceptions.superexceptions.MySuperException;
 
 import java.time.LocalDateTime;
 
-@Data
-public class OrderTimestampInFutureException extends RuntimeException {
-
-    private String details;
+public class OrderTimestampInFutureException extends MySuperException {
 
     public OrderTimestampInFutureException(LocalDateTime localDate, String details) {
-        super("The order's timestamp is in future: " + localDate.toString());
-        this.details = details;
+        super("The order's timestamp is in future: " + localDate.toString(), details);
     }
 }

@@ -67,8 +67,7 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
         try {
             toCsv((Class.forName(((ParameterizedType) type).getActualTypeArguments()[0].getTypeName())), t, outputMessage.getBody());
         } catch (ClassNotFoundException e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+            log.error("Given class was not found!", e);
         }
     }
 
@@ -81,7 +80,7 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
         try {
             return fromCsv((Class.forName(((ParameterizedType) type).getActualTypeArguments()[0].getTypeName())), inputMessage.getBody());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("Given class was not found!", e);
         }
 
         return Collections.emptyList();
@@ -89,8 +88,9 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
 
     public List<T> fromCsv(Class clazz, InputStream inputStream) throws IOException {
 
-        if (clazz == null)
+        if (clazz == null) {
             return null;
+        }
 
         CsvMapper mapper = new CsvMapper();
         CsvSchema schema = CsvSchema.emptySchema().withHeader();
@@ -100,7 +100,6 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
 
         return it.readAll();
     }
-
 
     public void toCsv(Class clazz, List<T> pojosWritten, OutputStream outputStream) throws IOException {
 

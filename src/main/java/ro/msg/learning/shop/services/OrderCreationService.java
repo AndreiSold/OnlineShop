@@ -1,45 +1,36 @@
 package ro.msg.learning.shop.services;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ro.msg.learning.shop.constrains.OrderDtoConstrains;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.entities.OrderDetail;
+import ro.msg.learning.shop.exceptions.NegativeQuantityException;
+import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
+import ro.msg.learning.shop.exceptions.ShippingAddressNotInRomaniaException;
 import ro.msg.learning.shop.mappers.OrderDetailMapper;
 import ro.msg.learning.shop.repositories.OrderDetailRepository;
 import ro.msg.learning.shop.repositories.OrderRepository;
 import ro.msg.learning.shop.strategies.SelectionStrategy;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class OrderCreationService {
 
-    private SelectionStrategy selectionStrategy;
-    private OrderDetailRepository orderDetailRepository;
-    private OrderDetailMapper orderDetailMapper;
-    private OrderRepository orderRepository;
-    private OrderDtoConstrains orderDtoConstrains;
-
-    @Autowired
-    public OrderCreationService(SelectionStrategy selectionStrategy, OrderDetailRepository orderDetailRepository, OrderDetailMapper orderDetailMapper,
-                                OrderRepository orderRepository, OrderDtoConstrains orderDtoConstrains) {
-        this.selectionStrategy = selectionStrategy;
-        this.orderDetailRepository = orderDetailRepository;
-        this.orderDetailMapper = orderDetailMapper;
-        this.orderRepository = orderRepository;
-        this.orderDtoConstrains = orderDtoConstrains;
-    }
+    private final SelectionStrategy selectionStrategy;
+    private final OrderDetailRepository orderDetailRepository;
+    private final OrderDetailMapper orderDetailMapper;
+    private final OrderRepository orderRepository;
 
     public Order createOrder(OrderDto orderDto) {
 
-        orderDtoConstrains.checkIfOrderDtoCorrectlyFormatted(orderDto);
+        checkIfOrderDtoCorrectlyFormatted(orderDto);
 
         List<OrderDetail> orderDetailList = orderDetailMapper.orderDetailDtoListToOrderDetailList(orderDto.getOrderDetails());
 
@@ -59,6 +50,35 @@ public class OrderCreationService {
         //TODO Customer still not tied to order here
 
         return finalOrder;
+    }
+
+    private void checkIfOrderDtoCorrectlyFormatted(OrderDto orderDto) {
+
+        //Checking if the shipping address is in Romania
+        String country = orderDto.getAddress().getCountry();
+
+        if (!("Romania".equalsIgnoreCase(country))) {
+            log.error("We only ship in Romania. Encountered an OrderDto with: ", orderDto.getAddress());
+            throw new ShippingAddressNotInRomaniaException(country, orderDto.getAddress().toString());
+        }
+
+        //Checking if any product quantity is less than 1 and throwing an exception if there is
+        orderDto.getOrderDetails().parallelStream().forEach(orderDetailDtoInstance -> {
+            Integer quantity = orderDetailDtoInstance.getQuantity();
+            if (quantity < 1) {
+                log.error("All quantities should be strictly positive. Encountered an OrderDetailDto with: ", orderDetailDtoInstance);
+                throw new NegativeQuantityException(quantity, orderDetailDtoInstance.toString());
+            }
+        });
+
+        //Checking if the order timestamp is not in the future
+        LocalDateTime timestamp = orderDto.getOrderTimestamp();
+
+        if (timestamp.isAfter(LocalDateTime.now())) {
+            log.error("The order's timestamp is in future. Encountered an OrderDto with: ", orderDto);
+            throw new OrderTimestampInFutureException(timestamp, orderDto.toString());
+        }
+
     }
 
 }

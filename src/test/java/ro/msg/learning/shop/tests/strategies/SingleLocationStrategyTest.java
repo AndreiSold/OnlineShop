@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.entities.Product;
 import ro.msg.learning.shop.exceptions.OrderDetailsListEmptyException;
-import ro.msg.learning.shop.exceptions.SuitableLocationInexistentException;
+import ro.msg.learning.shop.exceptions.SuitableLocationNonexistentException;
 import ro.msg.learning.shop.repositories.ProductRepository;
 import ro.msg.learning.shop.strategies.SingleLocationStrategy;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
@@ -40,23 +40,20 @@ public class SingleLocationStrategyTest {
 
     @Test(expected = NoSuchElementException.class)
     public void productIdNotInDatabaseTest() {
-
         Optional<Product> mockProductOptional = productRepository.findById(999999999);
-
         singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)));
-        Assert.assertFalse(true);
     }
 
-    @Test(expected = SuitableLocationInexistentException.class)
+    @Test(expected = SuitableLocationNonexistentException.class)
     public void noLocationWithWantedProductsTest() {
 
         Optional<Product> mockProductOptional = productRepository.findById(15);
 
         if (mockProductOptional.isPresent()) {
             singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)));
-            Assert.assertFalse(true);
-        } else
-            Assert.assertFalse("You chose an inexistent product for this test! Bad bad dev", true);
+        } else {
+            Assert.assertFalse("You chose a nonexistent product for this test! Bad bad dev", true);
+        }
     }
 
     @Test(expected = OrderDetailsListEmptyException.class)
@@ -67,7 +64,6 @@ public class SingleLocationStrategyTest {
     @Test(expected = NullPointerException.class)
     public void nullListAsParameterTest() {
         singleLocationStrategy.getStrategyResult(null);
-        Assert.assertFalse(true);
     }
 
     @Test
@@ -92,8 +88,8 @@ public class SingleLocationStrategyTest {
         Assert.assertEquals("Locations are not equal for the products to be bought!", firstStrategyWrapper.getLocation(), secondStrategyWrapper.getLocation());
         Assert.assertEquals("Quantities are not equal for the first object!", firstStrategyWrapper.getQuantity(), orderDetail1.getQuantity());
         Assert.assertEquals("Product IDs are not equal for the first object!", firstStrategyWrapper.getProduct().getId(), orderDetail1.getProduct().getId());
-        Assert.assertEquals("Quantities are not equal for the first object!", secondStrategyWrapper.getQuantity(), orderDetail2.getQuantity());
-        Assert.assertEquals("Product IDs are not equal for the first object!", secondStrategyWrapper.getProduct().getId(), orderDetail2.getProduct().getId());
+        Assert.assertEquals("Quantities are not equal for the second object!", secondStrategyWrapper.getQuantity(), orderDetail2.getQuantity());
+        Assert.assertEquals("Product IDs are not equal for the second object!", secondStrategyWrapper.getProduct().getId(), orderDetail2.getProduct().getId());
     }
 
 }

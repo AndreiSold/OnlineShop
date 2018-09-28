@@ -1,14 +1,10 @@
 package ro.msg.learning.shop.exceptions;
 
-import lombok.Data;
+import ro.msg.learning.shop.exceptions.superexceptions.MySuperException;
 
-@Data
-public class NegativeQuantityException extends RuntimeException {
+public class NegativeQuantityException extends MySuperException {
 
-    private String details;
-
-    public NegativeQuantityException(Integer quantity, String details) {
-        super("Quantity should be strictly positive. Given value was: " + quantity);
-        this.details = details;
+    public NegativeQuantityException(int quantity, String details) {
+        super("Quantity should be strictly positive. Given value was: " + quantity, details);
     }
 }

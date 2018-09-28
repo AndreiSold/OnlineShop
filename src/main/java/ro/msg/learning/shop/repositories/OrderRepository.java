@@ -5,6 +5,4 @@ import ro.msg.learning.shop.entities.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-    //Implement needed queries here
-
 }
