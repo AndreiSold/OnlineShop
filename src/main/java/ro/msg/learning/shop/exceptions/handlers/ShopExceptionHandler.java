@@ -12,7 +12,7 @@ import ro.msg.learning.shop.exceptions.superexceptions.MySuperException;
 @RestControllerAdvice
 public class ShopExceptionHandler {
 
-    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class})
+    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class, LocationPassedAsNullException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected Response badRequestExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());
