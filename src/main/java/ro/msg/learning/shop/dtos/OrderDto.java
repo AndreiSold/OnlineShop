@@ -1,7 +1,6 @@
 package ro.msg.learning.shop.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +18,6 @@ public class OrderDto {
     private LocalDateTime orderTimestamp;
     private Address address;
 
-    @JsonIgnore
+    //    @JsonIgnore
     private List<OrderDetailDto> orderDetails;
 }

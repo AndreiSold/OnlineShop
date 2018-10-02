@@ -12,6 +12,7 @@ import java.util.Objects;
 @ToString
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class OrderDetail {
 
     @Id

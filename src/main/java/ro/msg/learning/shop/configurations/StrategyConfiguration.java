@@ -20,7 +20,6 @@ import ro.msg.learning.shop.strategies.SingleLocationStrategy;
 @ComponentScan("ro.msg.learning.shop.strategies")
 @Slf4j
 @RequiredArgsConstructor
-//@ConfigurationProperties(prefix = "strategy")
 public class StrategyConfiguration {
 
     private final LocationRepository locationRepository;

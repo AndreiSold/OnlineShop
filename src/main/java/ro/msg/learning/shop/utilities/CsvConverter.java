@@ -42,7 +42,8 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
             Class.forName(((ParameterizedTypeImpl) type).getRawType().getName()).equals(List.class) &&
             mediaType != null &&
             mediaType.getType().equals("text") &&
-            mediaType.getSubtype().equals("csv");
+            mediaType.getSubtype().equals("csv") &&
+            super.canWrite(type, clazz, mediaType);
     }
 
     public CsvConverter() {

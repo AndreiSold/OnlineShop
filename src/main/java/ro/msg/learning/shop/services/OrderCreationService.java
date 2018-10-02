@@ -63,7 +63,7 @@ public class OrderCreationService {
         }
 
         //Checking if any product quantity is less than 1 and throwing an exception if there is
-        orderDto.getOrderDetails().parallelStream().forEach(orderDetailDtoInstance -> {
+        orderDto.getOrderDetails().stream().forEach(orderDetailDtoInstance -> {
             Integer quantity = orderDetailDtoInstance.getQuantity();
             if (quantity < 1) {
                 log.error("All quantities should be strictly positive. Encountered an OrderDetailDto with: ", orderDetailDtoInstance);

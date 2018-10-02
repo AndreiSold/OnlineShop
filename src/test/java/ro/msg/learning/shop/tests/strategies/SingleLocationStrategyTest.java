@@ -9,11 +9,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.entities.Product;
+import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.exceptions.OrderDetailsListEmptyException;
 import ro.msg.learning.shop.exceptions.SuitableLocationNonexistentException;
+import ro.msg.learning.shop.repositories.LocationRepository;
 import ro.msg.learning.shop.repositories.ProductRepository;
+import ro.msg.learning.shop.repositories.StockRepository;
 import ro.msg.learning.shop.strategies.SingleLocationStrategy;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
@@ -28,6 +32,10 @@ public class SingleLocationStrategyTest {
     private SingleLocationStrategy singleLocationStrategy;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private StockRepository stockRepository;
+    @Autowired
+    private LocationRepository locationRepository;
 
     @Autowired
     private Flyway flyway;
@@ -90,6 +98,43 @@ public class SingleLocationStrategyTest {
         Assert.assertEquals("Product IDs are not equal for the first object!", firstStrategyWrapper.getProduct().getId(), orderDetail1.getProduct().getId());
         Assert.assertEquals("Quantities are not equal for the second object!", secondStrategyWrapper.getQuantity(), orderDetail2.getQuantity());
         Assert.assertEquals("Product IDs are not equal for the second object!", secondStrategyWrapper.getProduct().getId(), orderDetail2.getProduct().getId());
+    }
+
+    @Test
+    public void checkIfStockQuantitiesUpdateTest() {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+
+        Optional<Product> product1 = productRepository.findById(83);
+        Optional<Product> product2 = productRepository.findById(737);
+
+        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 200);
+        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100);
+
+        orderDetailList.add(orderDetail1);
+        orderDetailList.add(orderDetail2);
+
+        Optional<Location> optionalLocation = locationRepository.findById(850);
+
+        Stock firstStock = stockRepository.findByLocationEqualsAndProductEqualsAndQuantityGreaterThanEqual(
+            optionalLocation.get(),
+            product1.get(),
+            200
+        );
+
+        Stock secondStock = stockRepository.findByLocationEqualsAndProductEqualsAndQuantityGreaterThanEqual(
+            optionalLocation.get(),
+            product2.get(),
+            100
+        );
+
+        // no need for the result
+        singleLocationStrategy.getStrategyResult(orderDetailList);
+
+        Optional<Stock> newFirstStock = stockRepository.findById(firstStock.getId());
+        Optional<Stock> newSecondStock = stockRepository.findById(secondStock.getId());
+
+        Assert.assertEquals(firstStock.getQuantity() - 200, newFirstStock.get().getQuantity().intValue());
+        Assert.assertEquals(secondStock.getQuantity() - 100, newSecondStock.get().getQuantity().intValue());
     }
 
 }
