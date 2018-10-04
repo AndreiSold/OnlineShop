@@ -16,13 +16,13 @@ import java.util.List;
 @RestControllerAdvice
 public class ShopExceptionHandler {
 
-    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class, LocationPassedAsNullException.class})
+    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class, LocationPassedAsNullException.class, UsernameAlreadyExistsException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response badRequestExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());
     }
 
-    @ExceptionHandler({LocationNotFoundException.class, StrategyNonexistentException.class, SuitableLocationNonexistentException.class})
+    @ExceptionHandler({LocationNotFoundException.class, StrategyNonexistentException.class, SuitableLocationNonexistentException.class, CustomerIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response notFoundExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());

@@ -26,6 +26,8 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
+//import org.flywaydb.core.Flyway;
+
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -61,6 +63,7 @@ public class OrderControllerTest {
         String finalPath = basePath + "/create-order/";
 
         try {
+
             restTemplate.postForEntity(finalPath, request, Order.class);
             Assert.fail("A location should not be found!");
         } catch (HttpClientErrorException e) {

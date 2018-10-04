@@ -2,7 +2,7 @@ create table customer (
   id integer not null,
   first_name varchar(255),
   last_name varchar(255),
-  username varchar(255),
+  username varchar(255) unique,
   primary key (id)
 ) engine=InnoDB;
 
