@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = {"productCategories", "suppliers"})
+@ToString(exclude = {"productCategories", "suppliers", "stocks", "orderDetails"})
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
@@ -26,11 +26,11 @@ public class Product {
 
     private Double weight;
 
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "products")
     private List<ProductCategory> productCategories;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "products")
     private List<Supplier> suppliers;
 
     @JsonIgnore

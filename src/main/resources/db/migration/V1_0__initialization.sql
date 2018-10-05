@@ -10,14 +10,14 @@ create table hibernate_sequence (
   next_val bigint
 ) engine=InnoDB;
 
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
-insert into hibernate_sequence values ( 1001 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
+insert into hibernate_sequence values ( 1002 );
 
 create table location (
   id integer not null,

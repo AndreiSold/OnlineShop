@@ -1,6 +1,5 @@
 package ro.msg.learning.shop.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,12 +12,10 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Product product;
 
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Location location;
 
     private Integer quantity;

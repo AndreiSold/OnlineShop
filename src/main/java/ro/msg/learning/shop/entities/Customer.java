@@ -1,16 +1,14 @@
 package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@ToString(exclude = {"orders", "roles"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,6 +22,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 

@@ -32,4 +32,9 @@ public class CustomerController {
     public CustomerDtoNoPassword showCustomerProfile(Authentication authentication) {
         return customerService.customerDtoNoPasswordFromCustomerUsername(authentication.getName());
     }
+
+    @DeleteMapping(value = "/{idToDelete}")
+    public void deleteCustomerAfterId(@PathVariable Integer idToDelete) {
+        customerService.deleteCustomerById(idToDelete);
+    }
 }

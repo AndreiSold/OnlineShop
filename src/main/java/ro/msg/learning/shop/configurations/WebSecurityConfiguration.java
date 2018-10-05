@@ -38,7 +38,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         auth.userDetailsService(s -> {
 
-            final Customer customer = customerRepository.findByUsernameEquals(s);
+            final Customer customer = customerRepository.findByUsername(s);
 
             if (customer == null) {
                 log.error("Given customer username does not exist!");
@@ -95,7 +95,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/customer/register").permitAll()
             .antMatchers(HttpMethod.GET).permitAll()
             .antMatchers(HttpMethod.POST).authenticated()
-            .antMatchers(HttpMethod.DELETE, "/customer").hasRole("ADMINISTRATOR")
+            .antMatchers(HttpMethod.DELETE, "/customer/delete").hasRole("ADMINISTRATOR")
             .anyRequest().permitAll()
             .and()
             .httpBasic();

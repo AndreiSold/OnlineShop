@@ -7,6 +7,7 @@ import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.exceptions.NegativeQuantityException;
+import ro.msg.learning.shop.exceptions.OrderDtoNullException;
 import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
 import ro.msg.learning.shop.exceptions.ShippingAddressNotInRomaniaException;
 import ro.msg.learning.shop.mappers.OrderDetailMapper;
@@ -15,6 +16,7 @@ import ro.msg.learning.shop.repositories.OrderRepository;
 import ro.msg.learning.shop.strategies.SelectionStrategy;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class OrderCreationService {
     private final OrderDetailMapper orderDetailMapper;
     private final OrderRepository orderRepository;
 
+    @Transactional
     public Order createOrder(OrderDto orderDto) {
 
         checkIfOrderDtoCorrectlyFormatted(orderDto);
@@ -53,6 +56,11 @@ public class OrderCreationService {
     }
 
     private void checkIfOrderDtoCorrectlyFormatted(OrderDto orderDto) {
+
+        if (orderDto == null) {
+            log.error("Given orderDto is null!");
+            throw new OrderDtoNullException("No more info needed!");
+        }
 
         //Checking if the shipping address is in Romania
         String country = orderDto.getAddress().getCountry();

@@ -9,13 +9,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.embeddables.Address;
@@ -37,7 +36,7 @@ public class OrderControllerTest {
     private int port;
 
     private String basePath;
-    private RestTemplate restTemplate = new RestTemplate();
+    private TestRestTemplate testRestTemplate = new TestRestTemplate();
 
     @Autowired
     private Flyway flyway;
@@ -50,27 +49,27 @@ public class OrderControllerTest {
 
     @Before
     public void init() {
-        basePath = "http://localhost:" + port + "/orders/";
+        basePath = "http://localhost:" + port + "/orders";
     }
 
-    @Test
-    public void createOrderNullOrderDtoTest() {
-
-        OrderDto orderDto = null;
-
-        HttpEntity<OrderDto> request = new HttpEntity<>(orderDto);
-
-        String finalPath = basePath + "/create-order/";
-
-        try {
-
-            restTemplate.postForEntity(finalPath, request, Order.class);
-            Assert.fail("A location should not be found!");
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getStatusCode());
-        }
-
-    }
+//    @Test
+//    public void createOrderNullOrderDtoTest() {
+//
+//        OrderDto orderDto = null;
+//
+//        HttpEntity<OrderDto> request = new HttpEntity<>(orderDto);
+//
+//        String finalPath = basePath + "/create-order/";
+//
+//        try {
+//            testRestTemplate.withBasicAuth("admin","1234").postForEntity(finalPath, request, Order.class);
+//            Assert.fail("Exception did not hit!");
+//
+//        } catch (HttpClientErrorException e) {
+//            Assert.assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getStatusCode());
+//        }
+//
+//    }
 
     @Test
     public void createOrderTimeStampInFutureTest() {
@@ -82,13 +81,9 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        try {
-            restTemplate.postForEntity(finalPath, request, Order.class);
-            Assert.fail("A location should not be found!");
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-        }
+        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
 
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, createdOrderEntity.getStatusCode());
     }
 
     @Test
@@ -101,13 +96,9 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        try {
-            restTemplate.postForEntity(finalPath, request, Order.class);
-            Assert.fail("A location should not be found!");
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-        }
+        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
 
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, createdOrderEntity.getStatusCode());
     }
 
     @Test
@@ -120,13 +111,9 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        try {
-            restTemplate.postForEntity(finalPath, request, Order.class);
-            Assert.fail("A location should not be found!");
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
-        }
+        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
 
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, createdOrderEntity.getStatusCode());
     }
 
     @Test
@@ -139,13 +126,9 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        try {
-            restTemplate.postForEntity(finalPath, request, Order.class);
-            Assert.fail("A location should not be found!");
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
-        }
+        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
 
+        Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
     }
 
     @Test
@@ -156,10 +139,8 @@ public class OrderControllerTest {
         HttpEntity<OrderDto> request = new HttpEntity<>(orderDto);
 
         String finalPath = basePath + "/create-order/";
-
-        ResponseEntity<Order> createdOrderEntity = restTemplate.postForEntity(finalPath, request, Order.class);
+        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
         Order createdOrder = createdOrderEntity.getBody();
-
 
         Assert.assertEquals("Romania", createdOrder.getAddress().getCountry());
         Assert.assertEquals("Arad", createdOrder.getAddress().getCity());

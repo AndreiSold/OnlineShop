@@ -26,10 +26,15 @@ public class OrderDetailMapper {
         orderDetailDtoList.stream().forEach(orderDetailDto -> {
             Optional<Product> currentProduct = productRepository.findById(orderDetailDto.getProductId());
             if (currentProduct.isPresent()) {
+//                Product existentProduct = currentProduct.get();
+//                OrderDetail orderDetail = OrderDetail.builder().product(existentProduct)
+//                    .quantity(orderDetailDto.getQuantity())
+//                    .build();
                 Product existentProduct = currentProduct.get();
-                OrderDetail orderDetail = OrderDetail.builder().product(existentProduct)
-                    .quantity(orderDetailDto.getQuantity())
-                    .build();
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.setProduct(existentProduct);
+                orderDetail.setQuantity(orderDetailDto.getQuantity());
+
                 orderDetailList.add(orderDetail);
             }
         });

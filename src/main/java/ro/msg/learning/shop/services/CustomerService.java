@@ -10,6 +10,8 @@ import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.exceptions.CustomerIdNotFoundException;
 import ro.msg.learning.shop.repositories.CustomerRepository;
 
+import javax.transaction.Transactional;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class CustomerService {
     }
 
     public CustomerDtoNoPassword customerDtoNoPasswordFromCustomerUsername(String username) {
-        Customer customer = customerRepository.findByUsernameEquals(username);
+        Customer customer = customerRepository.findByUsername(username);
 
         if (customer == null) {
             log.error("Customer username not found!");
@@ -50,5 +52,10 @@ public class CustomerService {
             .roles(customer.getRoles())
             .username(customer.getUsername())
             .build();
+    }
+
+    @Transactional
+    public void deleteCustomerById(Integer idToDelete) {
+        customerRepository.deleteById(idToDelete);
     }
 }

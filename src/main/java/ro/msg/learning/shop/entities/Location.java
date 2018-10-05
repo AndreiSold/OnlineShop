@@ -11,7 +11,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = "orders")
+@ToString(exclude = {"stocks", "orders"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Location {

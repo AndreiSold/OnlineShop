@@ -1,6 +1,5 @@
 package ro.msg.learning.shop.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ro.msg.learning.shop.embeddables.Address;
@@ -12,7 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "order_")
-@ToString(exclude = "shippedFrom")
+@ToString(exclude = {"orderDetails", "shippedFrom"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,13 +28,13 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    //@JsonIgnore
-    @OneToMany(mappedBy = "order")
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
 
     @Embedded
     private Address address;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm")
+    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm")
     private LocalDateTime timestamp;
 }

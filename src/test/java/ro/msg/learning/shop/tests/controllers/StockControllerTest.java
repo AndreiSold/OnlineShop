@@ -8,17 +8,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.utilities.CsvConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -33,7 +32,7 @@ public class StockControllerTest {
     private CsvConverter csvConverter;
 
     private String basePath;
-    private RestTemplate restTemplate = new RestTemplate();
+    private TestRestTemplate testRestTemplate = new TestRestTemplate();
 
     @Before
     public void init() {
@@ -44,12 +43,9 @@ public class StockControllerTest {
     public void exportStocksNullResultTest() {
         final int locationId = 3;
 
-        try {
-            restTemplate.getForEntity(basePath + "/export-stocks-from-location/" + locationId, String.class);
-            Assert.fail("Location " + locationId + " should not have any stocks.");
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
-        }
+        ResponseEntity<String> responseEntity = testRestTemplate.withBasicAuth("admin", "1234").getForEntity(basePath + "/export-stocks-from-location/" + locationId, String.class);
+
+        Assert.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -57,7 +53,14 @@ public class StockControllerTest {
     @SuppressWarnings("unchecked")
     public void exportStocksOneItemResultTest() {
         String exportStocksUrl = basePath + "/export-stocks-from-location";
-        ResponseEntity<String> response = restTemplate.getForEntity(exportStocksUrl + "/5", String.class);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setAccept(Collections.singletonList(MediaType.valueOf("text/csv")));
+//        ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin","1234").getForEntity(exportStocksUrl + "/5", String.class);
+
+        ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin", "1234")
+            .exchange(exportStocksUrl + "/5", HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class);
 
         String responseString = response.getBody();
         InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());
@@ -75,7 +78,7 @@ public class StockControllerTest {
     @SuppressWarnings("unchecked")
     public void exportStocksThreeItemResultTest() {
         String exportStocksUrl = basePath + "/export-stocks-from-location";
-        ResponseEntity<String> response = restTemplate.getForEntity(exportStocksUrl + "/8", String.class);
+        ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin", "1234").getForEntity(exportStocksUrl + "/8", String.class);
 
         String responseString = response.getBody();
         InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());

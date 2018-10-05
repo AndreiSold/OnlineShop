@@ -16,7 +16,7 @@ import java.util.List;
 @RestControllerAdvice
 public class ShopExceptionHandler {
 
-    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class, LocationPassedAsNullException.class, UsernameAlreadyExistsException.class})
+    @ExceptionHandler({FileTypeMismatchException.class, NegativeQuantityException.class, OrderTimestampInFutureException.class, ShippingAddressNotInRomaniaException.class, LocationPassedAsNullException.class, UsernameAlreadyExistsException.class, OrderDtoNullException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response badRequestExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());

@@ -9,5 +9,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     List<Customer> findAllByUsernameEquals(String username);
 
-    Customer findByUsernameEquals(String username);
+    Customer findByUsername(String username);
+
 }
