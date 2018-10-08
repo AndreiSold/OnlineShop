@@ -11,6 +11,7 @@ import ro.msg.learning.shop.exceptions.OrderDtoNullException;
 import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
 import ro.msg.learning.shop.exceptions.ShippingAddressNotInRomaniaException;
 import ro.msg.learning.shop.mappers.OrderDetailMapper;
+import ro.msg.learning.shop.repositories.CustomerRepository;
 import ro.msg.learning.shop.repositories.OrderDetailRepository;
 import ro.msg.learning.shop.repositories.OrderRepository;
 import ro.msg.learning.shop.strategies.SelectionStrategy;
@@ -18,6 +19,7 @@ import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -29,9 +31,10 @@ public class OrderCreationService {
     private final OrderDetailRepository orderDetailRepository;
     private final OrderDetailMapper orderDetailMapper;
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
     @Transactional
-    public Order createOrder(OrderDto orderDto) {
+    public Order createOrder(OrderDto orderDto, String customerUsername) {
 
         checkIfOrderDtoCorrectlyFormatted(orderDto);
 
@@ -50,7 +53,11 @@ public class OrderCreationService {
         finalOrder.setOrderDetails(orderDetailFinalList);
         orderRepository.save(finalOrder);
 
-        //TODO Customer still not tied to order here
+        if (!strategyWrapperList.isEmpty()) {
+            finalOrder.setShippedFrom(Collections.singletonList(strategyWrapperList.get(0).getLocation()));
+        }
+
+        finalOrder.setCustomer(customerRepository.findByUsername(customerUsername));
 
         return finalOrder;
     }

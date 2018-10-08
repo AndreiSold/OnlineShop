@@ -1,4 +1,4 @@
-insert into customer (id, first_name, last_name, username) values (1, 'Andrei', 'Sold', 'aduddle0');
+insert into customer (id, first_name, last_name, username) values (1, 'Andrei', 'Sold', 'andreiSold');
 insert into customer (id, first_name, last_name, username) values (2, 'Alameda', 'Wilshaw', 'awilshaw1');
 insert into customer (id, first_name, last_name, username) values (3, 'Carina', 'Harmes', 'charmes2');
 insert into customer (id, first_name, last_name, username) values (4, 'Kimble', 'Garr', 'kgarr3');

@@ -26,6 +26,7 @@ public class Product {
 
     private Double weight;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "products")
     private List<ProductCategory> productCategories;
 

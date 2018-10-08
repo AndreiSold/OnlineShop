@@ -2,6 +2,7 @@ package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Component
 public class Customer {
 
     @Id

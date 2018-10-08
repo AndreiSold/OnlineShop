@@ -57,10 +57,11 @@ public class StockControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.setAccept(Collections.singletonList(MediaType.valueOf("text/csv")));
-//        ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin","1234").getForEntity(exportStocksUrl + "/5", String.class);
+
+        HttpEntity<String> entity = new HttpEntity<>("headers", httpHeaders);
 
         ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin", "1234")
-            .exchange(exportStocksUrl + "/5", HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class);
+            .exchange(exportStocksUrl + "/5", HttpMethod.GET, entity, String.class);
 
         String responseString = response.getBody();
         InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());

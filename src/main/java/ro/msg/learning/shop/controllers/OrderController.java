@@ -3,6 +3,7 @@ package ro.msg.learning.shop.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
@@ -24,8 +25,8 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create-order")
-    public Order createOrder(@RequestBody OrderDto orderDto) {
-        return orderCreationService.createOrder(orderDto);
+    public Order createOrder(@RequestBody OrderDto orderDto, Authentication authentication) {
+        return orderCreationService.createOrder(orderDto, authentication.getName());
     }
 
     @ResponseStatus(HttpStatus.CREATED)

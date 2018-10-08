@@ -34,7 +34,7 @@ public class OrderCreationServiceTest {
         orderDto.setOrderTimestamp(LocalDateTime.now());
         orderDto.setOrderDetails(Collections.emptyList());
 
-        orderCreationService.createOrder(orderDto);
+        orderCreationService.createOrder(orderDto, "admin");
     }
 
     @Test(expected = NegativeQuantityException.class)
@@ -51,7 +51,7 @@ public class OrderCreationServiceTest {
         orderDto.setOrderTimestamp(LocalDateTime.now());
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
-        orderCreationService.createOrder(orderDto);
+        orderCreationService.createOrder(orderDto, "admin");
     }
 
     @Test(expected = OrderTimestampInFutureException.class)
@@ -68,7 +68,7 @@ public class OrderCreationServiceTest {
         orderDto.setOrderTimestamp(LocalDateTime.of(2020, Month.JANUARY, 1, 10, 10, 30));
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
-        orderCreationService.createOrder(orderDto);
+        orderCreationService.createOrder(orderDto, "admin");
     }
 
 }

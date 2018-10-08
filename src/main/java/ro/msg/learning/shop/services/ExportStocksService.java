@@ -3,10 +3,12 @@ package ro.msg.learning.shop.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ro.msg.learning.shop.dtos.StockDto;
 import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.ResultedStockListEmptyException;
+import ro.msg.learning.shop.mappers.StockDtoMapper;
 import ro.msg.learning.shop.repositories.LocationRepository;
 import ro.msg.learning.shop.repositories.StockRepository;
 
@@ -20,8 +22,9 @@ public class ExportStocksService {
 
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
+    private final StockDtoMapper stockDtoMapper;
 
-    public List<Stock> getAllStocksByLocationId(int locationId) {
+    public List<StockDto> getAllStocksByLocationId(int locationId) {
         Optional<Location> givenOptionalLocation = locationRepository.findById(locationId);
 
         if (givenOptionalLocation.isPresent()) {
@@ -33,7 +36,7 @@ public class ExportStocksService {
                 throw new ResultedStockListEmptyException(locationId, "No stocks have been found!");
             }
 
-            return stockResultList;
+            return stockDtoMapper.stockToStockDto(stockResultList);
         }
 
         log.error("Given location id does not exist. This is the given value: ", locationId);

@@ -2,6 +2,7 @@ package ro.msg.learning.shop.configurations;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.entities.Role;
 import ro.msg.learning.shop.exceptions.CustomerIdNotFoundException;
+import ro.msg.learning.shop.mappers.CustomerDtoMapper;
 import ro.msg.learning.shop.repositories.CustomerRepository;
 
 import java.util.Collection;
@@ -27,11 +29,13 @@ import java.util.stream.Collectors;
 
 @EnableWebSecurity
 @Configuration
+@EnableAutoConfiguration
 @RequiredArgsConstructor
 @Slf4j
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CustomerRepository customerRepository;
+    private final CustomerDtoMapper customerDtoMapper;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -120,5 +124,21 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         return null;
     }
+
+//    @Bean
+//    public Customer currentUser2() {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication == null) {
+//            return null;
+//        }
+//
+////        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+////            return authentication.getName();
+////        }
+//
+//        return customerRepository.findByUsername(authentication.getName());
+//    }
 
 }

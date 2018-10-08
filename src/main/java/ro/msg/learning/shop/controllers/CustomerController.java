@@ -2,12 +2,13 @@ package ro.msg.learning.shop.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dtos.CustomerDto;
 import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.services.CustomerService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/customer")
@@ -22,15 +23,10 @@ public class CustomerController {
         return customerService.registerCustomer(customerDto);
     }
 
-    @GetMapping(value = "/profile/{customer}")
-    public CustomerDtoNoPassword showCustomerProfile(@PathVariable("customer") Customer customer) {
-        return customerService.customerDtoNoPasswordFromCustomer(customer);
-    }
-
     @GetMapping(value = "/profile")
     @ResponseBody
-    public CustomerDtoNoPassword showCustomerProfile(Authentication authentication) {
-        return customerService.customerDtoNoPasswordFromCustomerUsername(authentication.getName());
+    public CustomerDtoNoPassword showCustomerProfile(Principal principal) {
+        return customerService.customerDtoNoPasswordFromCustomerUsername(principal.getName());
     }
 
     @DeleteMapping(value = "/{idToDelete}")
