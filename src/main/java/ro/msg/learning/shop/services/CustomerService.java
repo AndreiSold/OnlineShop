@@ -2,6 +2,7 @@ package ro.msg.learning.shop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.CustomerDto;
@@ -38,8 +39,8 @@ public class CustomerService {
             .build();
     }
 
-    public CustomerDtoNoPassword customerDtoNoPasswordFromCustomerUsername(String username) {
-        Customer customer = customerRepository.findByUsername(username);
+    public CustomerDtoNoPassword customerDtoNoPasswordFromLoggedCustomer() {
+        Customer customer = customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (customer == null) {
             log.error("Customer username not found!");
@@ -56,6 +57,12 @@ public class CustomerService {
 
     @Transactional
     public void deleteCustomerById(Integer idToDelete) {
+
+        if (!customerRepository.findById(idToDelete).isPresent()) {
+            log.error("Customer with id: " + idToDelete + " does not exist in our database!");
+            throw new CustomerIdNotFoundException("Customer with id: " + idToDelete + " does not exist in our database!");
+        }
+
         customerRepository.deleteById(idToDelete);
     }
 }

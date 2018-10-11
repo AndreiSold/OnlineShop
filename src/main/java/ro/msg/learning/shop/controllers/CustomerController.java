@@ -8,8 +8,6 @@ import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.services.CustomerService;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping("/customer")
 @RequiredArgsConstructor
@@ -25,8 +23,8 @@ public class CustomerController {
 
     @GetMapping(value = "/profile")
     @ResponseBody
-    public CustomerDtoNoPassword showCustomerProfile(Principal principal) {
-        return customerService.customerDtoNoPasswordFromCustomerUsername(principal.getName());
+    public CustomerDtoNoPassword showCustomerProfile() {
+        return customerService.customerDtoNoPasswordFromLoggedCustomer();
     }
 
     @DeleteMapping(value = "/{idToDelete}")

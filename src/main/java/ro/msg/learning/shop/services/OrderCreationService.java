@@ -2,6 +2,7 @@ package ro.msg.learning.shop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.entities.Order;
@@ -34,13 +35,13 @@ public class OrderCreationService {
     private final CustomerRepository customerRepository;
 
     @Transactional
-    public Order createOrder(OrderDto orderDto, String customerUsername) {
+    public Order createOrder(OrderDto orderDto) {
 
         checkIfOrderDtoCorrectlyFormatted(orderDto);
 
         List<OrderDetail> orderDetailList = orderDetailMapper.orderDetailDtoListToOrderDetailList(orderDto.getOrderDetails());
 
-        List<StrategyWrapper> strategyWrapperList = selectionStrategy.getStrategyResult(orderDetailList);
+        List<StrategyWrapper> strategyWrapperList = selectionStrategy.getStrategyResult(orderDetailList, orderDto.getAddress());
 
         Order finalOrder = Order.builder()
             .address(orderDto.getAddress())
@@ -57,7 +58,7 @@ public class OrderCreationService {
             finalOrder.setShippedFrom(Collections.singletonList(strategyWrapperList.get(0).getLocation()));
         }
 
-        finalOrder.setCustomer(customerRepository.findByUsername(customerUsername));
+        finalOrder.setCustomer(customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
 
         return finalOrder;
     }

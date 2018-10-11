@@ -49,7 +49,7 @@ public class SingleLocationStrategyTest {
     @Test(expected = NoSuchElementException.class)
     public void productIdNotInDatabaseTest() {
         Optional<Product> mockProductOptional = productRepository.findById(999999999);
-        singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)));
+        singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)), null);
     }
 
     @Test(expected = SuitableLocationNonexistentException.class)
@@ -58,7 +58,7 @@ public class SingleLocationStrategyTest {
         Optional<Product> mockProductOptional = productRepository.findById(15);
 
         if (mockProductOptional.isPresent()) {
-            singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)));
+            singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)), null);
         } else {
             Assert.assertFalse("You chose a nonexistent product for this test! Bad bad dev", true);
         }
@@ -66,12 +66,12 @@ public class SingleLocationStrategyTest {
 
     @Test(expected = OrderDetailsListEmptyException.class)
     public void emptyOrderDetailListTest() {
-        Assert.assertEquals(Collections.emptyList(), singleLocationStrategy.getStrategyResult(new ArrayList<>()));
+        Assert.assertEquals(Collections.emptyList(), singleLocationStrategy.getStrategyResult(new ArrayList<>(), null));
     }
 
     @Test(expected = NullPointerException.class)
     public void nullListAsParameterTest() {
-        singleLocationStrategy.getStrategyResult(null);
+        singleLocationStrategy.getStrategyResult(null, null);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SingleLocationStrategyTest {
         orderDetailList.add(orderDetail1);
         orderDetailList.add(orderDetail2);
 
-        List<StrategyWrapper> strategyWrapperList = singleLocationStrategy.getStrategyResult(orderDetailList);
+        List<StrategyWrapper> strategyWrapperList = singleLocationStrategy.getStrategyResult(orderDetailList, null);
 
         StrategyWrapper firstStrategyWrapper = strategyWrapperList.get(0);
         StrategyWrapper secondStrategyWrapper = strategyWrapperList.get(1);
@@ -128,7 +128,7 @@ public class SingleLocationStrategyTest {
         );
 
         // no need for the result
-        singleLocationStrategy.getStrategyResult(orderDetailList);
+        singleLocationStrategy.getStrategyResult(orderDetailList, null);
 
         Optional<Stock> newFirstStock = stockRepository.findById(firstStock.getId());
         Optional<Stock> newSecondStock = stockRepository.findById(secondStock.getId());

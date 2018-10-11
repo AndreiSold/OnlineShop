@@ -16,6 +16,7 @@ import java.util.List;
 @Builder
 @Component
 public class CustomerDto {
+    private Integer id;
     private String firstName;
     private String lastName;
     private String username;

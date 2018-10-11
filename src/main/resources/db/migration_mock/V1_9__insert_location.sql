@@ -97,7 +97,7 @@ insert into location (id, city, country, county, street_address, name) values (9
 insert into location (id, city, country, county, street_address, name) values (97, 'Pato-o', 'Philippines', 'Santa Teresa', '065 Tomscot Road', 'Sierra Pea');
 insert into location (id, city, country, county, street_address, name) values (98, 'Varva', 'Ukraine', 'Iwo', '5 Comanche Park', 'Leafy Wildparsley');
 insert into location (id, city, country, county, street_address, name) values (99, 'Saint-Lin-Laurentides', 'Canada', 'Pęczniew', '1558 Killdeer Junction', 'Blite Goosefoot');
-insert into location (id, city, country, county, street_address, name) values (100, 'Balagon', 'Philippines', 'Xiaxindian', '1878 La Follette Pass', 'Shoshone Carrot');
+insert into location (id, city, country, county, street_address, name) values (100, 'Paris', 'France', 'France', '1878 La Follette Pass', 'Shoshone Carrot');
 insert into location (id, city, country, county, street_address, name) values (101, 'Pniv', 'Ukraine', 'Nifuboko', '47 Judy Drive', 'Amur Chokecherry');
 insert into location (id, city, country, county, street_address, name) values (102, 'Diamantina', 'Philippines', 'Zouiat ech Cheïkh', '8635 Linden Court', 'Coral Dropseed');
 insert into location (id, city, country, county, street_address, name) values (103, 'San Benito', 'Philippines', 'Grati Satu', '21 Straubel Circle', 'White Sunbonnets');
@@ -197,7 +197,7 @@ insert into location (id, city, country, county, street_address, name) values (1
 insert into location (id, city, country, county, street_address, name) values (197, 'Uppsala', 'Sweden', 'Chum Phuang', '2004 Independence Hill', 'Skin Lichen');
 insert into location (id, city, country, county, street_address, name) values (198, 'Pont-à-Mousson', 'France', 'Quezalguaque', '22 Mesta Center', 'Elegant Indian Paintbrush');
 insert into location (id, city, country, county, street_address, name) values (199, 'Tomelilla', 'Sweden', 'Shankeng', '93 Florence Parkway', 'Leucophysalis');
-insert into location (id, city, country, county, street_address, name) values (200, 'Vila Verde', 'Portugal', 'Valsamáta', '313 Anthes Avenue', 'Elongate Dicranum Moss');
+insert into location (id, city, country, county, street_address, name) values (200, 'Valsamáta', 'Greece', 'Valsamata', '313 Anthes Avenue', 'Elongate Dicranum Moss');
 insert into location (id, city, country, county, street_address, name) values (201, 'Barisāl', 'Bangladesh', 'Genova', '3 Southridge Junction', 'Stiff Yellow Flax');
 insert into location (id, city, country, county, street_address, name) values (202, 'Skara', 'Sweden', 'Talok', '7 Golf View Circle', 'Disc Lichen');
 insert into location (id, city, country, county, street_address, name) values (203, 'Tsotsin-Yurt', 'Russia', 'Panggulan', '405 Mandrake Park', 'Goldencarpet');

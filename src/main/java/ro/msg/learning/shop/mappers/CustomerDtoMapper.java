@@ -10,7 +10,6 @@ import ro.msg.learning.shop.entities.Customer;
 public class CustomerDtoMapper {
 
     public CustomerDto customerToCustomerDto(Customer customer) {
-
         return CustomerDto.builder().username(customer.getUsername())
             .lastName(customer.getLastName())
             .firstName(customer.getFirstName())

@@ -205,7 +205,7 @@ insert into stock (id, quantity, location_id, product_id) values (204, 4, 120, 3
 insert into stock (id, quantity, location_id, product_id) values (205, 92, 273, 832);
 insert into stock (id, quantity, location_id, product_id) values (206, 146, 259, 418);
 insert into stock (id, quantity, location_id, product_id) values (207, 202, 842, 845);
-insert into stock (id, quantity, location_id, product_id) values (208, 348, 27, 57);
+insert into stock (id, quantity, location_id, product_id) values (208, 348, 200, 57);
 insert into stock (id, quantity, location_id, product_id) values (209, 139, 402, 848);
 insert into stock (id, quantity, location_id, product_id) values (210, 133, 342, 631);
 insert into stock (id, quantity, location_id, product_id) values (211, 406, 683, 744);
@@ -432,7 +432,7 @@ insert into stock (id, quantity, location_id, product_id) values (431, 133, 893,
 insert into stock (id, quantity, location_id, product_id) values (432, 49, 703, 110);
 insert into stock (id, quantity, location_id, product_id) values (433, 100, 679, 612);
 insert into stock (id, quantity, location_id, product_id) values (434, 1, 371, 780);
-insert into stock (id, quantity, location_id, product_id) values (435, 257, 667, 57);
+insert into stock (id, quantity, location_id, product_id) values (435, 257, 100, 57);
 insert into stock (id, quantity, location_id, product_id) values (436, 354, 670, 272);
 insert into stock (id, quantity, location_id, product_id) values (437, 284, 549, 952);
 insert into stock (id, quantity, location_id, product_id) values (438, 166, 60, 700);
@@ -602,7 +602,7 @@ insert into stock (id, quantity, location_id, product_id) values (601, 400, 200,
 insert into stock (id, quantity, location_id, product_id) values (602, 266, 289, 707);
 insert into stock (id, quantity, location_id, product_id) values (603, 320, 435, 583);
 insert into stock (id, quantity, location_id, product_id) values (604, 401, 352, 591);
-insert into stock (id, quantity, location_id, product_id) values (605, 46, 276, 64);
+insert into stock (id, quantity, location_id, product_id) values (605, 250, 100, 64);
 insert into stock (id, quantity, location_id, product_id) values (606, 492, 307, 728);
 insert into stock (id, quantity, location_id, product_id) values (607, 250, 677, 65);
 insert into stock (id, quantity, location_id, product_id) values (608, 463, 775, 9);
@@ -829,7 +829,7 @@ insert into stock (id, quantity, location_id, product_id) values (828, 298, 166,
 insert into stock (id, quantity, location_id, product_id) values (829, 81, 585, 717);
 insert into stock (id, quantity, location_id, product_id) values (830, 325, 203, 379);
 insert into stock (id, quantity, location_id, product_id) values (831, 19, 530, 874);
-insert into stock (id, quantity, location_id, product_id) values (832, 473, 590, 64);
+insert into stock (id, quantity, location_id, product_id) values (832, 473, 200, 64);
 insert into stock (id, quantity, location_id, product_id) values (833, 473, 970, 699);
 insert into stock (id, quantity, location_id, product_id) values (834, 138, 135, 464);
 insert into stock (id, quantity, location_id, product_id) values (835, 432, 559, 893);

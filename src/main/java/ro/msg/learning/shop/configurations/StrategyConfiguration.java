@@ -11,6 +11,8 @@ import ro.msg.learning.shop.exceptions.StrategyNonexistentException;
 import ro.msg.learning.shop.mappers.StrategyWrapperMapper;
 import ro.msg.learning.shop.repositories.LocationRepository;
 import ro.msg.learning.shop.repositories.StockRepository;
+import ro.msg.learning.shop.services.DistanceCalculatorService;
+import ro.msg.learning.shop.strategies.ClosestSingleLocationStrategy;
 import ro.msg.learning.shop.strategies.MultipleLocationsStrategy;
 import ro.msg.learning.shop.strategies.SelectionStrategy;
 import ro.msg.learning.shop.strategies.SingleLocationStrategy;
@@ -25,6 +27,7 @@ public class StrategyConfiguration {
     private final LocationRepository locationRepository;
     private final StrategyWrapperMapper strategyWrapperMapper;
     private final StockRepository stockRepository;
+    private final DistanceCalculatorService distanceCalculatorService;
 
     @Value("${initial-strategy}")
     private String initial;
@@ -34,8 +37,10 @@ public class StrategyConfiguration {
         switch (initial) {
             case ("singleLocation"):
                 return new SingleLocationStrategy(locationRepository, strategyWrapperMapper, stockRepository);
-            case ("multipleLoccation"):
+            case ("multipleLocations"):
                 return new MultipleLocationsStrategy();
+            case ("closestSingleLocation"):
+                return new ClosestSingleLocationStrategy(locationRepository, strategyWrapperMapper, stockRepository, distanceCalculatorService);
             default:
                 log.error("Given selection strategy does not exist! Given strategy: " + initial);
                 throw new StrategyNonexistentException(initial, "Existing strategies for the moment: singleLocation, multipleLocation");

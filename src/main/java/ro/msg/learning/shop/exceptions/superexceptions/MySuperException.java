@@ -8,7 +8,7 @@ public class MySuperException extends RuntimeException {
     private final String details;
 
     public MySuperException(String message, String details) {
-        super(message);
+        super(message + '\n' + details);
         this.details = details;
     }
 }

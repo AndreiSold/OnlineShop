@@ -2,15 +2,18 @@ package ro.msg.learning.shop.strategies;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ro.msg.learning.shop.dtos.distance.DistanceApiResponseDto;
 import ro.msg.learning.shop.embeddables.Address;
 import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.entities.Stock;
+import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.OrderDetailsListEmptyException;
 import ro.msg.learning.shop.exceptions.SuitableLocationNonexistentException;
 import ro.msg.learning.shop.mappers.StrategyWrapperMapper;
 import ro.msg.learning.shop.repositories.LocationRepository;
 import ro.msg.learning.shop.repositories.StockRepository;
+import ro.msg.learning.shop.services.DistanceCalculatorService;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
 import java.util.ArrayList;
@@ -18,11 +21,12 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SingleLocationStrategy implements SelectionStrategy {
+public class ClosestSingleLocationStrategy implements SelectionStrategy {
 
     private final LocationRepository locationRepository;
     private final StrategyWrapperMapper strategyWrapperMapper;
     private final StockRepository stockRepository;
+    private final DistanceCalculatorService distanceCalculatorService;
 
     @Override
     public List<StrategyWrapper> getStrategyResult(List<OrderDetail> orderDetailList, Address address) {
@@ -47,7 +51,52 @@ public class SingleLocationStrategy implements SelectionStrategy {
             throw new SuitableLocationNonexistentException("No more details available!");
         }
 
-        Location chosenLocation = shippedFrom.get(0);
+        String destinationCity = address.getCity();
+        String destinationCountry = address.getCountry();
+
+        int place = 0;
+        boolean shipmentCanBeMade = false;
+        Location chosenLocation = null;
+        Double minDistance = 0D;
+
+        while ((!shipmentCanBeMade) && (place < shippedFrom.size())) {
+            DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(shippedFrom.get(place).getAddress().getCity(), shippedFrom.get(place).getAddress().getCountry(), destinationCity, destinationCountry);
+            if (distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("ZERO_RESULTS")) {
+                place++;
+            } else {
+                shipmentCanBeMade = true;
+                chosenLocation = shippedFrom.get(place);
+
+                String distanceString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getText();
+                String[] distanceStringRupture = distanceString.split(" ");
+
+                minDistance = Double.valueOf(distanceStringRupture[0].replaceAll(",", ""));
+            }
+        }
+
+        if (shipmentCanBeMade) {
+            for (int i = place + 1; i < shippedFrom.size(); i++) {
+                DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(shippedFrom.get(i).getAddress().getCity(), shippedFrom.get(i).getAddress().getCountry(), destinationCity, destinationCountry);
+
+                if (!distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("ZERO_RESULTS")) {
+
+                    String distanceString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getText();
+                    String[] distanceStringRupture = distanceString.split(" ");
+
+                    Double toBeMinDistance = Double.valueOf(distanceStringRupture[0].replaceAll(",", ""));
+
+                    if (toBeMinDistance < minDistance) {
+                        minDistance = toBeMinDistance;
+                        chosenLocation = shippedFrom.get(i);
+                    }
+                }
+            }
+        }
+
+        if (chosenLocation == null) {
+            log.error("No suitable location found to deliver all items on road!");
+            throw new LocationNotFoundException(-1, "No suitable location found to deliver all items on road!");
+        }
 
         updateStocksFromLocationThatHaveCorrespondingOrderDetails(chosenLocation, orderDetailList);
 

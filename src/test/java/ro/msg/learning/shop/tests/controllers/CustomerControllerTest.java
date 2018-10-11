@@ -137,7 +137,7 @@ public class CustomerControllerTest {
 
         String finalPath = basePath + "/1";
 
-        testRestTemplate.delete(finalPath);
+        testRestTemplate.withBasicAuth("admin", "1234").delete(finalPath);
 
         Optional<Customer> customer = customerRepository.findById(1);
 

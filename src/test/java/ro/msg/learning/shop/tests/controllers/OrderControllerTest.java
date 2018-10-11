@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -50,25 +51,6 @@ public class OrderControllerTest {
     public void init() {
         basePath = "http://localhost:" + port + "/orders";
     }
-
-//    @Test
-//    public void createOrderNullOrderDtoTest() {
-//
-//        OrderDto orderDto = null;
-//
-//        HttpEntity<OrderDto> request = new HttpEntity<>(orderDto);
-//
-//        String finalPath = basePath + "/create-order/";
-//
-//        try {
-//            testRestTemplate.withBasicAuth("admin","1234").postForEntity(finalPath, request, Order.class);
-//            Assert.fail("Exception did not hit!");
-//
-//        } catch (HttpClientErrorException e) {
-//            Assert.assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getStatusCode());
-//        }
-//
-//    }
 
     @Test
     public void createOrderTimeStampInFutureTest() {
@@ -130,6 +112,9 @@ public class OrderControllerTest {
         Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
     }
 
+    @Value("${initial-strategy:singleStrategy}")
+    private String strategy;
+
     @Test
     public void createOrderGoodParametersTest() {
 
@@ -146,10 +131,17 @@ public class OrderControllerTest {
 
         Order createdOrder = createdOrderEntity.getBody();
 
-        Assert.assertEquals("Romania", createdOrder.getAddress().getCountry());
-        Assert.assertEquals("Arad", createdOrder.getAddress().getCity());
-        Assert.assertEquals("Arad", createdOrder.getAddress().getCounty());
-        Assert.assertEquals("Cluj", createdOrder.getAddress().getStreetAddress());
+        if (strategy.equals("singleLocationStrategy")) {
+            Assert.assertEquals("Romania", createdOrder.getAddress().getCountry());
+            Assert.assertEquals("Arad", createdOrder.getAddress().getCity());
+            Assert.assertEquals("Arad", createdOrder.getAddress().getCounty());
+            Assert.assertEquals("Cluj", createdOrder.getAddress().getStreetAddress());
+            Assert.assertEquals("admin", createdOrder.getCustomer().getUsername());
+            Assert.assertEquals("admin", createdOrder.getCustomer().getFirstName());
+            Assert.assertEquals("admin", createdOrder.getCustomer().getLastName());
+        } else if (strategy.equals("closestSingleLocationStrategy")) {
+            Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
+        }
     }
 
 
