@@ -9,6 +9,7 @@ import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.OrderDetailsListEmptyException;
+import ro.msg.learning.shop.exceptions.StockNotFoundException;
 import ro.msg.learning.shop.exceptions.SuitableLocationNonexistentException;
 import ro.msg.learning.shop.mappers.StrategyWrapperMapper;
 import ro.msg.learning.shop.repositories.LocationRepository;
@@ -16,8 +17,7 @@ import ro.msg.learning.shop.repositories.StockRepository;
 import ro.msg.learning.shop.services.DistanceCalculatorService;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +36,31 @@ public class ClosestSingleLocationStrategy implements SelectionStrategy {
             throw new OrderDetailsListEmptyException("You must give information about the order details!");
         }
 
+        List<Location> shippedFrom = getLocationsThatHaveAllProducts(orderDetailList);
+
+        if (shippedFrom.isEmpty()) {
+            log.error("There isn't any location having all the products the customer ordered!");
+            throw new SuitableLocationNonexistentException("No more details available!");
+        }
+
+        String destinationCity = address.getCity();
+        String destinationCountry = address.getCountry();
+
+        Map<Location, Double> resultMap = getOnlyLocationsThatCanBeReached(shippedFrom, destinationCity, destinationCountry);
+
+        if (resultMap.isEmpty()) {
+            log.error("No suitable location found to deliver all items on road!");
+            throw new LocationNotFoundException(-1, "No suitable location found to deliver all items on road!");
+        }
+
+        Location chosenLocation = getLocationWithShortestDistance(resultMap);
+
+        updateStocksFromLocationThatHaveCorrespondingOrderDetails(chosenLocation, orderDetailList);
+
+        return strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(chosenLocation, orderDetailList);
+    }
+
+    private List<Location> getLocationsThatHaveAllProducts(List<OrderDetail> orderDetailList) {
         List<Location> shippedFrom = new ArrayList<>();
 
         orderDetailList.stream().forEach(orderDetail -> {
@@ -46,67 +71,55 @@ public class ClosestSingleLocationStrategy implements SelectionStrategy {
             }
         });
 
-        if (shippedFrom.isEmpty()) {
-            log.error("There isn't any location having all the products the customer ordered!");
-            throw new SuitableLocationNonexistentException("No more details available!");
-        }
+        return shippedFrom;
+    }
 
-        String destinationCity = address.getCity();
-        String destinationCountry = address.getCountry();
-
-        int place = 0;
-        boolean shipmentCanBeMade = false;
-        Location chosenLocation = null;
+    private Location getLocationWithShortestDistance(Map<Location, Double> resultMap) {
         Double minDistance = 0D;
+        Location chosenLocation = null;
 
-        while ((!shipmentCanBeMade) && (place < shippedFrom.size())) {
-            DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(shippedFrom.get(place).getAddress().getCity(), shippedFrom.get(place).getAddress().getCountry(), destinationCity, destinationCountry);
-            if (distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("ZERO_RESULTS")) {
-                place++;
-            } else {
-                shipmentCanBeMade = true;
-                chosenLocation = shippedFrom.get(place);
+        Iterator it = resultMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            Location location = (Location) pair.getKey();
+            Double distance = (Double) pair.getValue();
 
-                String distanceString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getText();
-                String[] distanceStringRupture = distanceString.split(" ");
+            if ((minDistance == 0D) || (distance < minDistance)) {
+                minDistance = distance;
+                chosenLocation = location;
+            }
 
-                minDistance = Double.valueOf(distanceStringRupture[0].replaceAll(",", ""));
+            it.remove();
+        }
+
+        return chosenLocation;
+    }
+
+    private Map<Location, Double> getOnlyLocationsThatCanBeReached(List<Location> shippedFrom, String destinationCity, String destinationCountry) {
+        Map<Location, Double> resultMap = new HashMap<>();
+
+        for (Location location : shippedFrom) {
+            DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(location.getAddress().getCity(), location.getAddress().getCountry(), destinationCity, destinationCountry);
+
+            if (distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("OK")) {
+                String distanceResultString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getValue();
+                resultMap.put(location, Double.valueOf(distanceResultString));
             }
         }
 
-        if (shipmentCanBeMade) {
-            for (int i = place + 1; i < shippedFrom.size(); i++) {
-                DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(shippedFrom.get(i).getAddress().getCity(), shippedFrom.get(i).getAddress().getCountry(), destinationCity, destinationCountry);
-
-                if (!distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("ZERO_RESULTS")) {
-
-                    String distanceString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getText();
-                    String[] distanceStringRupture = distanceString.split(" ");
-
-                    Double toBeMinDistance = Double.valueOf(distanceStringRupture[0].replaceAll(",", ""));
-
-                    if (toBeMinDistance < minDistance) {
-                        minDistance = toBeMinDistance;
-                        chosenLocation = shippedFrom.get(i);
-                    }
-                }
-            }
-        }
-
-        if (chosenLocation == null) {
-            log.error("No suitable location found to deliver all items on road!");
-            throw new LocationNotFoundException(-1, "No suitable location found to deliver all items on road!");
-        }
-
-        updateStocksFromLocationThatHaveCorrespondingOrderDetails(chosenLocation, orderDetailList);
-
-        return strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(chosenLocation, orderDetailList);
+        return resultMap;
     }
 
     private void updateStocksFromLocationThatHaveCorrespondingOrderDetails(Location finalLocation, List<OrderDetail> orderDetailList) {
 
         orderDetailList.stream().forEach(orderDetail -> {
             Stock stock = stockRepository.findByLocationEqualsAndProductEqualsAndQuantityGreaterThanEqual(finalLocation, orderDetail.getProduct(), orderDetail.getQuantity());
+
+            if (stock == null) {
+                log.error("No stock found to be updated!");
+                throw new StockNotFoundException("No stock found after location abd order details list!");
+            }
+
             stock.setQuantity(stock.getQuantity() - orderDetail.getQuantity());
             stockRepository.save(stock);
         });

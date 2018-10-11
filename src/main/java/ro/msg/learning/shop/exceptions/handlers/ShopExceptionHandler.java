@@ -22,7 +22,7 @@ public class ShopExceptionHandler {
         return new Response(e.getMessage(), e.getDetails());
     }
 
-    @ExceptionHandler({LocationNotFoundException.class, StrategyNonexistentException.class, SuitableLocationNonexistentException.class, CustomerIdNotFoundException.class})
+    @ExceptionHandler({LocationNotFoundException.class, StockNotFoundException.class, StrategyNonexistentException.class, SuitableLocationNonexistentException.class, CustomerIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response notFoundExceptionsHandling(MySuperException e) {
         return new Response(e.getMessage(), e.getDetails());
