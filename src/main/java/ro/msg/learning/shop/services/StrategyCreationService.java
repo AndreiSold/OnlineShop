@@ -133,6 +133,6 @@ public class StrategyCreationService {
     }
 
     public Optional<Integer> getQuantityOfProductAtLocation(Product product, Location location) {
-        return locationRepository.getQuantityOfProductAtLocation(product, location);
+        return locationRepository.getQuantityOfProductInStockFromLocation(product, location);
     }
 }

@@ -51,7 +51,7 @@ public class ClosestSingleLocationStrategy implements SelectionStrategy {
 
         strategyCreationService.updateStocksFromLocationThatHaveCorrespondingOrderDetails(chosenLocation, orderDetailList);
 
-        return strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(chosenLocation, orderDetailList);
+        return strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(chosenLocation, orderDetailList);
     }
 
 

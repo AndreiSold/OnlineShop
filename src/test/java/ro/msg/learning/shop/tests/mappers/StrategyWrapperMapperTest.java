@@ -25,12 +25,12 @@ public class StrategyWrapperMapperTest {
 
     @Test(expected = NullPointerException.class)
     public void nullListParameterTest() {
-        strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(new Location(), null);
+        strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(new Location(), null);
     }
 
     @Test(expected = LocationPassedAsNullException.class)
     public void nullLocationParameterTest() {
-        strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(null, new ArrayList<>());
+        strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(null, new ArrayList<>());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class StrategyWrapperMapperTest {
 
         Location location = new Location();
 
-        List<StrategyWrapper> strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(location, orderDetailList);
+        List<StrategyWrapper> strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(location, orderDetailList);
 
         strategyWrapperList.stream().forEach(strategyWrapper -> {
             Assert.assertEquals(orderDetail.getQuantity(), strategyWrapper.getQuantity());
@@ -61,7 +61,7 @@ public class StrategyWrapperMapperTest {
 
         Location location = new Location();
 
-        List<StrategyWrapper> strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListFromLocationAndOrderDetails(location, orderDetailList);
+        List<StrategyWrapper> strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(location, orderDetailList);
 
         strategyWrapperList.stream().forEach(strategyWrapper -> {
             int position = strategyWrapperList.indexOf(strategyWrapper);

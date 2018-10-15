@@ -15,6 +15,13 @@ import java.util.Objects;
 @NoArgsConstructor
 public class OrderDetail {
 
+    public OrderDetail(OrderDetail orderDetail) {
+        this.id = orderDetail.getQuantity();
+        this.order = orderDetail.getOrder();
+        this.quantity = orderDetail.getQuantity();
+        this.product = orderDetail.getProduct();
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -45,5 +52,10 @@ public class OrderDetail {
     public int hashCode() {
 
         return Objects.hash(id, quantity);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return this;
     }
 }

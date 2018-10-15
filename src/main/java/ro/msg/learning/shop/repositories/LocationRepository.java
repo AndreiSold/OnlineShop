@@ -17,5 +17,5 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     List<Location> findAllByStocksContainsProduct(Product product);
 
     @Query("select stock.quantity from Stock stock where stock.product = ?1 and stock.location = ?2")
-    Optional<Integer> getQuantityOfProductAtLocation(Product product, Location location);
+    Optional<Integer> getQuantityOfProductInStockFromLocation(Product product, Location location);
 }

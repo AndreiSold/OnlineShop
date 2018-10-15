@@ -9,6 +9,7 @@ import ro.msg.learning.shop.entities.Product;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class StrategyWrapper {
     private Location location;
     private Product product;

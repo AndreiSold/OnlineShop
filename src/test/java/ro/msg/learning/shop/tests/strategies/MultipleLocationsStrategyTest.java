@@ -2,6 +2,7 @@ package ro.msg.learning.shop.tests.strategies;
 
 import org.flywaydb.core.Flyway;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import ro.msg.learning.shop.entities.Product;
 import ro.msg.learning.shop.repositories.ProductRepository;
 import ro.msg.learning.shop.strategies.MultipleLocationsStrategy;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class MultipleLocationsStrategyTest {
         flyway.migrate();
     }
 
-    @Test(expected = NotImplementedException.class)
+    @Test
     public void constraintsPassedTest() {
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
@@ -59,15 +59,15 @@ public class MultipleLocationsStrategyTest {
 
         List<StrategyWrapper> strategyWrapperList = multipleLocationsStrategy.getStrategyResult(orderDetailList, testAddress);
 
-//        StrategyWrapper firstStrategyWrapper = strategyWrapperList.get(0);
-//        StrategyWrapper secondStrategyWrapper = strategyWrapperList.get(1);
-//
-//        Assert.assertEquals("Locations are not equal for the products to be bought!", firstStrategyWrapper.getLocation(), secondStrategyWrapper.getLocation());
-//        Assert.assertEquals("Quantities are not equal for the first object!", firstStrategyWrapper.getQuantity(), orderDetail1.getQuantity());
-//        Assert.assertEquals("Product IDs are not equal for the first object!", firstStrategyWrapper.getProduct().getId(), orderDetail1.getProduct().getId());
-//        Assert.assertEquals("Quantities are not equal for the second object!", secondStrategyWrapper.getQuantity(), orderDetail2.getQuantity());
-//        Assert.assertEquals("Product IDs are not equal for the second object!", secondStrategyWrapper.getProduct().getId(), orderDetail2.getProduct().getId());
-//        Assert.assertEquals(secondStrategyWrapper.getLocation().getId().intValue(), 200);
+        StrategyWrapper firstStrategyWrapper = strategyWrapperList.get(0);
+        StrategyWrapper secondStrategyWrapper = strategyWrapperList.get(1);
+
+        Assert.assertEquals("Location for first wrapper is wrong!", firstStrategyWrapper.getLocation().getId().intValue(), 200);
+        Assert.assertEquals("Location for second wrapper is wrong!", secondStrategyWrapper.getLocation().getId().intValue(), 200);
+        Assert.assertEquals("Product ID for first wrapper is wrong!", firstStrategyWrapper.getProduct().getId().intValue(), 57);
+        Assert.assertEquals("Product ID for second wrapper is wrong!", secondStrategyWrapper.getProduct().getId().intValue(), 64);
+        Assert.assertEquals("Quantity for first wrapper is wrong!", firstStrategyWrapper.getQuantity().intValue(), 100);
+        Assert.assertEquals("Quantity for second wrapper is wrong!", secondStrategyWrapper.getQuantity().intValue(), 100);
     }
 
 }
