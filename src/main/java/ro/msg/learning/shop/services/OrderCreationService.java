@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.OrderDto;
+import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.exceptions.NegativeQuantityException;
@@ -20,6 +21,7 @@ import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,9 +45,15 @@ public class OrderCreationService {
 
         List<StrategyWrapper> strategyWrapperList = selectionStrategy.getStrategyResult(orderDetailList, orderDto.getAddress());
 
+        List<Location> shippedFrom = new ArrayList<>();
+        for (StrategyWrapper strategyWrapper : strategyWrapperList) {
+            shippedFrom.add(strategyWrapper.getLocation());
+        }
+
         Order finalOrder = Order.builder()
             .address(orderDto.getAddress())
             .timestamp(orderDto.getOrderTimestamp())
+            .shippedFrom(shippedFrom)
             .build();
 
         List<OrderDetail> orderDetailFinalList = orderDetailMapper.strategyWrapperListToOrderDetailList(strategyWrapperList, finalOrder);

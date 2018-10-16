@@ -1,6 +1,5 @@
 package ro.msg.learning.shop.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ro.msg.learning.shop.embeddables.Address;
 
@@ -21,14 +20,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @JsonIgnore
     @ManyToMany
     private List<Location> shippedFrom;
 
     @ManyToOne
     private Customer customer;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
 

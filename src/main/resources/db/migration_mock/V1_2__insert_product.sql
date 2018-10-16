@@ -1,5 +1,5 @@
-insert into product (id, description, name, price, weight) values (1, 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 'Gergolet', 975, 75);
-insert into product (id, description, name, price, weight) values (2, 'Proin interdum mauris non ligula pellentesque ultrices.', 'Stower', 246, 3);
+insert into product (id, description, name, price, weight) values (1, 'Pita traditional romaneasca', 'Paine', 5, 1);
+insert into product (id, description, name, price, weight) values (2, 'Bere aferenta timisoareana la pet', 'Bere', 10, 2);
 insert into product (id, description, name, price, weight) values (3, 'Duis aliquam convallis nunc.', 'Benton', 953, 98);
 insert into product (id, description, name, price, weight) values (4, 'Morbi quis tortor id nulla ultrices aliquet.', 'Chaney', 281, 17);
 insert into product (id, description, name, price, weight) values (5, 'Duis bibendum.', 'Ramsell', 676, 67);

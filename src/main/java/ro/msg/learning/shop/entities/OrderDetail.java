@@ -35,6 +35,8 @@ public class OrderDetail {
 
     private Integer quantity;
 
+//    private Location location;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

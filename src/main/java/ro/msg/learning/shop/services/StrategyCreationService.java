@@ -104,7 +104,8 @@ public class StrategyCreationService {
         List<Location> shippedFrom = new ArrayList<>();
 
         orderDetailList.stream().forEach(orderDetail -> {
-            shippedFrom.addAll(locationRepository.findAllByStocksContainsProduct(orderDetail.getProduct()));
+//            shippedFrom.addAll(locationRepository.findAllByStocksContainsProduct(orderDetail.getProduct()));
+            shippedFrom.addAll(locationRepository.findAllByStocksContainsProductWithPositiveQuantity(orderDetail.getProduct()));
         });
 
         Set<Location> shippedFromNoDuplicates = new HashSet<>();

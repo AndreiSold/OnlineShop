@@ -69,23 +69,34 @@ public class StrategyWrapperMapper {
             for (OrderDetail orderDetail : orderDetailList) {
                 if (orderDetail.getQuantity() > 0) {
                     Optional<Integer> quantityOptional = locationRepository.getQuantityOfProductInStockFromLocation(orderDetail.getProduct(), location);
-                    int quantity = quantityOptional.get();
+
+                    int quantity = 0;
+                    if (quantityOptional.isPresent()) {
+                        quantity = quantityOptional.get();
+                    }
 
                     if (quantityOptional.isPresent() && quantity != 0) {
-                        strategyWrapperList.add(StrategyWrapper.builder()
-                            .location(location)
-                            .product(orderDetail.getProduct())
-                            .quantity(orderDetail.getQuantity())
-                            .build());
 
                         Stock stock = stockRepository.findStockThatHasProductFromLocation(orderDetail.getProduct(), location);
 
                         if (quantity > orderDetail.getQuantity()) {
                             stock.setQuantity(quantity - orderDetail.getQuantity());
                             orderDetail.setQuantity(0);
+
+                            strategyWrapperList.add(StrategyWrapper.builder()
+                                .location(location)
+                                .product(orderDetail.getProduct())
+                                .quantity(orderDetail.getQuantity())
+                                .build());
                         } else {
                             orderDetail.setQuantity(orderDetail.getQuantity() - quantity);
                             stock.setQuantity(0);
+
+                            strategyWrapperList.add(StrategyWrapper.builder()
+                                .location(location)
+                                .product(orderDetail.getProduct())
+                                .quantity(quantity)
+                                .build());
                         }
 
                         stockRepository.save(stock);

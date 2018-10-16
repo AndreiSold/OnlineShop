@@ -1,7 +1,7 @@
-insert into location (id, city, country, county, street_address, name) values (1, 'Oliveiras', 'Portugal', 'Buyuan', '15001 Sage Avenue', 'Jaeger''s Currant');
-insert into location (id, city, country, county, street_address, name) values (2, 'Lisala', 'Democratic Republic of the Congo', 'Cimrutu', '317 Dryden Parkway', 'Slender Cyclanthera');
-insert into location (id, city, country, county, street_address, name) values (3, 'Banjar Serangan', 'Indonesia', 'Paris 08', '9099 Arizona Road', 'Hybrid Violet');
-insert into location (id, city, country, county, street_address, name) values (4, 'Jazovo', 'Serbia', 'General La Madrid', '76997 Kinsman Terrace', 'Pygmy Pussytoes');
+insert into location (id, city, country, county, street_address, name) values (1, 'Timisoara', 'Romania', 'Buyuan', '15001 Sage Avenue', 'Jaeger''s Currant');
+insert into location (id, city, country, county, street_address, name) values (2, 'Cluj', 'Romania', 'Cimrutu', '317 Dryden Parkway', 'Slender Cyclanthera');
+insert into location (id, city, country, county, street_address, name) values (3, 'Alba Iulia', 'Romania', 'Paris 08', '9099 Arizona Road', 'Hybrid Violet');
+insert into location (id, city, country, county, street_address, name) values (4, 'Bucuresti', 'Romania', 'General La Madrid', '76997 Kinsman Terrace', 'Pygmy Pussytoes');
 insert into location (id, city, country, county, street_address, name) values (5, 'Subotica', 'Serbia', 'Cinunjang', '34120 Farragut Junction', 'California Balsamroot');
 insert into location (id, city, country, county, street_address, name) values (6, 'Padangguci', 'Indonesia', 'Skoki', '373 Maryland Drive', 'Trumpet Honeysuckle');
 insert into location (id, city, country, county, street_address, name) values (7, 'Ñuñoa', 'Peru', 'Roma', '4519 Monument Street', 'Betonyleaf Thoroughwort');

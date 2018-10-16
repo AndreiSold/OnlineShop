@@ -69,12 +69,6 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         Arrays.fill(visitedCities, false);
         visitedCities[0] = true;
 
-//        List<OrderDetail> orderDetailAuxList = new ArrayList<>();
-//        Collections.copy(orderDetailAuxList, orderDetailList);
-
-
-// Create new List with same capacity as original (for efficiency).
-
         List<OrderDetail> orderDetailAuxList = new ArrayList<>();
         orderDetailList.stream().forEach(orderDetail -> {
             orderDetailAuxList.add(new OrderDetail(orderDetail));
@@ -133,7 +127,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
                 Map.Entry secondPair = (Map.Entry) secondIterator.next();
                 if (firstIteratorPosition == secondIteratorPosition) {
                     mapGraph[firstIteratorPosition][secondIteratorPosition] = 0D;
-                } else {
+                } else if (firstIteratorPosition < secondIteratorPosition) {
                     Location secondIteratorLocation = (Location) secondPair.getKey();
 
                     Double distanceBetweenCities = strategyCreationService.getDistanceBetweenTwoLocations(firstIteratorLocation, secondIteratorLocation);
@@ -194,10 +188,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
 
     private void backt(int currentCity, int currentPosition, Integer[] citiesPath, Boolean[] visitedCities, Double distanceUntilHere, List<OrderDetail> leftOrderDetails) {
 
-        List<OrderDetail> orderDetailAuxList = new ArrayList<>();
-        leftOrderDetails.stream().forEach(orderDetail -> {
-            orderDetailAuxList.add(new OrderDetail(orderDetail));
-        });
+
 
         for (int city = 0; city < visitedCities.length; city++) {
             if (isValid(currentCity, city, mapGraph, visitedCities)) {
@@ -208,6 +199,11 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
                 distanceUntilHere += mapGraph[currentCity][city];
                 //update order details here but only the parameter
                 Location currentLocation = graphLocations.get(city);
+
+                List<OrderDetail> orderDetailAuxList = new ArrayList<>();
+                leftOrderDetails.stream().forEach(orderDetail -> {
+                    orderDetailAuxList.add(new OrderDetail(orderDetail));
+                });
 
                 for (OrderDetail orderDetail : leftOrderDetails) {
 
