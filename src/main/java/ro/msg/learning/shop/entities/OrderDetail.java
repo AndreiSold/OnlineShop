@@ -20,6 +20,7 @@ public class OrderDetail {
         this.order = orderDetail.getOrder();
         this.quantity = orderDetail.getQuantity();
         this.product = orderDetail.getProduct();
+        this.location = orderDetail.getLocation();
     }
 
     @Id
@@ -35,7 +36,8 @@ public class OrderDetail {
 
     private Integer quantity;
 
-//    private Location location;
+    @ManyToOne
+    private Location location;
 
     @Override
     public boolean equals(Object o) {
@@ -56,8 +58,4 @@ public class OrderDetail {
         return Objects.hash(id, quantity);
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return this;
-    }
 }

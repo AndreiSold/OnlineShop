@@ -32,6 +32,9 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OrderControllerTest {
 
+    @Value("${initial-strategy:singleStrategy}")
+    private String strategy;
+
     @LocalServerPort
     private int port;
 
@@ -112,9 +115,6 @@ public class OrderControllerTest {
         Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
     }
 
-    @Value("${initial-strategy:singleStrategy}")
-    private String strategy;
-
     @Test
     public void createOrderGoodParametersTest() {
 
@@ -131,7 +131,7 @@ public class OrderControllerTest {
 
         Order createdOrder = createdOrderEntity.getBody();
 
-        if (strategy.equals("singleLocationStrategy")) {
+        if ("singleLocationStrategy".equals(strategy)) {
             Assert.assertEquals("Romania", createdOrder.getAddress().getCountry());
             Assert.assertEquals("Arad", createdOrder.getAddress().getCity());
             Assert.assertEquals("Arad", createdOrder.getAddress().getCounty());
@@ -139,7 +139,7 @@ public class OrderControllerTest {
             Assert.assertEquals("admin", createdOrder.getCustomer().getUsername());
             Assert.assertEquals("admin", createdOrder.getCustomer().getFirstName());
             Assert.assertEquals("admin", createdOrder.getCustomer().getLastName());
-        } else if (strategy.equals("closestSingleLocationStrategy")) {
+        } else if ("closestSingleLocationStrategy".equals(strategy)) {
             Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
         }
     }

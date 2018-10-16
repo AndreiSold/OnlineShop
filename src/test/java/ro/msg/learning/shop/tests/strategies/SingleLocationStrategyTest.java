@@ -49,7 +49,7 @@ public class SingleLocationStrategyTest {
     @Test(expected = NoSuchElementException.class)
     public void productIdNotInDatabaseTest() {
         Optional<Product> mockProductOptional = productRepository.findById(999999999);
-        singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)), null);
+        singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999, null)), null);
     }
 
     @Test(expected = SuitableLocationNonexistentException.class)
@@ -58,7 +58,7 @@ public class SingleLocationStrategyTest {
         Optional<Product> mockProductOptional = productRepository.findById(15);
 
         if (mockProductOptional.isPresent()) {
-            singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999)), null);
+            singleLocationStrategy.getStrategyResult(Collections.singletonList(new OrderDetail(null, mockProductOptional.get(), null, 999999999, null)), null);
         } else {
             Assert.assertFalse("You chose a nonexistent product for this test! Bad bad dev", true);
         }
@@ -82,8 +82,8 @@ public class SingleLocationStrategyTest {
         Optional<Product> product1 = productRepository.findById(83);
         Optional<Product> product2 = productRepository.findById(737);
 
-        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 200);
-        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100);
+        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 200, null);
+        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100, null);
 
         orderDetailList.add(orderDetail1);
         orderDetailList.add(orderDetail2);
@@ -107,8 +107,8 @@ public class SingleLocationStrategyTest {
         Optional<Product> product1 = productRepository.findById(83);
         Optional<Product> product2 = productRepository.findById(737);
 
-        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 200);
-        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100);
+        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 200, null);
+        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100, null);
 
         orderDetailList.add(orderDetail1);
         orderDetailList.add(orderDetail2);

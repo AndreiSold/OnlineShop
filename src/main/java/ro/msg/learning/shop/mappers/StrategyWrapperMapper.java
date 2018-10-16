@@ -47,7 +47,7 @@ public class StrategyWrapperMapper {
         return strategyWrapperList;
     }
 
-    public List<StrategyWrapper> createStrategyWrapperListFromPathAndOrderDetails(MultipleStrategyResultDto multipleStrategyResultDto, List<OrderDetail> orderDetailList, List<Location> locationList) {
+    public List<StrategyWrapper> createStrategyWrapperListForMultipleLocationStrategy(MultipleStrategyResultDto multipleStrategyResultDto, List<OrderDetail> orderDetailList, List<Location> locationList) {
 
         //get the first (last index) city for the courier to leave from
         int lastCityIndex = biggestValueInArray(multipleStrategyResultDto.getCitiesPath());
@@ -81,22 +81,24 @@ public class StrategyWrapperMapper {
 
                         if (quantity > orderDetail.getQuantity()) {
                             stock.setQuantity(quantity - orderDetail.getQuantity());
-                            orderDetail.setQuantity(0);
 
                             strategyWrapperList.add(StrategyWrapper.builder()
                                 .location(location)
                                 .product(orderDetail.getProduct())
                                 .quantity(orderDetail.getQuantity())
                                 .build());
+
+                            orderDetail.setQuantity(0);
                         } else {
                             orderDetail.setQuantity(orderDetail.getQuantity() - quantity);
-                            stock.setQuantity(0);
 
                             strategyWrapperList.add(StrategyWrapper.builder()
                                 .location(location)
                                 .product(orderDetail.getProduct())
                                 .quantity(quantity)
                                 .build());
+
+                            stock.setQuantity(0);
                         }
 
                         stockRepository.save(stock);

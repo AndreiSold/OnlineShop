@@ -54,12 +54,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         Map<Location, Double> resultMapAux = new HashMap<>(resultMap);
         this.mapGraph = createMapGraphForLocationsWithWantedProducts(resultMapAux);
 
-        Location destinationLocation = new Location(null, null, null, null, address);
-        List<Location> locationList = new ArrayList<>();
-        locationList.add(destinationLocation);
-        locationList.addAll(strategyCreationService.getTheLocationListFromMapResult(resultMap));
-
-        this.graphLocations = locationList;
+        this.graphLocations = createLocationList(address, resultMap);
 
         Integer[] citiesPath = new Integer[mapGraph.length];
         Arrays.fill(citiesPath, 0);
@@ -70,14 +65,24 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         visitedCities[0] = true;
 
         List<OrderDetail> orderDetailAuxList = new ArrayList<>();
-        orderDetailList.stream().forEach(orderDetail -> {
-            orderDetailAuxList.add(new OrderDetail(orderDetail));
-        });
-
-        backt(0, 2, citiesPath, visitedCities, 0D, orderDetailList);
+        orderDetailList.stream().forEach(orderDetail ->
+            orderDetailAuxList.add(new OrderDetail(orderDetail)));
 
 
-        return strategyWrapperMapper.createStrategyWrapperListFromPathAndOrderDetails(getShortestPathFromResults(), orderDetailAuxList, locationList);
+        backtrackCities(0, 2, citiesPath, visitedCities, 0D, orderDetailList);
+
+        return strategyWrapperMapper.createStrategyWrapperListForMultipleLocationStrategy(getShortestPathFromResults(), orderDetailAuxList, graphLocations);
+    }
+
+    private List<Location> createLocationList(Address address, Map<Location, Double> resultMap) {
+        Location destinationLocation = new Location(null, null, null, null, null, address);
+        List<Location> locationList = new ArrayList<>();
+        locationList.add(destinationLocation);
+        locationList.addAll(strategyCreationService.getTheLocationListFromMapResult(resultMap));
+
+        this.graphLocations = locationList;
+
+        return locationList;
     }
 
     private MultipleStrategyResultDto getShortestPathFromResults() {
@@ -142,9 +147,9 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                System.out.print(mapGraph[i][j] + "        ");
+                log.info(mapGraph[i][j] + "        ");
             }
-            System.out.println("\n");
+            log.info("\n");
         }
 
         return mapGraph;
@@ -152,21 +157,11 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
 
     private boolean isSolution(List<OrderDetail> leftOrderDetails) {
 
-        return leftOrderDetails.parallelStream().filter(orderDetail -> {
-            if (orderDetail.getQuantity() != 0) {
-                return true;
-            }
-
-            return false;
-        }).collect(Collectors.toList()).isEmpty();
+        return leftOrderDetails.parallelStream().filter(orderDetail -> orderDetail.getQuantity() != 0).collect(Collectors.toList()).isEmpty();
     }
 
     private boolean isValid(int currentCity, int destinationCity, Double[][] mapGraph, Boolean[] visitedCities) {
-        if (mapGraph[currentCity][destinationCity] != 0 && !visitedCities[destinationCity]) {
-            return true;
-        }
-
-        return false;
+        return mapGraph[currentCity][destinationCity] != 0 && !visitedCities[destinationCity];
     }
 
     private void printSolution(Integer[] citiesPath, Double distanceUntilHere) {
@@ -176,7 +171,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         }
         result += "\nTotal distance: " + distanceUntilHere + "\n";
 
-        System.out.println(result);
+        log.info(result);
     }
 
     private void saveSolution(Integer[] citiesPath, Double totalDistance) {
@@ -186,9 +181,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
             .build());
     }
 
-    private void backt(int currentCity, int currentPosition, Integer[] citiesPath, Boolean[] visitedCities, Double distanceUntilHere, List<OrderDetail> leftOrderDetails) {
-
-
+    private void backtrackCities(int currentCity, int currentPosition, Integer[] citiesPath, Boolean[] visitedCities, Double distanceUntilHere, List<OrderDetail> leftOrderDetails) {
 
         for (int city = 0; city < visitedCities.length; city++) {
             if (isValid(currentCity, city, mapGraph, visitedCities)) {
@@ -201,9 +194,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
                 Location currentLocation = graphLocations.get(city);
 
                 List<OrderDetail> orderDetailAuxList = new ArrayList<>();
-                leftOrderDetails.stream().forEach(orderDetail -> {
-                    orderDetailAuxList.add(new OrderDetail(orderDetail));
-                });
+                leftOrderDetails.stream().forEach(orderDetail -> orderDetailAuxList.add(new OrderDetail(orderDetail)));
 
                 for (OrderDetail orderDetail : leftOrderDetails) {
 
@@ -225,7 +216,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
                     printSolution(citiesPath, distanceUntilHere);
                     saveSolution(citiesPath, distanceUntilHere);
                 } else {
-                    backt(city, currentPosition + 1, citiesPath, visitedCities, distanceUntilHere, leftOrderDetails);
+                    backtrackCities(city, currentPosition + 1, citiesPath, visitedCities, distanceUntilHere, leftOrderDetails);
                 }
 
                 //reset the updates

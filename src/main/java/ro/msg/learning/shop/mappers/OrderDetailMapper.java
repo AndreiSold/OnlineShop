@@ -46,6 +46,7 @@ public class OrderDetailMapper {
             OrderDetail orderDetail = OrderDetail.builder()
                 .quantity(strategyWrapper.getQuantity())
                 .product(strategyWrapper.getProduct())
+                .location(strategyWrapper.getLocation())
                 .order(order)
                 .build();
             orderDetailList.add(orderDetail);

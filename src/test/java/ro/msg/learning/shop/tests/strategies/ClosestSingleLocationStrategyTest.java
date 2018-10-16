@@ -47,8 +47,8 @@ public class ClosestSingleLocationStrategyTest {
         Optional<Product> product1 = productRepository.findById(57);
         Optional<Product> product2 = productRepository.findById(64);
 
-        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 100);
-        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100);
+        OrderDetail orderDetail1 = new OrderDetail(1111, product1.get(), null, 100, null);
+        OrderDetail orderDetail2 = new OrderDetail(2222, product2.get(), null, 100, null);
 
         orderDetailList.add(orderDetail1);
         orderDetailList.add(orderDetail2);
@@ -69,7 +69,7 @@ public class ClosestSingleLocationStrategyTest {
         Assert.assertEquals("Product IDs are not equal for the first object!", firstStrategyWrapper.getProduct().getId(), orderDetail1.getProduct().getId());
         Assert.assertEquals("Quantities are not equal for the second object!", secondStrategyWrapper.getQuantity(), orderDetail2.getQuantity());
         Assert.assertEquals("Product IDs are not equal for the second object!", secondStrategyWrapper.getProduct().getId(), orderDetail2.getProduct().getId());
-        Assert.assertEquals(secondStrategyWrapper.getLocation().getId().intValue(), 200);
+        Assert.assertEquals(200, secondStrategyWrapper.getLocation().getId().intValue());
     }
 
 }

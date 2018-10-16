@@ -28,13 +28,13 @@ public class ExportStocksServiceTest {
 
     @Test(expected = ResultedStockListEmptyException.class)
     public void noStocksFoundInLocationTest() {
-        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(3);
+        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(999);
         Assert.assertEquals(Collections.emptyList(), stockListReceived);
     }
 
     @Test
     public void oneStockFoundInLocationTest() {
-        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(2);
+        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(9);
         Assert.assertEquals(1, stockListReceived.size());
     }
 

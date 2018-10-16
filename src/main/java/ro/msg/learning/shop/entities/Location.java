@@ -11,7 +11,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"stocks", "orders"})
+@ToString(exclude = {"stocks", "orders", "orderDetails"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Location {
@@ -23,6 +23,10 @@ public class Location {
     @JsonIgnore
     @OneToMany(mappedBy = "location")
     private List<Stock> stocks;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<OrderDetail> orderDetails;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "shippedFrom")

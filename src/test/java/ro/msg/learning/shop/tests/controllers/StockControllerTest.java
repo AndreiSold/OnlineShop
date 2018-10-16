@@ -41,7 +41,7 @@ public class StockControllerTest {
 
     @Test
     public void exportStocksNullResultTest() {
-        final int locationId = 3;
+        final int locationId = 999;
 
         ResponseEntity<String> responseEntity = testRestTemplate.withBasicAuth("admin", "1234").getForEntity(basePath + "/export-stocks-from-location/" + locationId, String.class);
 

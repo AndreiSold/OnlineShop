@@ -39,7 +39,7 @@ public class DistanceCalculatorServiceTest {
     @Test
     public void theirExampleTest() {
 
-        if (proxyUsed.equals("true")) {
+        if ("true".equals(proxyUsed)) {
 
             SimpleClientHttpRequestFactory clientHttpReq = new SimpleClientHttpRequestFactory();
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, Integer.valueOf(proxyPort)));
@@ -49,7 +49,7 @@ public class DistanceCalculatorServiceTest {
 
             createResponseEntity(restTemplate);
 
-        } else if (proxyUsed.equals("false")) {
+        } else if ("false".equals(proxyUsed)) {
 
             RestTemplate restTemplate = new RestTemplate();
 

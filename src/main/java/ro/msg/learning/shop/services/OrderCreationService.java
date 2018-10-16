@@ -22,7 +22,6 @@ import ro.msg.learning.shop.wrappers.StrategyWrapper;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -47,7 +46,9 @@ public class OrderCreationService {
 
         List<Location> shippedFrom = new ArrayList<>();
         for (StrategyWrapper strategyWrapper : strategyWrapperList) {
-            shippedFrom.add(strategyWrapper.getLocation());
+            if (!shippedFrom.contains(strategyWrapper.getLocation())) {
+                shippedFrom.add(strategyWrapper.getLocation());
+            }
         }
 
         Order finalOrder = Order.builder()
@@ -61,10 +62,6 @@ public class OrderCreationService {
 
         finalOrder.setOrderDetails(orderDetailFinalList);
         orderRepository.save(finalOrder);
-
-        if (!strategyWrapperList.isEmpty()) {
-            finalOrder.setShippedFrom(Collections.singletonList(strategyWrapperList.get(0).getLocation()));
-        }
 
         finalOrder.setCustomer(customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
 

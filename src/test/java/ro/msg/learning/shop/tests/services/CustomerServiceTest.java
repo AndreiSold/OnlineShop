@@ -20,6 +20,14 @@ import java.util.Optional;
 @SpringBootTest
 public class CustomerServiceTest {
 
+
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CustomerRepository customerRepository;
+
     @Autowired
     private Flyway flyway;
 
@@ -28,13 +36,6 @@ public class CustomerServiceTest {
         flyway.clean();
         flyway.migrate();
     }
-
-    @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private CustomerRepository customerRepository;
 
     @Test
     public void registerCustomerTest() {
