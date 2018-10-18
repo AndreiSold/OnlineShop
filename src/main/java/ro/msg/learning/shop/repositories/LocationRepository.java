@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.Product;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,16 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     @Query("select stock.quantity from Stock stock where stock.product = ?1 and stock.location = ?2")
     Optional<Integer> getQuantityOfProductInStockFromLocation(Product product, Location location);
+
+    @Query(value = "select orderDetail.location,sum(orderDetail.product.price * orderDetail.quantity), orderDetail.order.timestamp from OrderDetail orderDetail where orderDetail.order.timestamp >= ?1 and orderDetail.order.timestamp <= ?2 group by orderDetail.location")
+    List<Object[]> getDailyRevenuesAsObjectsQuery(LocalDateTime afterDateTime, LocalDateTime beforeDateTime);
+
+    default List<Object[]> getDailyRevenuesAsObjects() {
+        LocalDateTime afterDateTime = LocalDateTime.now().minusHours(LocalDateTime.now().getHour()).minusMinutes(LocalDateTime.now().getMinute())
+            .minusSeconds(LocalDateTime.now().getSecond()).minusNanos(LocalDateTime.now().getNano());
+
+        LocalDateTime beforeDateTime = LocalDateTime.now();
+
+        return getDailyRevenuesAsObjectsQuery(afterDateTime, beforeDateTime);
+    }
 }

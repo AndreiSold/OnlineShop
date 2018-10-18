@@ -16,6 +16,15 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Location {
 
+    public Location(Integer id, List<Stock> stocks, List<OrderDetail> orderDetailList, List<Order> orders, String name, Address address) {
+        this.id = id;
+        this.stocks = stocks;
+        this.orderDetails = orderDetailList;
+        this.orders = orders;
+        this.name = name;
+        this.address = address;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -36,6 +45,10 @@ public class Location {
 
     @Embedded
     private Address address;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<Revenue> revenue;
 
     @Override
     public boolean equals(Object o) {
