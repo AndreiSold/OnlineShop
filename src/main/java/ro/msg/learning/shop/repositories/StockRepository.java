@@ -15,8 +15,6 @@ public interface StockRepository extends JpaRepository<Stock, Integer> {
     @Query("select stock from Stock stock where stock.location = ?1")
     List<Stock> getAllStocksByLocation(Location location);
 
-    Stock findByProductEqualsAndLocationContains(Product product, Location location);
-
     @Query("select stock from Stock stock where stock.product = ?1 and stock.location = ?2")
     Stock findStockThatHasProductFromLocation(Product product, Location location);
 }

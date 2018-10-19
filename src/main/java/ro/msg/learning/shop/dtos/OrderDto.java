@@ -12,11 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-    //    , pattern = "yyyy-MM-dd@HH:mm"
-//    @JsonFormat(shape = JsonFormat.Shape.STRING)
+
     private LocalDateTime orderTimestamp;
+
     private Address address;
 
-    //    @JsonIgnore
     private List<OrderDetailDto> orderDetails;
 }

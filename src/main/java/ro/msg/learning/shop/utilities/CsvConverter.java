@@ -61,9 +61,9 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
 
     @Override
     protected void writeInternal(List t, Type type, HttpOutputMessage outputMessage) throws IOException {
-        // t - input, obiectele care vin
-        // type - se ia clasa
-        // outputMessage - aici se scriu rezultatele
+        // t - input, objects that come
+        // type - class
+        // outputMessage - here the results are written
 
         try {
             toCsv((Class.forName(((ParameterizedType) type).getActualTypeArguments()[0].getTypeName())), t, outputMessage.getBody());
@@ -74,9 +74,9 @@ public class CsvConverter<T> extends AbstractGenericHttpMessageConverter<List<T>
 
     @Override
     public List read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException {
-        // type - se ia clasa
-        // class - si de aici se ia clasa
-        // inputMessage - de aici se ia stringu pt conversie
+        // type - class
+        // class - also class
+        // inputMessage - from here you take the string for conversion
 
         try {
             return fromCsv((Class.forName(((ParameterizedType) type).getActualTypeArguments()[0].getTypeName())), inputMessage.getBody());

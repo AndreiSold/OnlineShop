@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +23,7 @@ import java.net.Proxy;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
+@ActiveProfiles(profiles = "dev")
 public class DistanceCalculatorServiceTest {
 
     @Value("${proxy.host}")

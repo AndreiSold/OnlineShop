@@ -10,7 +10,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 public class OrderDetailDto {
+
     private Integer productId;
+
     private Integer quantity;
 
     @Override

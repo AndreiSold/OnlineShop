@@ -11,19 +11,11 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"stocks", "orders", "orderDetails"})
+@ToString(exclude = {"stocks", "orders", "orderDetails", "revenues"})
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Location {
-
-    public Location(Integer id, List<Stock> stocks, List<OrderDetail> orderDetailList, List<Order> orders, String name, Address address) {
-        this.id = id;
-        this.stocks = stocks;
-        this.orderDetails = orderDetailList;
-        this.orders = orders;
-        this.name = name;
-        this.address = address;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -48,7 +40,16 @@ public class Location {
 
     @JsonIgnore
     @OneToMany(mappedBy = "location")
-    private List<Revenue> revenue;
+    private List<Revenue> revenues;
+
+    public Location(Integer id, List<Stock> stocks, List<OrderDetail> orderDetailList, List<Order> orders, String name, Address address) {
+        this.id = id;
+        this.stocks = stocks;
+        this.orderDetails = orderDetailList;
+        this.orders = orders;
+        this.name = name;
+        this.address = address;
+    }
 
     @Override
     public boolean equals(Object o) {

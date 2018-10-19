@@ -15,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.msg.learning.shop.dtos.CustomerDto;
 import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
@@ -28,6 +29,7 @@ import java.util.Optional;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(profiles = "dev")
 public class CustomerControllerTest {
 
     @Autowired

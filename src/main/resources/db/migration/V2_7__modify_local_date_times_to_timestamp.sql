@@ -1,0 +1,2 @@
+ALTER TABLE order_ MODIFY timestamp TIMESTAMP;
+ALTER TABLE revenue MODIFY timestamp TIMESTAMP;

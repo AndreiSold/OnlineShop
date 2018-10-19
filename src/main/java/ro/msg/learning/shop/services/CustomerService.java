@@ -30,15 +30,6 @@ public class CustomerService {
             .build());
     }
 
-    public CustomerDtoNoPassword customerDtoNoPasswordFromCustomer(Customer customer) {
-        return CustomerDtoNoPassword.builder().firstName(customer.getFirstName())
-            .lastName(customer.getLastName())
-            .orders(customer.getOrders())
-            .roles(customer.getRoles())
-            .username(customer.getUsername())
-            .build();
-    }
-
     public CustomerDtoNoPassword customerDtoNoPasswordFromLoggedCustomer() {
         Customer customer = customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 

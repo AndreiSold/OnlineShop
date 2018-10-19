@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StockDto {
+
     private Integer id;
+
     private Integer quantity;
 }

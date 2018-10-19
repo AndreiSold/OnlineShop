@@ -13,6 +13,7 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Builder
 public class Address {
+
     private String country;
     private String city;
     private String county;

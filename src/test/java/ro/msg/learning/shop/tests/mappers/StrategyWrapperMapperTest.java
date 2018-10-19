@@ -1,15 +1,20 @@
 package ro.msg.learning.shop.tests.mappers;
 
+import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.exceptions.LocationPassedAsNullException;
 import ro.msg.learning.shop.mappers.StrategyWrapperMapper;
+import ro.msg.learning.shop.repositories.LocationRepository;
 import ro.msg.learning.shop.repositories.ProductRepository;
 import ro.msg.learning.shop.strategies.ClosestSingleLocationStrategy;
 import ro.msg.learning.shop.strategies.SelectionStrategy;
@@ -22,6 +27,8 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles(profiles = "dev")
+@Slf4j
 public class StrategyWrapperMapperTest {
 
     @Autowired
@@ -30,6 +37,17 @@ public class StrategyWrapperMapperTest {
     private SelectionStrategy selectionStrategy;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Autowired
+    private Flyway flyway;
+
+    @After
+    public void resetDb() {
+        flyway.clean();
+        flyway.migrate();
+    }
 
     @Test(expected = NullPointerException.class)
     public void nullListParameterTest() {
@@ -43,19 +61,17 @@ public class StrategyWrapperMapperTest {
 
     @Test
     public void locationOkAndOneItemInListTest() {
-        OrderDetail orderDetail = new OrderDetail(null, productRepository.findById(64).get(), null, 100, null);
+        OrderDetail orderDetail = new OrderDetail(null, productRepository.findById(64).get(), null, 100, locationRepository.findById(200).get());
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
         orderDetailList.add(orderDetail);
 
-        Location location = new Location();
-
         List<StrategyWrapper> strategyWrapperList;
         if (selectionStrategy instanceof SingleLocationStrategy || selectionStrategy instanceof ClosestSingleLocationStrategy) {
-            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(location, orderDetailList);
+            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(orderDetail.getLocation(), orderDetailList);
             strategyWrapperList.stream().forEach(strategyWrapper -> {
                 Assert.assertEquals(orderDetail.getQuantity(), strategyWrapper.getQuantity());
-                Assert.assertEquals(location, strategyWrapper.getLocation());
+                Assert.assertEquals(orderDetail.getLocation(), strategyWrapper.getLocation());
             });
         }
 
@@ -64,23 +80,23 @@ public class StrategyWrapperMapperTest {
     @Test
     public void locationOkAndThreeItemsInListTest() {
 
-        List<OrderDetail> orderDetailList = new ArrayList<>(Arrays.asList(
-            new OrderDetail(null, null, null, 100, null),
-            new OrderDetail(null, null, null, 200, null),
-            new OrderDetail(null, null, null, 300, null)
-        ));
+        Location finalLocation = locationRepository.findById(8).get();
 
-        Location location = new Location();
+        List<OrderDetail> orderDetailList = new ArrayList<>(Arrays.asList(
+            new OrderDetail(null, productRepository.findById(506).get(), null, 100, finalLocation),
+            new OrderDetail(null, productRepository.findById(479).get(), null, 200, finalLocation),
+            new OrderDetail(null, productRepository.findById(704).get(), null, 200, finalLocation)
+        ));
 
         List<StrategyWrapper> strategyWrapperList;
         if (selectionStrategy instanceof SingleLocationStrategy || selectionStrategy instanceof ClosestSingleLocationStrategy) {
-            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(location, orderDetailList);
+            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(finalLocation, orderDetailList);
 
             strategyWrapperList.stream().forEach(strategyWrapper -> {
                 int position = strategyWrapperList.indexOf(strategyWrapper);
 
                 Assert.assertEquals(orderDetailList.get(position).getQuantity(), strategyWrapper.getQuantity());
-                Assert.assertEquals(location, strategyWrapper.getLocation());
+                Assert.assertEquals(finalLocation, strategyWrapper.getLocation());
             });
         }
 

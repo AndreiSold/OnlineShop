@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MultipleStrategyResultDto {
+
     private Integer[] citiesPath;
     private Double totalDistance;
 }

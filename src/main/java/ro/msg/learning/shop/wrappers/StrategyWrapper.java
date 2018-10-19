@@ -11,6 +11,7 @@ import ro.msg.learning.shop.entities.Product;
 @AllArgsConstructor
 @Builder
 public class StrategyWrapper {
+
     private Location location;
     private Product product;
     private Integer quantity;

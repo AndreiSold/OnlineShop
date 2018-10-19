@@ -36,11 +36,11 @@ public class ExcelFileCreator {
         headerCellStyle.setFont(headerFont);
 
         // Create a Row
-        org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+        Row headerRow = sheet.createRow(0);
 
         // Create cells
         for (int i = 0; i < columns.length; i++) {
-            org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
+            Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerCellStyle);
         }
@@ -48,7 +48,7 @@ public class ExcelFileCreator {
         // Create Other rows and cells with employees data
         int rowNum = 1;
         for (Product product : productList) {
-            org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+            Row row = sheet.createRow(rowNum++);
 
             row.createCell(0)
                 .setCellValue(product.getId());

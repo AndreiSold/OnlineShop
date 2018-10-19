@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CustomerDtoNoPassword {
+
     private Integer id;
     private String firstName;
     private String lastName;

@@ -16,11 +16,10 @@ public class DistanceCalculatorService {
     private RestTemplate restTemplate;
 
     public DistanceApiResponseDto getDistanceApiResultBetweenTwoCities(String originCity, String originCountry, String destinationCity, String destinationCountry) {
-
         return createDistanceApiResponseEntity(restTemplate, originCity, originCountry, destinationCity, destinationCountry);
     }
 
-    private final DistanceApiResponseDto createDistanceApiResponseEntity(RestTemplate restTemplate, String originCity, String originCounty, String destinationCity, String destinationCounty) {
+    private DistanceApiResponseDto createDistanceApiResponseEntity(RestTemplate restTemplate, String originCity, String originCounty, String destinationCity, String destinationCounty) {
 
         try {
             ResponseEntity<DistanceApiResponseDto> responseEntity = restTemplate.getForEntity(

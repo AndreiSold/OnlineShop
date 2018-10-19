@@ -15,14 +15,6 @@ import java.util.Objects;
 @NoArgsConstructor
 public class OrderDetail {
 
-    public OrderDetail(OrderDetail orderDetail) {
-        this.id = orderDetail.getQuantity();
-        this.order = orderDetail.getOrder();
-        this.quantity = orderDetail.getQuantity();
-        this.product = orderDetail.getProduct();
-        this.location = orderDetail.getLocation();
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
@@ -38,6 +30,14 @@ public class OrderDetail {
 
     @ManyToOne
     private Location location;
+
+    public OrderDetail(OrderDetail orderDetail) {
+        this.id = orderDetail.getQuantity();
+        this.order = orderDetail.getOrder();
+        this.quantity = orderDetail.getQuantity();
+        this.product = orderDetail.getProduct();
+        this.location = orderDetail.getLocation();
+    }
 
     @Override
     public boolean equals(Object o) {

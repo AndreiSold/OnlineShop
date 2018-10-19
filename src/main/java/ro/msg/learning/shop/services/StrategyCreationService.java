@@ -24,6 +24,7 @@ public class StrategyCreationService {
     private final DistanceCalculatorService distanceCalculatorService;
 
     public List<Location> getLocationsThatHaveAllProducts(List<OrderDetail> orderDetailList) {
+
         List<Location> shippedFrom = new ArrayList<>();
 
         orderDetailList.stream().forEach(orderDetail -> {
@@ -38,6 +39,7 @@ public class StrategyCreationService {
     }
 
     public Location getLocationWithShortestDistance(Map<Location, Double> resultMap) {
+
         Double minDistance = 0D;
         Location chosenLocation = null;
 
@@ -59,6 +61,7 @@ public class StrategyCreationService {
     }
 
     public Map<Location, Double> getOnlyLocationsThatCanBeReached(List<Location> shippedFrom, String destinationCity, String destinationCountry) {
+
         Map<Location, Double> resultMap = new HashMap<>();
 
         for (Location location : shippedFrom) {
@@ -74,6 +77,7 @@ public class StrategyCreationService {
     }
 
     public Double getDistanceBetweenTwoLocations(Location firstLocation, Location secondLocation) {
+
         DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(firstLocation.getAddress().getCity(), firstLocation.getAddress().getCountry(), secondLocation.getAddress().getCity(), secondLocation.getAddress().getCountry());
 
         if (distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("OK")) {
@@ -103,10 +107,9 @@ public class StrategyCreationService {
 
         List<Location> shippedFrom = new ArrayList<>();
 
-        orderDetailList.stream().forEach(orderDetail -> {
-//            shippedFrom.addAll(locationRepository.findAllByStocksContainsProduct(orderDetail.getProduct()));
-            shippedFrom.addAll(locationRepository.findAllByStocksContainsProductWithPositiveQuantity(orderDetail.getProduct()));
-        });
+        orderDetailList.stream().forEach(orderDetail ->
+            shippedFrom.addAll(locationRepository.findAllByStocksContainsProductWithPositiveQuantity(orderDetail.getProduct()))
+        );
 
         Set<Location> shippedFromNoDuplicates = new HashSet<>();
         shippedFromNoDuplicates.addAll(shippedFrom);
