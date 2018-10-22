@@ -3,7 +3,8 @@ package ro.msg.learning.shop.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ro.msg.learning.shop.entities.Product;
+import ro.msg.learning.shop.dtos.ProductDto;
+import ro.msg.learning.shop.mappers.ProductMapper;
 import ro.msg.learning.shop.repositories.ProductRepository;
 
 import java.util.List;
@@ -14,8 +15,9 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    public List<Product> getPurchasedProductsInMonth() {
-        return productRepository.selectProductsPurchasedFromCurrentMonth();
+    public List<ProductDto> getPurchasedProductsInMonth() {
+        return productMapper.productListToProductDtoList(productRepository.selectProductsPurchasedFromCurrentMonth());
     }
 }

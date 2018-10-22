@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
-import ro.msg.learning.shop.entities.Product;
+import ro.msg.learning.shop.dtos.ProductDto;
 
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Component
@@ -15,7 +17,7 @@ import java.util.List;
 public class ExcelFileCreator {
 
     @SneakyThrows
-    public void createExcelForProducts(List<Product> productList) {
+    public byte[] createExcelForProducts(List<ProductDto> productList) {
 
         String[] columns = {"ID", "NAME", "DESCRIPTION", "PRICE", "WEIGHT"};
 
@@ -47,7 +49,7 @@ public class ExcelFileCreator {
 
         // Create Other rows and cells with employees data
         int rowNum = 1;
-        for (Product product : productList) {
+        for (ProductDto product : productList) {
             Row row = sheet.createRow(rowNum++);
 
             row.createCell(0)
@@ -78,6 +80,8 @@ public class ExcelFileCreator {
 
         // Closing the workbook
         workbook.close();
+
+        return Files.readAllBytes(Paths.get("resulted_products.xlsx"));
     }
 
 }

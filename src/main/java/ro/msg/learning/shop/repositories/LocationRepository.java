@@ -38,7 +38,7 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
         revenuesAsObjects.parallelStream().forEach(revenueObject ->
             createdRevenues.add(Revenue.builder().location((Location) revenueObject[0])
                 .sum((Double) revenueObject[1])
-                .timestamp((LocalDateTime) revenueObject[2])
+                .timestamp(LocalDateTime.now())
                 .build())
         );
 
