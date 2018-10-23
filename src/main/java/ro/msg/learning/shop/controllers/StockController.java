@@ -1,12 +1,10 @@
 package ro.msg.learning.shop.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dtos.StockDto;
-import ro.msg.learning.shop.services.ExportStocksService;
+import ro.msg.learning.shop.services.StockService;
 
 import java.util.List;
 
@@ -15,11 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StockController {
 
-    private final ExportStocksService exportStocksService;
+    private final StockService stockService;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/export-stocks-from-location/{locationId}", produces = "text/csv")
-    public List<StockDto> exportStocks(@PathVariable int locationId) {
-        return exportStocksService.getAllStocksByLocationId(locationId);
+    public List<StockDto> exportStocksFromLocation(@PathVariable int locationId) {
+        return stockService.getAllStocksByLocationId(locationId);
     }
 
 }

@@ -11,7 +11,6 @@ import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.exceptions.NegativeQuantityException;
 import ro.msg.learning.shop.exceptions.OrderDtoNullException;
 import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
-import ro.msg.learning.shop.exceptions.ShippingAddressNotInRomaniaException;
 import ro.msg.learning.shop.mappers.OrderDetailMapper;
 import ro.msg.learning.shop.repositories.CustomerRepository;
 import ro.msg.learning.shop.repositories.OrderDetailRepository;
@@ -27,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OrderCreationService {
+public class OrderService {
 
     private final SelectionStrategy selectionStrategy;
     private final OrderDetailRepository orderDetailRepository;
@@ -75,16 +74,8 @@ public class OrderCreationService {
             throw new OrderDtoNullException("No more info needed!");
         }
 
-        //Checking if the shipping address is in Romania
-        String country = orderDto.getAddress().getCountry();
-
-        if (!("Romania".equalsIgnoreCase(country))) {
-            log.error("We only ship in Romania. Encountered an OrderDto with: ", orderDto.getAddress());
-            throw new ShippingAddressNotInRomaniaException(country, orderDto.getAddress().toString());
-        }
-
         //Checking if any product quantity is less than 1 and throwing an exception if there is
-        orderDto.getOrderDetails().stream().forEach(orderDetailDtoInstance -> {
+        orderDto.getOrderDetails().forEach(orderDetailDtoInstance -> {
             Integer quantity = orderDetailDtoInstance.getQuantity();
             if (quantity < 1) {
                 log.error("All quantities should be strictly positive. Encountered an OrderDetailDto with: ", orderDetailDtoInstance);

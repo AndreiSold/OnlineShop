@@ -10,8 +10,9 @@ import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.exceptions.CustomerIdNotFoundException;
 import ro.msg.learning.shop.repositories.CustomerRepository;
+import ro.msg.learning.shop.repositories.RoleRepository;
 
-import javax.transaction.Transactional;
+import java.util.Collections;
 
 @Service
 @Slf4j
@@ -19,13 +20,14 @@ import javax.transaction.Transactional;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public Customer registerCustomer(CustomerDto customerDto) {
         return customerRepository.save(Customer.builder().firstName(customerDto.getFirstName())
             .lastName(customerDto.getLastName())
             .username(customerDto.getUsername())
-            .roles(customerDto.getRoles())
+            .roles(Collections.singletonList(roleRepository.findByNameEquals("ROLE_CUSTOMER")))
             .password(passwordEncoder.encode(customerDto.getPassword()))
             .build());
     }
@@ -46,7 +48,6 @@ public class CustomerService {
             .build();
     }
 
-    @Transactional
     public void deleteCustomerById(Integer idToDelete) {
 
         if (!customerRepository.findById(idToDelete).isPresent()) {

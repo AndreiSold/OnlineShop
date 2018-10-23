@@ -4,11 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
 @SpringBootApplication
-@EnableScheduling
 @PropertySource(value = "classpath:application.yaml")
 public class ShopApplication {
 
@@ -16,5 +14,4 @@ public class ShopApplication {
         SpringApplication app = new SpringApplication(ShopApplication.class);
         app.run();
     }
-
 }

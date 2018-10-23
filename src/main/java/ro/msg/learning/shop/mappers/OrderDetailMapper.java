@@ -23,7 +23,7 @@ public class OrderDetailMapper {
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
-        orderDetailDtoList.stream().forEach(orderDetailDto -> {
+        orderDetailDtoList.forEach(orderDetailDto -> {
             Optional<Product> currentProduct = productRepository.findById(orderDetailDto.getProductId());
             if (currentProduct.isPresent()) {
                 Product existentProduct = currentProduct.get();
@@ -42,7 +42,7 @@ public class OrderDetailMapper {
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
-        strategyWrapperList.stream().forEach(strategyWrapper -> {
+        strategyWrapperList.forEach(strategyWrapper -> {
             OrderDetail orderDetail = OrderDetail.builder()
                 .quantity(strategyWrapper.getQuantity())
                 .product(strategyWrapper.getProduct())

@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ro.msg.learning.shop.dtos.StockDto;
 import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.ResultedStockListEmptyException;
-import ro.msg.learning.shop.services.ExportStocksService;
+import ro.msg.learning.shop.services.StockService;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,31 +18,31 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles(profiles = "dev")
-public class ExportStocksServiceTest {
+public class StockServiceTest {
 
     @Autowired
-    private ExportStocksService exportStocksService;
+    private StockService stockService;
 
     @Test(expected = LocationNotFoundException.class)
     public void locationIdNotFoundTest() {
-        exportStocksService.getAllStocksByLocationId(-1);
+        stockService.getAllStocksByLocationId(-1);
     }
 
     @Test(expected = ResultedStockListEmptyException.class)
     public void noStocksFoundInLocationTest() {
-        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(999);
+        List<StockDto> stockListReceived = stockService.getAllStocksByLocationId(999);
         Assert.assertEquals(Collections.emptyList(), stockListReceived);
     }
 
     @Test
     public void oneStockFoundInLocationTest() {
-        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(9);
+        List<StockDto> stockListReceived = stockService.getAllStocksByLocationId(9);
         Assert.assertEquals(1, stockListReceived.size());
     }
 
     @Test
     public void moreThanOneStockFoundInLocationTest() {
-        List<StockDto> stockListReceived = exportStocksService.getAllStocksByLocationId(8);
+        List<StockDto> stockListReceived = stockService.getAllStocksByLocationId(8);
         Assert.assertTrue(stockListReceived.size() > 1);
     }
 

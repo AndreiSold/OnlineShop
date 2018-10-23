@@ -6,17 +6,11 @@ import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.dtos.MultipleStrategyResultDto;
 import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.OrderDetail;
-import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.exceptions.LocationPassedAsNullException;
 import ro.msg.learning.shop.repositories.LocationRepository;
-import ro.msg.learning.shop.repositories.StockRepository;
-import ro.msg.learning.shop.services.StrategyCreationService;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -24,10 +18,8 @@ import java.util.Optional;
 public class StrategyWrapperMapper {
 
     private final LocationRepository locationRepository;
-    private final StockRepository stockRepository;
-    private final StrategyCreationService strategyCreationService;
 
-    public List<StrategyWrapper> createStrategyWrapperListAndUpdateStocks(Location finalLocation, List<OrderDetail> orderDetailList) {
+    public List<StrategyWrapper> createStrategyWrapperListForSingleLocationStrategy(Location finalLocation, List<OrderDetail> orderDetailList) {
 
         if (finalLocation == null) {
             log.error("Null location given as parameter!");
@@ -36,21 +28,20 @@ public class StrategyWrapperMapper {
 
         List<StrategyWrapper> strategyWrapperList = new ArrayList<>();
 
-        orderDetailList.stream().forEach(orderDetail -> {
+        orderDetailList.forEach(orderDetail -> {
             StrategyWrapper strategyWrapper = new StrategyWrapper(finalLocation, orderDetail.getProduct(), orderDetail.getQuantity());
             strategyWrapperList.add(strategyWrapper);
         });
-
-        //update stocks here
-        strategyCreationService.updateStocksFromLocationThatHaveCorrespondingOrderDetails(finalLocation, orderDetailList);
 
         return strategyWrapperList;
     }
 
     public List<StrategyWrapper> createStrategyWrapperListForMultipleLocationStrategy(MultipleStrategyResultDto multipleStrategyResultDto, List<OrderDetail> orderDetailList, List<Location> locationList) {
 
-        //get the first (last index) city for the courier to leave from
-        int lastCityIndex = biggestValueInArray(multipleStrategyResultDto.getCitiesPath());
+        Comparator<Integer> integerComparator = Comparator.comparingInt(firstInteger -> firstInteger);
+
+        Optional<Integer> lastCityIndexOptional = Arrays.stream(multipleStrategyResultDto.getCitiesPath()).max(integerComparator);
+        int lastCityIndex = lastCityIndexOptional.get();
 
         //create strategy wrapper for that first city than reduce the order details and go to the next city index
         List<StrategyWrapper> strategyWrapperList = new ArrayList<>();
@@ -77,11 +68,7 @@ public class StrategyWrapperMapper {
 
                     if (quantityOptional.isPresent() && quantity != 0) {
 
-                        Stock stock = stockRepository.findStockThatHasProductFromLocation(orderDetail.getProduct(), location);
-
                         if (quantity > orderDetail.getQuantity()) {
-                            stock.setQuantity(quantity - orderDetail.getQuantity());
-
                             strategyWrapperList.add(StrategyWrapper.builder()
                                 .location(location)
                                 .product(orderDetail.getProduct())
@@ -97,15 +84,10 @@ public class StrategyWrapperMapper {
                                 .product(orderDetail.getProduct())
                                 .quantity(quantity)
                                 .build());
-
-                            stock.setQuantity(0);
                         }
-
-                        stockRepository.save(stock);
                     }
                 }
             }
-
 
         }
 
@@ -113,21 +95,4 @@ public class StrategyWrapperMapper {
         return strategyWrapperList;
     }
 
-    private int biggestValueInArray(Integer[] array) {
-
-        if (array.length == 0) {
-            log.error("Given path array is empty!");
-            throw new EmptyStackException();
-        }
-
-        int maxValue = array[0];
-
-        for (Integer integer : array) {
-            if (integer > maxValue) {
-                maxValue = integer;
-            }
-        }
-
-        return maxValue;
-    }
 }

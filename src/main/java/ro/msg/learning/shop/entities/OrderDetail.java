@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Setter
@@ -13,6 +12,7 @@ import java.util.Objects;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"id", "quantity"})
 public class OrderDetail {
 
     @Id
@@ -37,25 +37,6 @@ public class OrderDetail {
         this.quantity = orderDetail.getQuantity();
         this.product = orderDetail.getProduct();
         this.location = orderDetail.getLocation();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OrderDetail that = (OrderDetail) o;
-        return Objects.equals(id, that.id) &&
-            Objects.equals(quantity, that.quantity);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, quantity);
     }
 
 }

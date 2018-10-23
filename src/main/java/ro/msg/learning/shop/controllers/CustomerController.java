@@ -9,26 +9,25 @@ import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.services.CustomerService;
 
 @RestController
-@RequestMapping("/customer")
 @RequiredArgsConstructor
 public class CustomerController {
 
     private final CustomerService customerService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/register")
+    @PostMapping("/customer/register")
     public Customer registerCustomer(@RequestBody CustomerDto customerDto) {
         return customerService.registerCustomer(customerDto);
     }
 
-    @GetMapping(value = "/profile")
-    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/profile")
     public CustomerDtoNoPassword showCustomerProfile() {
         return customerService.customerDtoNoPasswordFromLoggedCustomer();
     }
 
-    @DeleteMapping(value = "/{idToDelete}")
-    public void deleteCustomerAfterId(@PathVariable Integer idToDelete) {
-        customerService.deleteCustomerById(idToDelete);
+    @DeleteMapping("/customer/{id}")
+    public void deleteCustomerById(@PathVariable Integer id) {
+        customerService.deleteCustomerById(id);
     }
 }

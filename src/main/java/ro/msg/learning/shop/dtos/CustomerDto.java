@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.entities.Role;
 
@@ -14,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Component
 public class CustomerDto {
 
     private Integer id;

@@ -14,8 +14,6 @@ import java.util.List;
 public class OrderDto {
 
     private LocalDateTime orderTimestamp;
-
     private Address address;
-
     private List<OrderDetailDto> orderDetails;
 }

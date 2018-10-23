@@ -11,33 +11,20 @@ import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.embeddables.Address;
 import ro.msg.learning.shop.exceptions.NegativeQuantityException;
 import ro.msg.learning.shop.exceptions.OrderTimestampInFutureException;
-import ro.msg.learning.shop.exceptions.ShippingAddressNotInRomaniaException;
-import ro.msg.learning.shop.services.OrderCreationService;
+import ro.msg.learning.shop.services.OrderService;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles(profiles = "dev")
-public class OrderCreationServiceTest {
+public class OrderServiceTest {
 
     @Autowired
-    private OrderCreationService orderCreationService;
-
-    @Test(expected = ShippingAddressNotInRomaniaException.class)
-    public void countryNotRomaniaExceptionTest() {
-
-        OrderDto orderDto = new OrderDto();
-        orderDto.setAddress(new Address("Hungary", "Kosenom", "Titusko", "Sarma"));
-        orderDto.setOrderTimestamp(LocalDateTime.now());
-        orderDto.setOrderDetails(Collections.emptyList());
-
-        orderCreationService.createOrder(orderDto);
-    }
+    private OrderService orderService;
 
     @Test(expected = NegativeQuantityException.class)
     public void negativeQuantityExceptionTest() {
@@ -53,7 +40,7 @@ public class OrderCreationServiceTest {
         orderDto.setOrderTimestamp(LocalDateTime.now());
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
-        orderCreationService.createOrder(orderDto);
+        orderService.createOrder(orderDto);
     }
 
     @Test(expected = OrderTimestampInFutureException.class)
@@ -70,7 +57,7 @@ public class OrderCreationServiceTest {
         orderDto.setOrderTimestamp(LocalDateTime.of(2020, Month.JANUARY, 1, 10, 10, 30));
         orderDto.setAddress(new Address("Romania", "Kosenom", "Titusko", "Sarma"));
 
-        orderCreationService.createOrder(orderDto);
+        orderService.createOrder(orderDto);
     }
 
 }

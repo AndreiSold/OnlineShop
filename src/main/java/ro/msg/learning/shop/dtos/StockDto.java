@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class StockDto {
 
     private Integer id;
-
     private Integer quantity;
 }

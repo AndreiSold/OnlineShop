@@ -13,9 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-import ro.msg.learning.shop.dtos.distance.DistanceApiResponseDto;
+import ro.msg.learning.shop.dtos.distance.DistanceResponseDto;
 import ro.msg.learning.shop.exceptions.ProxyBadConfiguredException;
-import ro.msg.learning.shop.services.DistanceCalculatorService;
+import ro.msg.learning.shop.utilities.distance.DistanceCalculator;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -24,7 +24,7 @@ import java.net.Proxy;
 @SpringBootTest
 @Slf4j
 @ActiveProfiles(profiles = "dev")
-public class DistanceCalculatorServiceTest {
+public class GoogleDistanceCalculatorTest {
 
     @Value("${proxy.host}")
     private String proxyHost;
@@ -36,7 +36,7 @@ public class DistanceCalculatorServiceTest {
     private String proxyUsed;
 
     @Autowired
-    private DistanceCalculatorService distanceCalculatorService;
+    private DistanceCalculator distanceCalculator;
 
     @Test
     public void theirExampleTest() {
@@ -64,20 +64,20 @@ public class DistanceCalculatorServiceTest {
 
     @Test
     public void serviceTest() {
-        log.info(distanceCalculatorService.getDistanceApiResultBetweenTwoCities("Washington", "DC", "New York City", "NY").toString());
+        log.info(distanceCalculator.getDistanceResponseBetweenTwoCities("Washington", "DC", "New York City", "NY").toString());
         Assert.assertTrue(true);
     }
 
     @Test
     public void serviceMyTest() {
-        log.info(distanceCalculatorService.getDistanceApiResultBetweenTwoCities("Arad", "Arad", "New York City", "NY").toString());
+        log.info(distanceCalculator.getDistanceResponseBetweenTwoCities("Arad", "Arad", "New York City", "NY").toString());
         Assert.assertTrue(true);
     }
 
     private final void createResponseEntity(RestTemplate restTemplate) {
         try {
-            ResponseEntity<DistanceApiResponseDto> responseEntity = restTemplate.getForEntity(
-                "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=Washington,DC&destinations=New+York+City,NY&key=AIzaSyC19ZDeu_knnKSr15mFt_c1uwTeJHnE0xY", DistanceApiResponseDto.class);
+            ResponseEntity<DistanceResponseDto> responseEntity = restTemplate.getForEntity(
+                "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=Washington,DC&destinations=New+York+City,NY&key=AIzaSyC19ZDeu_knnKSr15mFt_c1uwTeJHnE0xY", DistanceResponseDto.class);
             log.info(responseEntity.getBody().toString());
             Assert.assertTrue(true);
         } catch (ResourceAccessException e) {

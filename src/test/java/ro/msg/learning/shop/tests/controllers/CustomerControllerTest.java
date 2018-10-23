@@ -55,13 +55,13 @@ public class CustomerControllerTest {
 
     @Before
     public void init() {
-        basePath = "http://localhost:" + port + "/customer";
+        basePath = "http://localhost:" + port;
     }
 
     @Test
     public void registerTest() {
 
-        String finalPath = basePath + "/register";
+        String finalPath = basePath + "/customer/register";
 
         CustomerDto customerDto = CustomerDto.builder()
             .firstName("Andrei")
@@ -137,7 +137,7 @@ public class CustomerControllerTest {
     @Test
     public void customerDeleteTest() {
 
-        String finalPath = basePath + "/1";
+        String finalPath = basePath + "/customer/1";
 
         testRestTemplate.withBasicAuth("admin", "1234").delete(finalPath);
 

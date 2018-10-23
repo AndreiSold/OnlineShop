@@ -9,7 +9,7 @@ import ro.msg.learning.shop.dtos.OrderDetailDto;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.entities.Order;
 import ro.msg.learning.shop.exceptions.FileTypeMismatchException;
-import ro.msg.learning.shop.services.OrderCreationService;
+import ro.msg.learning.shop.services.OrderService;
 import ro.msg.learning.shop.utilities.CsvConverter;
 
 import java.util.List;
@@ -19,19 +19,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderCreationService orderCreationService;
+    private final OrderService orderService;
     private final CsvConverter csvConverter;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create-order")
     public Order createOrder(@RequestBody OrderDto orderDto) {
-        return orderCreationService.createOrder(orderDto);
+        return orderService.createOrder(orderDto);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @SneakyThrows
-    @PostMapping(value = "/csv-from-file")
-    public List<OrderDetailDto> csvFromFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/csv-from-file")
+    public List<OrderDetailDto> readFromCsvFile(@RequestParam("file") MultipartFile file) {
 
         if (!file.getOriginalFilename().endsWith(".csv")) {
             throw new FileTypeMismatchException(file.getOriginalFilename(), "Use a .csv file!");

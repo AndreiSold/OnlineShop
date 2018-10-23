@@ -10,7 +10,7 @@ import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.OrderDetailsListEmptyException;
 import ro.msg.learning.shop.exceptions.SuitableLocationNonexistentException;
 import ro.msg.learning.shop.mappers.StrategyWrapperMapper;
-import ro.msg.learning.shop.services.StrategyCreationService;
+import ro.msg.learning.shop.services.StrategyService;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
 import java.util.*;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class MultipleLocationsStrategy implements SelectionStrategy {
 
     private final StrategyWrapperMapper strategyWrapperMapper;
-    private final StrategyCreationService strategyCreationService;
+    private final StrategyService strategyService;
     private List<MultipleStrategyResultDto> multipleStrategyResultDtoList = new ArrayList<>();
     private List<Location> graphLocations;
     private Double[][] mapGraph;
@@ -34,7 +34,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
             throw new OrderDetailsListEmptyException("You must give information about the order details!");
         }
 
-        List<Location> shippedFrom = strategyCreationService.getAllNoDoubleLocationsThatHaveAtLeastOneProduct(orderDetailList);
+        List<Location> shippedFrom = strategyService.getAllNoDoubleLocationsThatHaveAtLeastOneProduct(orderDetailList);
 
         if (shippedFrom.isEmpty()) {
             log.error("There isn't any location having all the products the customer ordered!");
@@ -44,7 +44,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         String destinationCity = address.getCity();
         String destinationCountry = address.getCountry();
 
-        Map<Location, Double> resultMap = strategyCreationService.getOnlyLocationsThatCanBeReached(shippedFrom, destinationCity, destinationCountry);
+        Map<Location, Double> resultMap = strategyService.getOnlyLocationsThatCanBeReached(shippedFrom, destinationCity, destinationCountry);
 
         if (resultMap.isEmpty()) {
             log.error("No suitable location found to deliver all items on road!");
@@ -65,20 +65,23 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         visitedCities[0] = true;
 
         List<OrderDetail> orderDetailAuxList = new ArrayList<>();
-        orderDetailList.stream().forEach(orderDetail ->
+        orderDetailList.forEach(orderDetail ->
             orderDetailAuxList.add(new OrderDetail(orderDetail)));
-
 
         backtrackCities(0, 2, citiesPath, visitedCities, 0D, orderDetailList);
 
-        return strategyWrapperMapper.createStrategyWrapperListForMultipleLocationStrategy(getShortestPathFromResults(), orderDetailAuxList, graphLocations);
+        final List<StrategyWrapper> strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListForMultipleLocationStrategy(getShortestPathFromResults(), orderDetailAuxList, graphLocations);
+
+        strategyWrapperList.parallelStream().forEach(strategyService::updateStockForStrategyWrapper);
+
+        return strategyWrapperList;
     }
 
     private List<Location> createLocationList(Address address, Map<Location, Double> resultMap) {
         Location destinationLocation = new Location(null, null, null, null, null, address, null);
         List<Location> locationList = new ArrayList<>();
         locationList.add(destinationLocation);
-        locationList.addAll(strategyCreationService.getTheLocationListFromMapResult(resultMap));
+        locationList.addAll(strategyService.getTheLocationListFromMapResult(resultMap));
 
         this.graphLocations = locationList;
 
@@ -135,7 +138,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
                 } else if (firstIteratorPosition < secondIteratorPosition) {
                     Location secondIteratorLocation = (Location) secondPair.getKey();
 
-                    Double distanceBetweenCities = strategyCreationService.getDistanceBetweenTwoLocations(firstIteratorLocation, secondIteratorLocation);
+                    Double distanceBetweenCities = strategyService.getDistanceBetweenTwoLocations(firstIteratorLocation, secondIteratorLocation);
 
                     mapGraph[firstIteratorPosition][secondIteratorPosition] = distanceBetweenCities;
                     mapGraph[secondIteratorPosition][firstIteratorPosition] = distanceBetweenCities;
@@ -194,11 +197,11 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
                 Location currentLocation = graphLocations.get(city);
 
                 List<OrderDetail> orderDetailAuxList = new ArrayList<>();
-                leftOrderDetails.stream().forEach(orderDetail -> orderDetailAuxList.add(new OrderDetail(orderDetail)));
+                leftOrderDetails.forEach(orderDetail -> orderDetailAuxList.add(new OrderDetail(orderDetail)));
 
                 for (OrderDetail orderDetail : leftOrderDetails) {
 
-                    Optional<Integer> quantityContained = strategyCreationService.getQuantityOfProductAtLocation(orderDetail.getProduct(), currentLocation);
+                    Optional<Integer> quantityContained = strategyService.getQuantityOfProductAtLocation(orderDetail.getProduct(), currentLocation);
 
                     if (quantityContained.isPresent()) {
 

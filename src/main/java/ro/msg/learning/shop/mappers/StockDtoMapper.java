@@ -14,7 +14,7 @@ public class StockDtoMapper {
 
         List<StockDto> stockDtoList = new ArrayList<>();
 
-        stockList.stream().forEach(stock -> {
+        stockList.forEach(stock -> {
             stockDtoList.add(new StockDto(stock.getId(), stock.getQuantity()));
         });
 

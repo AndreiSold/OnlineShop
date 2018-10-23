@@ -21,10 +21,7 @@ public class Report {
     private String id;
 
     private byte[] file;
-
     private List<MonthlyProductWrapper> monthlyProductWrapperList;
-
     private Integer month;
-
     private Integer year;
 }

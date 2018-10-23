@@ -51,12 +51,12 @@ public class StrategyWrapperMapperTest {
 
     @Test(expected = NullPointerException.class)
     public void nullListParameterTest() {
-        strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(new Location(), null);
+        strategyWrapperMapper.createStrategyWrapperListForSingleLocationStrategy(new Location(), null);
     }
 
     @Test(expected = LocationPassedAsNullException.class)
     public void nullLocationParameterTest() {
-        strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(null, new ArrayList<>());
+        strategyWrapperMapper.createStrategyWrapperListForSingleLocationStrategy(null, new ArrayList<>());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class StrategyWrapperMapperTest {
 
         List<StrategyWrapper> strategyWrapperList;
         if (selectionStrategy instanceof SingleLocationStrategy || selectionStrategy instanceof ClosestSingleLocationStrategy) {
-            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(orderDetail.getLocation(), orderDetailList);
+            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListForSingleLocationStrategy(orderDetail.getLocation(), orderDetailList);
             strategyWrapperList.stream().forEach(strategyWrapper -> {
                 Assert.assertEquals(orderDetail.getQuantity(), strategyWrapper.getQuantity());
                 Assert.assertEquals(orderDetail.getLocation(), strategyWrapper.getLocation());
@@ -90,7 +90,7 @@ public class StrategyWrapperMapperTest {
 
         List<StrategyWrapper> strategyWrapperList;
         if (selectionStrategy instanceof SingleLocationStrategy || selectionStrategy instanceof ClosestSingleLocationStrategy) {
-            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(finalLocation, orderDetailList);
+            strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListForSingleLocationStrategy(finalLocation, orderDetailList);
 
             strategyWrapperList.stream().forEach(strategyWrapper -> {
                 int position = strategyWrapperList.indexOf(strategyWrapper);

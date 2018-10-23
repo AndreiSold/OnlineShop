@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RevenuesCreationService {
+public class RevenueService {
 
     private final LocationRepository locationRepository;
     private final RevenueRepository revenueRepository;

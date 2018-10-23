@@ -1,20 +1,20 @@
-##MySQL settings
 spring:
+    data:
+        mongodb:
+            host: localhost
+            port: 27017
+            database: OnlineShopMongoDB
     datasource:
         url: jdbc:mysql://localhost:3306/online_shop_testing_schema?useSSL=false
         username: root
         password: 1234
         driver-class-name: com.mysql.jdbc.Driver
-## This is important for flyway; Hibernate ddl auto (create, create-drop, validate, update)
     flyway.locations: classpath:/db/migration,classpath:/db/migration_mock
-## Hibernate Properties - The SQL dialect makes Hibernate generate better SQL for the chosen database
     jpa:
         properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         hibernate.ddl-auto: validate
         show-sql: true
-#spring.jpa.generate-ddl: true
-##Logging
-#logging.level.org.springframework: debug
-initial-strategy: singleLocation
-#strategy.initial: singleLocation
+initial-strategy: SINGLE_LOCATION
+distance-api: GOOGLE_DISTANCE_MATRIX
+google-api-key: AIzaSyC19ZDeu_knnKSr15mFt_c1uwTeJHnE0xY
 server.port: 8090

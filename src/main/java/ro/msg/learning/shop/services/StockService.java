@@ -15,10 +15,10 @@ import ro.msg.learning.shop.repositories.StockRepository;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
+@Slf4j
 @RequiredArgsConstructor
-public class ExportStocksService {
+public class StockService {
 
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;

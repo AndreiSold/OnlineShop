@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DistanceApiResponseDto {
+public class DistanceResponseDto {
 
     private List<String> destination_addresses;
     private List<String> origin_addresses;

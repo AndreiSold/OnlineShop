@@ -9,7 +9,7 @@ import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.OrderDetailsListEmptyException;
 import ro.msg.learning.shop.exceptions.SuitableLocationNonexistentException;
 import ro.msg.learning.shop.mappers.StrategyWrapperMapper;
-import ro.msg.learning.shop.services.StrategyCreationService;
+import ro.msg.learning.shop.services.StrategyService;
 import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class ClosestSingleLocationStrategy implements SelectionStrategy {
 
     private final StrategyWrapperMapper strategyWrapperMapper;
-    private final StrategyCreationService strategyCreationService;
+    private final StrategyService strategyService;
 
     @Override
     public List<StrategyWrapper> getStrategyResult(List<OrderDetail> orderDetailList, Address address) {
@@ -30,7 +30,7 @@ public class ClosestSingleLocationStrategy implements SelectionStrategy {
             throw new OrderDetailsListEmptyException("You must give information about the order details!");
         }
 
-        List<Location> shippedFrom = strategyCreationService.getLocationsThatHaveAllProducts(orderDetailList);
+        List<Location> shippedFrom = strategyService.getLocationsThatHaveAllProducts(orderDetailList);
 
         if (shippedFrom.isEmpty()) {
             log.error("There isn't any location having all the products the customer ordered!");
@@ -40,18 +40,20 @@ public class ClosestSingleLocationStrategy implements SelectionStrategy {
         String destinationCity = address.getCity();
         String destinationCountry = address.getCountry();
 
-        Map<Location, Double> resultMap = strategyCreationService.getOnlyLocationsThatCanBeReached(shippedFrom, destinationCity, destinationCountry);
+        Map<Location, Double> resultMap = strategyService.getOnlyLocationsThatCanBeReached(shippedFrom, destinationCity, destinationCountry);
 
         if (resultMap.isEmpty()) {
             log.error("No suitable location found to deliver all items on road!");
             throw new LocationNotFoundException(-1, "No suitable location found to deliver all items on road!");
         }
 
-        Location chosenLocation = strategyCreationService.getLocationWithShortestDistance(resultMap);
+        Location chosenLocation = strategyService.getLocationWithShortestDistance(resultMap);
 
-        strategyCreationService.updateStocksFromLocationThatHaveCorrespondingOrderDetails(chosenLocation, orderDetailList);
+        final List<StrategyWrapper> strategyWrapperList = strategyWrapperMapper.createStrategyWrapperListForSingleLocationStrategy(chosenLocation, orderDetailList);
 
-        return strategyWrapperMapper.createStrategyWrapperListAndUpdateStocks(chosenLocation, orderDetailList);
+        strategyService.updateStocksFromLocationThatHaveCorrespondingOrderDetails(chosenLocation, orderDetailList);
+
+        return strategyWrapperList;
     }
 
 

@@ -71,21 +71,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void createOrderNotRomaniaTest() {
-
-        OrderDto orderDto = createPerfectOrderDto();
-        orderDto.getAddress().setCountry("Hungary");
-
-        HttpEntity<OrderDto> request = new HttpEntity<>(orderDto);
-
-        String finalPath = basePath + "/create-order/";
-
-        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
-
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, createdOrderEntity.getStatusCode());
-    }
-
-    @Test
     public void createOrderNegativeQuantityTest() {
 
         OrderDto orderDto = createPerfectOrderDto();

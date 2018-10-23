@@ -2,8 +2,8 @@ package ro.msg.learning.shop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import ro.msg.learning.shop.dtos.distance.DistanceApiResponseDto;
+import org.springframework.stereotype.Service;
+import ro.msg.learning.shop.dtos.distance.DistanceResponseDto;
 import ro.msg.learning.shop.entities.Location;
 import ro.msg.learning.shop.entities.OrderDetail;
 import ro.msg.learning.shop.entities.Product;
@@ -11,23 +11,25 @@ import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.exceptions.StockNotFoundException;
 import ro.msg.learning.shop.repositories.LocationRepository;
 import ro.msg.learning.shop.repositories.StockRepository;
+import ro.msg.learning.shop.utilities.distance.DistanceCalculator;
+import ro.msg.learning.shop.wrappers.StrategyWrapper;
 
 import java.util.*;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
-public class StrategyCreationService {
+public class StrategyService {
 
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
-    private final DistanceCalculatorService distanceCalculatorService;
+    private final DistanceCalculator distanceCalculator;
 
     public List<Location> getLocationsThatHaveAllProducts(List<OrderDetail> orderDetailList) {
 
         List<Location> shippedFrom = new ArrayList<>();
 
-        orderDetailList.stream().forEach(orderDetail -> {
+        orderDetailList.forEach(orderDetail -> {
             if (shippedFrom.isEmpty()) {
                 shippedFrom.addAll(locationRepository.findAllByStockQuantityAndProduct(orderDetail.getQuantity(), orderDetail.getProduct()));
             } else {
@@ -65,7 +67,7 @@ public class StrategyCreationService {
         Map<Location, Double> resultMap = new HashMap<>();
 
         for (Location location : shippedFrom) {
-            DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(location.getAddress().getCity(), location.getAddress().getCountry(), destinationCity, destinationCountry);
+            DistanceResponseDto distanceResult = distanceCalculator.getDistanceResponseBetweenTwoCities(location.getAddress().getCity(), location.getAddress().getCountry(), destinationCity, destinationCountry);
 
             if (distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("OK")) {
                 String distanceResultString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getValue();
@@ -78,7 +80,7 @@ public class StrategyCreationService {
 
     public Double getDistanceBetweenTwoLocations(Location firstLocation, Location secondLocation) {
 
-        DistanceApiResponseDto distanceResult = distanceCalculatorService.getDistanceApiResultBetweenTwoCities(firstLocation.getAddress().getCity(), firstLocation.getAddress().getCountry(), secondLocation.getAddress().getCity(), secondLocation.getAddress().getCountry());
+        DistanceResponseDto distanceResult = distanceCalculator.getDistanceResponseBetweenTwoCities(firstLocation.getAddress().getCity(), firstLocation.getAddress().getCountry(), secondLocation.getAddress().getCity(), secondLocation.getAddress().getCountry());
 
         if (distanceResult.getRows().get(0).getElements().get(0).getStatus().equals("OK")) {
             String distanceResultString = distanceResult.getRows().get(0).getElements().get(0).getDistance().getValue();
@@ -138,5 +140,13 @@ public class StrategyCreationService {
 
     public Optional<Integer> getQuantityOfProductAtLocation(Product product, Location location) {
         return locationRepository.getQuantityOfProductInStockFromLocation(product, location);
+    }
+
+    public void updateStockForStrategyWrapper(StrategyWrapper strategyWrapper) {
+        Stock stock = stockRepository.findByLocationEqualsAndProductEqualsAndQuantityGreaterThanEqual(strategyWrapper.getLocation(), strategyWrapper.getProduct(), strategyWrapper.getQuantity());
+
+        stock.setQuantity(stock.getQuantity() - strategyWrapper.getQuantity());
+
+        stockRepository.save(stock);
     }
 }

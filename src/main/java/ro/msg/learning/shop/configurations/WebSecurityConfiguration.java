@@ -2,7 +2,6 @@ package ro.msg.learning.shop.configurations;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 @EnableWebSecurity
 @Configuration
-@EnableAutoConfiguration
 @RequiredArgsConstructor
 @Slf4j
 @ComponentScan("ro.msg.learning.shop.services")

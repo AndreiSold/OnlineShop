@@ -1,10 +1,5 @@
 spring:
     profiles.active: dev
-    data:
-        mongodb:
-            host: localhost
-            port: 27017
-            database: OnlineShopMongoDB
 proxy:
     host: proxy.msg.de
     port: 3128
