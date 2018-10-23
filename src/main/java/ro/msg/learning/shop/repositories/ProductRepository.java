@@ -19,5 +19,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
         return selectProductsPurchasedFromCurrentMonthQuery(afterDateEquals, beforeDateEquals);
     }
+
+    @Query("select sum(orderDetail.quantity) from OrderDetail orderDetail where orderDetail.product.id = ?1 and orderDetail.order.timestamp >= ?2 and orderDetail.order.timestamp <= ?3")
+    Integer getQuantitySoldInLastMonthByProductIdQuery(int productId, LocalDateTime afterDateEquals, LocalDateTime beforeDateEquals);
+
+    default Integer getQuantitySoldInLastMonthByProductId(int productId) {
+        val afterDateEquals = LocalDateTime.now().minusDays(LocalDateTime.now().getDayOfMonth());
+        val beforeDateEquals = afterDateEquals.plusMonths(1).minusSeconds(1);
+
+        return getQuantitySoldInLastMonthByProductIdQuery(productId, afterDateEquals, beforeDateEquals);
+    }
 }
 

@@ -42,15 +42,6 @@ public class Location {
     @OneToMany(mappedBy = "location")
     private List<Revenue> revenues;
 
-    public Location(Integer id, List<Stock> stocks, List<OrderDetail> orderDetailList, List<Order> orders, String name, Address address) {
-        this.id = id;
-        this.stocks = stocks;
-        this.orderDetails = orderDetailList;
-        this.orders = orders;
-        this.name = name;
-        this.address = address;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

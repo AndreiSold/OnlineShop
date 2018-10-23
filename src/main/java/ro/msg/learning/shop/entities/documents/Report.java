@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
-import ro.msg.learning.shop.dtos.ProductDto;
+import ro.msg.learning.shop.wrappers.MonthlyProductWrapper;
 
 import javax.persistence.Id;
 import java.util.List;
@@ -22,7 +22,7 @@ public class Report {
 
     private byte[] file;
 
-    private List<ProductDto> productDtos;
+    private List<MonthlyProductWrapper> monthlyProductWrapperList;
 
     private Integer month;
 

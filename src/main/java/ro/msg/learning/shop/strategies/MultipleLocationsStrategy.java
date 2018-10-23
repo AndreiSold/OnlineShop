@@ -75,7 +75,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
     }
 
     private List<Location> createLocationList(Address address, Map<Location, Double> resultMap) {
-        Location destinationLocation = new Location(null, null, null, null, null, address);
+        Location destinationLocation = new Location(null, null, null, null, null, address, null);
         List<Location> locationList = new ArrayList<>();
         locationList.add(destinationLocation);
         locationList.addAll(strategyCreationService.getTheLocationListFromMapResult(resultMap));

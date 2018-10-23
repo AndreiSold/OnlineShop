@@ -86,7 +86,7 @@ public class OrderDetailMapperTest {
     public void oneItemInListFromStrategyWrapperListTest() {
         List<StrategyWrapper> strategyWrapperList = new ArrayList<>();
 
-        StrategyWrapper toBeMappedObject = new StrategyWrapper(new Location(12, null, null, null, "Locatie", null),
+        StrategyWrapper toBeMappedObject = new StrategyWrapper(new Location(12, null, null, null, "Locatie", null, null),
             new Product(5, "Produs", "DescriereBlana", 500D, 1000D, null, null, null, null),
             200);
 
@@ -107,11 +107,11 @@ public class OrderDetailMapperTest {
     @Test
     public void threeItemsInListFromStrategyWrapperListTest() {
         List<StrategyWrapper> strategyWrapperList = new ArrayList<>(Arrays.asList(
-            new StrategyWrapper(new Location(12, null, null, null, "Locatie", null),
+            new StrategyWrapper(new Location(12, null, null, null, "Locatie", null, null),
                 new Product(5, "Produs", "DescriereBlana", 500D, 1000D, null, null, null, null), 200),
-            new StrategyWrapper(new Location(20, null, null, null, "Locatie2", null),
+            new StrategyWrapper(new Location(20, null, null, null, "Locatie2", null, null),
                 new Product(15, "Produs2", "DescriereBlana2", 502D, 1002D, null, null, null, null), 300),
-            new StrategyWrapper(new Location(42, null, null, null, "Locatie3", null),
+            new StrategyWrapper(new Location(42, null, null, null, "Locatie3", null, null),
                 new Product(25, "Produs", "DescriereBlana", 10001D, 5D, null, null, null, null), 400)
         ));
 
