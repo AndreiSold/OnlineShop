@@ -1,8 +1,6 @@
 package ro.msg.learning.shop.tests.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +17,8 @@ import ro.msg.learning.shop.dtos.OrderDetailDto;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.embeddables.Address;
 import ro.msg.learning.shop.entities.Order;
+import ro.msg.learning.shop.enums.StrategyEnum;
+import ro.msg.learning.shop.repositories.OrderRepository;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -32,7 +32,10 @@ import java.util.List;
 @ActiveProfiles(profiles = "dev")
 public class OrderControllerTest {
 
-    @Value("${initial-strategy:singleStrategy}")
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Value("${initial-strategy:SINGLE_LOCATION}")
     private String strategy;
 
     @LocalServerPort
@@ -40,15 +43,6 @@ public class OrderControllerTest {
 
     private String basePath;
     private TestRestTemplate testRestTemplate = new TestRestTemplate();
-
-    @Autowired
-    private Flyway flyway;
-
-    @After
-    public void resetDB() {
-        flyway.clean();
-        flyway.migrate();
-    }
 
     @Before
     public void init() {
@@ -116,7 +110,7 @@ public class OrderControllerTest {
 
         Order createdOrder = createdOrderEntity.getBody();
 
-        if ("singleLocationStrategy".equals(strategy)) {
+        if (StrategyEnum.SINGLE_LOCATION.equals(StrategyEnum.valueOf(strategy))) {
             Assert.assertEquals("Romania", createdOrder.getAddress().getCountry());
             Assert.assertEquals("Arad", createdOrder.getAddress().getCity());
             Assert.assertEquals("Arad", createdOrder.getAddress().getCounty());
@@ -124,9 +118,11 @@ public class OrderControllerTest {
             Assert.assertEquals("admin", createdOrder.getCustomer().getUsername());
             Assert.assertEquals("admin", createdOrder.getCustomer().getFirstName());
             Assert.assertEquals("admin", createdOrder.getCustomer().getLastName());
-        } else if ("closestSingleLocationStrategy".equals(strategy)) {
+        } else if (StrategyEnum.CLOSEST_SINGLE_LOCATION.equals(StrategyEnum.valueOf(strategy))) {
             Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
         }
+
+        orderRepository.deleteById(createdOrder.getId());
     }
 
 

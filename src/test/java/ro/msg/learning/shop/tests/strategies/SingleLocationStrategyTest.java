@@ -2,7 +2,6 @@ package ro.msg.learning.shop.tests.strategies;
 
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +41,7 @@ public class SingleLocationStrategyTest {
     @Autowired
     private Flyway flyway;
 
-    @After
-    public void resetDB() {
+    private void resetDB() {
         flyway.clean();
         flyway.migrate();
     }
@@ -100,6 +98,8 @@ public class SingleLocationStrategyTest {
         Assert.assertEquals("Product IDs are not equal for the first object!", firstStrategyWrapper.getProduct().getId(), orderDetail1.getProduct().getId());
         Assert.assertEquals("Quantities are not equal for the second object!", secondStrategyWrapper.getQuantity(), orderDetail2.getQuantity());
         Assert.assertEquals("Product IDs are not equal for the second object!", secondStrategyWrapper.getProduct().getId(), orderDetail2.getProduct().getId());
+
+        resetDB();
     }
 
     @Test
@@ -137,6 +137,8 @@ public class SingleLocationStrategyTest {
 
         Assert.assertEquals(firstStock.getQuantity() - 200, newFirstStock.get().getQuantity().intValue());
         Assert.assertEquals(secondStock.getQuantity() - 100, newSecondStock.get().getQuantity().intValue());
+
+        resetDB();
     }
 
 }

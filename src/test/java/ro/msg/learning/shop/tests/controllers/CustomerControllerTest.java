@@ -2,7 +2,6 @@ package ro.msg.learning.shop.tests.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +46,7 @@ public class CustomerControllerTest {
     @Autowired
     private Flyway flyway;
 
-    @After
-    public void resetDB() {
+    private void resetDB() {
         flyway.clean();
         flyway.migrate();
     }
@@ -82,6 +80,8 @@ public class CustomerControllerTest {
         Assert.assertEquals(createdCustomer.getLastName(), customerInDb.getLastName());
         Assert.assertTrue(passwordEncoder.matches("blana", customerInDb.getPassword()));
         Assert.assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+
+        customerRepository.delete(createdCustomer);
     }
 
     @Test
@@ -131,12 +131,11 @@ public class CustomerControllerTest {
                 isNotAdmin = false;
             }
         }
-        Assert.assertEquals(true, isNotAdmin);
+        Assert.assertTrue(isNotAdmin);
     }
 
     @Test
     public void customerDeleteTest() {
-
         String finalPath = basePath + "/customer/1";
 
         testRestTemplate.withBasicAuth("admin", "1234").delete(finalPath);
@@ -144,5 +143,7 @@ public class CustomerControllerTest {
         Optional<Customer> customer = customerRepository.findById(1);
 
         Assert.assertTrue(!customer.isPresent());
+
+        resetDB();
     }
 }

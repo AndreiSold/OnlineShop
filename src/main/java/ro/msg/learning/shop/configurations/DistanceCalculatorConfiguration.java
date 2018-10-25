@@ -18,7 +18,7 @@ public class DistanceCalculatorConfiguration {
 
     private final RestTemplate restTemplate;
 
-    @Value("${distance-api}")
+    @Value("${distance-api:GOOGLE_DISTANCE_MATRIX}")
     private String chosenDistanceApi;
 
     @Bean

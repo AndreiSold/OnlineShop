@@ -1,7 +1,6 @@
 package ro.msg.learning.shop.tests.services;
 
 import org.flywaydb.core.Flyway;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,6 @@ import java.util.Optional;
 @ActiveProfiles(profiles = "dev")
 public class CustomerServiceTest {
 
-
     @Autowired
     private CustomerService customerService;
     @Autowired
@@ -33,8 +31,7 @@ public class CustomerServiceTest {
     @Autowired
     private Flyway flyway;
 
-    @After
-    public void reset() {
+    private void resetDb() {
         flyway.clean();
         flyway.migrate();
     }
@@ -58,6 +55,8 @@ public class CustomerServiceTest {
         Customer customerInDb = customerRepository.findByUsername("vlad");
 
         Assert.assertNotNull(customerInDb);
+
+        customerRepository.deleteById(customerInDb.getId());
     }
 
     @Test
@@ -70,5 +69,7 @@ public class CustomerServiceTest {
         Optional<Customer> customerOptional = customerRepository.findById(5);
 
         Assert.assertTrue(!customerOptional.isPresent());
+
+        resetDb();
     }
 }

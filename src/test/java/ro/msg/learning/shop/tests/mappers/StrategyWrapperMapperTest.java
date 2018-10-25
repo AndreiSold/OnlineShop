@@ -1,8 +1,6 @@
 package ro.msg.learning.shop.tests.mappers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,14 +38,6 @@ public class StrategyWrapperMapperTest {
     @Autowired
     private LocationRepository locationRepository;
 
-    @Autowired
-    private Flyway flyway;
-
-    @After
-    public void resetDb() {
-        flyway.clean();
-        flyway.migrate();
-    }
 
     @Test(expected = NullPointerException.class)
     public void nullListParameterTest() {

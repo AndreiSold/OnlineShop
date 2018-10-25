@@ -43,8 +43,6 @@ public class MultipleLocationsStrategyTest {
     @Test
     public void constraintsPassedTest() {
 
-        resetDB();
-
         List<OrderDetail> orderDetailList = new ArrayList<>();
 
         Optional<Product> product1 = productRepository.findById(57);

@@ -22,12 +22,16 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
 
     private final StrategyWrapperMapper strategyWrapperMapper;
     private final StrategyService strategyService;
-    private List<MultipleStrategyResultDto> multipleStrategyResultDtoList = new ArrayList<>();
+
+    private List<MultipleStrategyResultDto> multipleStrategyResultDtoList;
     private List<Location> graphLocations;
     private Double[][] mapGraph;
 
     @Override
     public List<StrategyWrapper> getStrategyResult(List<OrderDetail> orderDetailList, Address address) {
+
+        multipleStrategyResultDtoList = new ArrayList<>();
+        graphLocations = new ArrayList<>();
 
         if (orderDetailList.isEmpty()) {
             log.error("The order details list is empty!");
@@ -51,7 +55,7 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
             throw new LocationNotFoundException(-1, "No suitable location found to deliver all items on road!");
         }
 
-        Map<Location, Double> resultMapAux = new HashMap<>(resultMap);
+        Map<Location, Double> resultMapAux = copy(resultMap);
         this.mapGraph = createMapGraphForLocationsWithWantedProducts(resultMapAux);
 
         this.graphLocations = createLocationList(address, resultMap);
@@ -75,6 +79,15 @@ public class MultipleLocationsStrategy implements SelectionStrategy {
         strategyWrapperList.parallelStream().forEach(strategyService::updateStockForStrategyWrapper);
 
         return strategyWrapperList;
+    }
+
+    public static Map<Location, Double> copy(Map<Location, Double> original) {
+        HashMap<Location, Double> copy = new HashMap<>();
+        for (Map.Entry<Location, Double> entry : original.entrySet()) {
+            copy.put(entry.getKey(),
+                entry.getValue());
+        }
+        return copy;
     }
 
     private List<Location> createLocationList(Address address, Map<Location, Double> resultMap) {
