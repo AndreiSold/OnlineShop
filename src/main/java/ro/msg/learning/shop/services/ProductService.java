@@ -17,7 +17,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public List<ProductDto> getPurchasedProductsInMonth() {
+    public List<ProductDto> getPurchasedProductsInCurrentMonth() {
         return productMapper.productListToProductDtoList(productRepository.selectProductsPurchasedFromCurrentMonth());
     }
 }

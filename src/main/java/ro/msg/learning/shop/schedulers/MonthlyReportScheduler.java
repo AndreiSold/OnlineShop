@@ -27,7 +27,7 @@ public class MonthlyReportScheduler {
     @Scheduled(cron = "0 59 23 28 2 *")
     public void createMonthlySoldProductsReport() {
 
-        List<ProductDto> purchasedProducts = productService.getPurchasedProductsInMonth();
+        List<ProductDto> purchasedProducts = productService.getPurchasedProductsInCurrentMonth();
 
         byte[] fileAsBytes = excelFileCreator.createExcelForProducts(purchasedProducts);
 

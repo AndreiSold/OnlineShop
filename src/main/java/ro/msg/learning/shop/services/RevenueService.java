@@ -17,10 +17,12 @@ public class RevenueService {
     private final LocationRepository locationRepository;
     private final RevenueRepository revenueRepository;
 
-    public void createDailyRevenues() {
+    public List<Revenue> createDailyRevenues() {
         List<Revenue> revenuesCreated = locationRepository.createDailyRevenues();
 
         revenuesCreated.parallelStream().forEach(revenueRepository::save);
+
+        return revenuesCreated;
     }
 
 }
