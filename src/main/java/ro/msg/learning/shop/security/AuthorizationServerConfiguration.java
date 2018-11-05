@@ -1,7 +1,8 @@
 package ro.msg.learning.shop.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,45 +16,90 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 @EnableAuthorizationServer
+@RequiredArgsConstructor
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-    private static String REALM="MY_OAUTH_REALM";
-
-    @Autowired
-    private TokenStore tokenStore;
-
-    @Autowired
-    private UserApprovalHandler userApprovalHandler;
-
-    @Autowired
+    private final TokenStore tokenStore;
+    private final UserApprovalHandler userApprovalHandler;
     @Qualifier("authenticationManagerBean")
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    @Value("${client_id}")
+    private String clientId;
+
+    @Value("${client_secret}")
+    private String clientSecret;
+
+    @Value("${grant_type}")
+    private String grantType;
+
+    @Value("${authorization_code}")
+    private String authorizationCode;
+
+    @Value("${refresh_token}")
+    private String refreshToken;
+
+    @Value("${implicit}")
+    private String implicit;
+
+    @Value("${scope_read}")
+    private String scopeRead;
+
+    @Value("${scope_write}")
+    private String scopeWrite;
+
+    @Value("${scope_trust}")
+    private String scopeTrust;
+
+    @Value("${access_token_validity_seconds}")
+    private int accessTokenValiditySeconds;
+
+    @Value("${refresh_token_validity_seconds}")
+    private int refreshTokenValiditySeconds;
+
+    @Value("${product_manager}")
+    private String productManager;
+
+    @Value("${customer}")
+    private String customer;
+
+    @Value("${administrator}")
+    private String administrator;
+
+    private static final String FALSE = "false";
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
+        List<String> authoritiesList = new ArrayList<>();
+
+        if (!FALSE.equals(productManager)) authoritiesList.add(productManager);
+        if (!FALSE.equals(customer)) authoritiesList.add(customer);
+        if (!FALSE.equals(administrator)) authoritiesList.add(administrator);
+
+        String[] authoritiesArray = authoritiesList.toArray(new String[0]);
+
         clients.inMemory()
-            .withClient("my-trusted-client")
-            .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
-            .authorities("ROLE_PRODUCT_MANAGER", "ROLE_CUSTOMER", "ROLE_ADMINISTRATOR")
-            .scopes("read", "write", "trust")
-            .secret("secret")
-            .accessTokenValiditySeconds(120)//Access token is only valid for 2 minutes.
-            .refreshTokenValiditySeconds(600);//Refresh token is only valid for 10 minutes.
+            .withClient(clientId)
+            .secret(clientSecret)
+            .authorizedGrantTypes(grantType, authorizationCode, refreshToken, implicit)
+            .authorities(authoritiesArray)
+            .scopes(scopeRead, scopeWrite, scopeWrite)
+            .accessTokenValiditySeconds(accessTokenValiditySeconds)
+            .refreshTokenValiditySeconds(refreshTokenValiditySeconds);
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore).userApprovalHandler(userApprovalHandler)
             .authenticationManager(authenticationManager);
     }
 
-//    @Override
-//    public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-//        oauthServer.realm(REALM+"/client");
-//    }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {

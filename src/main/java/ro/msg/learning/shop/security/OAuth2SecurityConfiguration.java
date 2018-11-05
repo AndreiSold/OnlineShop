@@ -39,47 +39,50 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("bill").password("1234").roles("ADMINISTRATOR").and()
-            .withUser("bob").password("1234").roles("CUSTOMER");
 
-//        auth.userDetailsService(s -> {
-//            final Customer customer = customerRepository.findByUsername(s);
-//            if (customer == null) {
-//                log.error("Given customer username does not exist!");
-//                throw new CustomerIdNotFoundException("This username does not exist!");
-//            }
-//            return new UserDetails() {
-//                @Override
-//                public Collection<? extends GrantedAuthority> getAuthorities() {
-//                    return customer.getRoles().parallelStream().map(Role::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-//                }
-//                @Override
-//                public String getPassword() {
-//                    return customer.getPassword();
-//                }
-//                @Override
-//                public String getUsername() {
-//                    return s;
-//                }
-//                @Override
-//                public boolean isAccountNonExpired() {
-//                    return true;
-//                }
-//                @Override
-//                public boolean isAccountNonLocked() {
-//                    return true;
-//                }
-//                @Override
-//                public boolean isCredentialsNonExpired() {
-//                    return true;
-//                }
-//                @Override
-//                public boolean isEnabled() {
-//                    return true;
-//                }
-//            };
-//        });
+        auth.userDetailsService(s -> {
+            final Customer customer = customerRepository.findByUsername(s);
+            if (customer == null) {
+                log.error("Given customer username does not exist!");
+                throw new CustomerIdNotFoundException("This username does not exist!");
+            }
+            return new UserDetails() {
+                @Override
+                public Collection<? extends GrantedAuthority> getAuthorities() {
+                    return customer.getRoles().parallelStream().map(Role::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+                }
+
+                @Override
+                public String getPassword() {
+                    return customer.getPassword();
+                }
+
+                @Override
+                public String getUsername() {
+                    return s;
+                }
+
+                @Override
+                public boolean isAccountNonExpired() {
+                    return true;
+                }
+
+                @Override
+                public boolean isAccountNonLocked() {
+                    return true;
+                }
+
+                @Override
+                public boolean isCredentialsNonExpired() {
+                    return true;
+                }
+
+                @Override
+                public boolean isEnabled() {
+                    return true;
+                }
+            };
+        });
     }
 
     @Override
@@ -87,8 +90,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .anonymous().disable()
-            .authorizeRequests()
-            .antMatchers("/oauth/token").permitAll();
+            .authorizeRequests().antMatchers("/oauth/token").permitAll();
     }
 
     @Override
@@ -115,7 +117,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Autowired
-    public ApprovalStore approvalStore(TokenStore tokenStore) throws Exception {
+    public ApprovalStore approvalStore(TokenStore tokenStore) {
         TokenApprovalStore store = new TokenApprovalStore();
         store.setTokenStore(tokenStore);
         return store;

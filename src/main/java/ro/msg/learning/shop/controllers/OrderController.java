@@ -15,7 +15,7 @@ import ro.msg.learning.shop.utilities.CsvConverter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
 

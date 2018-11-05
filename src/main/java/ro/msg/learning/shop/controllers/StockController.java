@@ -9,7 +9,7 @@ import ro.msg.learning.shop.services.StockService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stocks")
+@RequestMapping("/stock")
 @RequiredArgsConstructor
 public class StockController {
 
