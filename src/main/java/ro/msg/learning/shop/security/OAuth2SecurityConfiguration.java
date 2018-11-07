@@ -28,6 +28,7 @@ import ro.msg.learning.shop.repositories.CustomerRepository;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

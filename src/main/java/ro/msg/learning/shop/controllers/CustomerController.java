@@ -2,6 +2,7 @@ package ro.msg.learning.shop.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dtos.CustomerDto;
 import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
@@ -26,6 +27,7 @@ public class CustomerController {
         return customerService.customerDtoNoPasswordFromLoggedCustomer();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @DeleteMapping("/customer/{id}")
     public void deleteCustomerById(@PathVariable Integer id) {
         customerService.deleteCustomerById(id);

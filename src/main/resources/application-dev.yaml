@@ -26,7 +26,7 @@ implicit: implicit
 scope_read: read
 scope_write: write
 scope_trust: trust
-access_token_validity_seconds: 120
+access_token_validity_seconds: 300
 refresh_token_validity_seconds: 600
 product_manager: ROLE_PRODUCT_MANAGER
 customer: false

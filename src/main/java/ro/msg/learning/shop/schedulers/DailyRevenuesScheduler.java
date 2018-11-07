@@ -8,8 +8,8 @@ import ro.msg.learning.shop.services.RevenueService;
 
 import java.time.LocalDateTime;
 
-@Component
 @RequiredArgsConstructor
+@Component
 @Slf4j
 public class DailyRevenuesScheduler {
 
