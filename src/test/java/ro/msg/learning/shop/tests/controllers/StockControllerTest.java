@@ -8,11 +8,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.utilities.CsvConverter;
 
@@ -20,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -34,20 +39,33 @@ public class StockControllerTest {
     private CsvConverter csvConverter;
 
     private String basePath;
-    private TestRestTemplate testRestTemplate = new TestRestTemplate();
+    private OAuth2RestTemplate oAuth2RestTemplate;
+
 
     @Before
     public void init() {
-        basePath = "http://localhost:" + port + "/stocks";
+        basePath = "http://localhost:" + port + "/stock";
+
+        HttpHeaders headers = new HttpHeaders();
+        ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
+        resourceDetails.setPassword("1234");
+        resourceDetails.setUsername("admin");
+        resourceDetails.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
+        resourceDetails.setClientId("my-trusted-client");
+        resourceDetails.setScope(asList("read", "write"));
+        resourceDetails.setClientSecret("secret");
+        resourceDetails.setGrantType("password");
+
+        DefaultOAuth2ClientContext clientContext = new DefaultOAuth2ClientContext();
+
+        oAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails, clientContext);
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void exportStocksNullResultTest() {
         final int locationId = 999;
 
-        ResponseEntity<String> responseEntity = testRestTemplate.withBasicAuth("admin", "1234").getForEntity(basePath + "/export-stocks-from-location/" + locationId, String.class);
-
-        Assert.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        oAuth2RestTemplate.getForEntity(basePath + "/export-stocks-from-location/" + locationId, String.class);
     }
 
     @Test
@@ -62,8 +80,7 @@ public class StockControllerTest {
 
         HttpEntity<String> entity = new HttpEntity<>("headers", httpHeaders);
 
-        ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin", "1234")
-            .exchange(exportStocksUrl + "/5", HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = oAuth2RestTemplate.exchange(exportStocksUrl + "/5", HttpMethod.GET, entity, String.class);
 
         String responseString = response.getBody();
         InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());
@@ -81,7 +98,7 @@ public class StockControllerTest {
     @SuppressWarnings("unchecked")
     public void exportStocksThreeItemResultTest() {
         String exportStocksUrl = basePath + "/export-stocks-from-location";
-        ResponseEntity<String> response = testRestTemplate.withBasicAuth("admin", "1234").getForEntity(exportStocksUrl + "/8", String.class);
+        ResponseEntity<String> response = oAuth2RestTemplate.getForEntity(exportStocksUrl + "/8", String.class);
 
         String responseString = response.getBody();
         InputStream inputStream = new ByteArrayInputStream(responseString.getBytes());

@@ -8,11 +8,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import ro.msg.learning.shop.dtos.OrderDetailDto;
 import ro.msg.learning.shop.dtos.OrderDto;
 import ro.msg.learning.shop.embeddables.Address;
@@ -25,6 +28,8 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -42,14 +47,28 @@ public class OrderControllerTest {
     private int port;
 
     private String basePath;
-    private TestRestTemplate testRestTemplate = new TestRestTemplate();
+
+    private OAuth2RestTemplate oAuth2RestTemplate;
 
     @Before
     public void init() {
-        basePath = "http://localhost:" + port + "/orders";
+        basePath = "http://localhost:" + port + "/order";
+
+        ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
+        resourceDetails.setPassword("1234");
+        resourceDetails.setUsername("admin");
+        resourceDetails.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
+        resourceDetails.setClientId("my-trusted-client");
+        resourceDetails.setScope(asList("read", "write"));
+        resourceDetails.setClientSecret("secret");
+        resourceDetails.setGrantType("password");
+
+        DefaultOAuth2ClientContext clientContext = new DefaultOAuth2ClientContext();
+
+        oAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails, clientContext);
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void createOrderTimeStampInFutureTest() {
 
         OrderDto orderDto = createPerfectOrderDto();
@@ -59,12 +78,10 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
-
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, createdOrderEntity.getStatusCode());
+        oAuth2RestTemplate.postForEntity(finalPath, request, Order.class);
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void createOrderNegativeQuantityTest() {
 
         OrderDto orderDto = createPerfectOrderDto();
@@ -74,12 +91,10 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
-
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, createdOrderEntity.getStatusCode());
+        oAuth2RestTemplate.postForEntity(finalPath, request, Order.class);
     }
 
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public void createOrderLocationNonexistentTest() {
 
         OrderDto orderDto = createPerfectOrderDto();
@@ -89,9 +104,7 @@ public class OrderControllerTest {
 
         String finalPath = basePath + "/create-order/";
 
-        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
-
-        Assert.assertEquals(HttpStatus.NOT_FOUND, createdOrderEntity.getStatusCode());
+        oAuth2RestTemplate.postForEntity(finalPath, request, Order.class);
     }
 
     @Test
@@ -106,7 +119,7 @@ public class OrderControllerTest {
         HttpEntity<OrderDto> request = new HttpEntity<>(orderDto, httpHeaders);
 
         String finalPath = basePath + "/create-order/";
-        ResponseEntity<Order> createdOrderEntity = testRestTemplate.withBasicAuth("admin", "1234").postForEntity(finalPath, request, Order.class);
+        ResponseEntity<Order> createdOrderEntity = oAuth2RestTemplate.postForEntity(finalPath, request, Order.class);
 
         Order createdOrder = createdOrderEntity.getBody();
 

@@ -14,6 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ro.msg.learning.shop.dtos.CustomerDto;
@@ -24,6 +27,8 @@ import ro.msg.learning.shop.repositories.CustomerRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Arrays.asList;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -51,9 +56,39 @@ public class CustomerControllerTest {
         flyway.migrate();
     }
 
+    private OAuth2RestTemplate oAuth2RestTemplateAdmin;
+    private OAuth2RestTemplate oAuth2RestTemplateUser;
+
     @Before
     public void init() {
         basePath = "http://localhost:" + port;
+
+        ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
+        resourceDetails.setPassword("1234");
+        resourceDetails.setUsername("admin");
+        resourceDetails.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
+        resourceDetails.setClientId("my-trusted-client");
+        resourceDetails.setScope(asList("read", "write"));
+        resourceDetails.setClientSecret("secret");
+        resourceDetails.setGrantType("password");
+
+        DefaultOAuth2ClientContext clientContext = new DefaultOAuth2ClientContext();
+
+        oAuth2RestTemplateAdmin = new OAuth2RestTemplate(resourceDetails, clientContext);
+
+
+        ResourceOwnerPasswordResourceDetails resourceDetails2 = new ResourceOwnerPasswordResourceDetails();
+        resourceDetails2.setPassword("1234");
+        resourceDetails2.setUsername("andreiSold");
+        resourceDetails2.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
+        resourceDetails2.setClientId("my-trusted-client");
+        resourceDetails2.setScope(asList("read", "write"));
+        resourceDetails2.setClientSecret("secret");
+        resourceDetails2.setGrantType("password");
+
+        DefaultOAuth2ClientContext clientContext2 = new DefaultOAuth2ClientContext();
+
+        oAuth2RestTemplateUser = new OAuth2RestTemplate(resourceDetails2, clientContext2);
     }
 
     @Test
@@ -89,7 +124,7 @@ public class CustomerControllerTest {
 
         String finalPath = basePath + "/profile";
 
-        ResponseEntity<CustomerDtoNoPassword> response = testRestTemplate.withBasicAuth("admin", "1234").getForEntity(finalPath, CustomerDtoNoPassword.class);
+        ResponseEntity<CustomerDtoNoPassword> response = oAuth2RestTemplateAdmin.getForEntity(finalPath, CustomerDtoNoPassword.class);
 
         CustomerDtoNoPassword createdCustomerDtoNoPassword = response.getBody();
 
@@ -114,7 +149,7 @@ public class CustomerControllerTest {
 
         String finalPath = basePath + "/profile";
 
-        ResponseEntity<CustomerDtoNoPassword> response = testRestTemplate.withBasicAuth("andreiSold", "1234").getForEntity(finalPath, CustomerDtoNoPassword.class);
+        ResponseEntity<CustomerDtoNoPassword> response = oAuth2RestTemplateUser.getForEntity(finalPath, CustomerDtoNoPassword.class);
 
         CustomerDtoNoPassword createdCustomerDtoNoPassword = response.getBody();
 
@@ -138,7 +173,7 @@ public class CustomerControllerTest {
     public void customerDeleteTest() {
         String finalPath = basePath + "/customer/1";
 
-        testRestTemplate.withBasicAuth("admin", "1234").delete(finalPath);
+        oAuth2RestTemplateAdmin.delete(finalPath);
 
         Optional<Customer> customer = customerRepository.findById(1);
 
