@@ -25,6 +25,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
         http
             .authorizeRequests()
             .antMatchers(HttpMethod.POST, "/customer/register").anonymous()
+            .antMatchers(HttpMethod.GET, "/odata/**").permitAll()
             .antMatchers("/**").authenticated()
             .and()
             .exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
