@@ -89,11 +89,13 @@ public class Storage {
         List<Product> productListDb = productRepository.findAll();
 
         productListDb.forEach(product -> {
+
             final Entity entity = new Entity()
                 .addProperty(new Property(null, "id", ValueType.PRIMITIVE, product.getId()))
                 .addProperty(new Property(null, "name", ValueType.PRIMITIVE, product.getName()))
                 .addProperty(new Property(null, "price", ValueType.PRIMITIVE, product.getPrice()))
                 .addProperty(new Property(null, "weight", ValueType.PRIMITIVE, product.getWeight()))
+                .addProperty(new Property("Supplier", "suppliers", ValueType.COLLECTION_ENTITY, product.getSuppliers()))
                 .addProperty(new Property(null, "description", ValueType.PRIMITIVE, product.getDescription()));
             entity.setId(createId("Product" + product.getId(), product.getId()));
             productList.add(entity);
@@ -102,7 +104,7 @@ public class Storage {
 
     private URI createId(String entitySetName, Object id) {
         try {
-            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+            return new URI(entitySetName + "(" + id + ")");
         } catch (URISyntaxException e) {
             throw new ODataRuntimeException("Unable to create id for entity: " + entitySetName, e);
         }

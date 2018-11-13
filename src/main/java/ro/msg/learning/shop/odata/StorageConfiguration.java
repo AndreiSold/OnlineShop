@@ -10,6 +10,7 @@ import ro.msg.learning.shop.repositories.ProductRepository;
 public class StorageConfiguration {
 
     private final ProductRepository productRepository;
+    private final DemoEdmProvider demoEdmProvider;
 
     @Bean
     public Storage storage() {

@@ -31,7 +31,7 @@ public class Product {
     private List<ProductCategory> productCategories;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER)
     private List<Supplier> suppliers;
 
     @JsonIgnore
