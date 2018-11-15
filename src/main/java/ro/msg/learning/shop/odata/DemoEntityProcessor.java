@@ -1,9 +1,11 @@
 package ro.msg.learning.shop.odata;
 
 import org.apache.olingo.commons.api.data.ContextURL;
+import org.apache.olingo.commons.api.data.ContextURL.Suffix;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
+import org.apache.olingo.commons.api.edm.EdmNavigationProperty;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.commons.api.http.HttpHeader;
 import org.apache.olingo.commons.api.http.HttpStatusCode;
@@ -11,19 +13,17 @@ import org.apache.olingo.server.api.*;
 import org.apache.olingo.server.api.processor.EntityProcessor;
 import org.apache.olingo.server.api.serializer.EntitySerializerOptions;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
+import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
-import org.apache.olingo.server.api.uri.UriInfo;
-import org.apache.olingo.server.api.uri.UriParameter;
-import org.apache.olingo.server.api.uri.UriResource;
-import org.apache.olingo.server.api.uri.UriResourceEntitySet;
+import org.apache.olingo.server.api.uri.*;
 
-import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 
 public class DemoEntityProcessor implements EntityProcessor {
 
     private OData odata;
-    private ServiceMetadata serviceMetadata;
+    private ServiceMetadata srvMetadata;
     private Storage storage;
 
     public DemoEntityProcessor(Storage storage) {
@@ -32,51 +32,116 @@ public class DemoEntityProcessor implements EntityProcessor {
 
     public void init(OData odata, ServiceMetadata serviceMetadata) {
         this.odata = odata;
-        this.serviceMetadata = serviceMetadata;
+        this.srvMetadata = serviceMetadata;
     }
 
-    @Override
-    public void readEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat) throws ODataApplicationException, ODataLibraryException {
+    /**
+     * This method is invoked when a single entity has to be read.
+     * In our example, this can be either a "normal" read operation, or a navigation:
+     * <p>
+     * Example for "normal" read operation:
+     * http://localhost:8080/DemoService/DemoService.svc/Products(1)
+     * <p>
+     * Example for navigation
+     * http://localhost:8080/DemoService/DemoService.svc/Products(1)/Category
+     */
+    public void readEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat)
+        throws ODataApplicationException, SerializerException {
 
-        // 1. retrieve the Entity Type
-        List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
-        // Note: only in our example we can assume that the first segment is the EntitySet
-        UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) resourcePaths.get(0);
-        EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
+        EdmEntityType responseEdmEntityType = null; // we'll need this to build the ContextURL
+        Entity responseEntity = null; // required for serialization of the response body
+        EdmEntitySet responseEdmEntitySet = null; // we need this for building the contextUrl
 
-        // 2. retrieve the data from backend
-        List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
-        Entity entity = storage.readEntityData(edmEntitySet, keyPredicates);
+        // 1st step: retrieve the requested Entity: can be "normal" read operation, or navigation (to-one)
+        List<UriResource> resourceParts = uriInfo.getUriResourceParts();
+        int segmentCount = resourceParts.size();
+
+        UriResource uriResource = resourceParts.get(0); // in our example, the first segment is the EntitySet
+        if (!(uriResource instanceof UriResourceEntitySet)) {
+            throw new ODataApplicationException("Only EntitySet is supported",
+                HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ENGLISH);
+        }
+
+        UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) uriResource;
+        EdmEntitySet startEdmEntitySet = uriResourceEntitySet.getEntitySet();
+
+        // Analyze the URI segments
+        if (segmentCount == 1) { // no navigation
+            responseEdmEntityType = startEdmEntitySet.getEntityType();
+            responseEdmEntitySet = startEdmEntitySet; // since we have only one segment
+
+            // 2. step: retrieve the data from backend
+            List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
+            responseEntity = storage.readEntityData(startEdmEntitySet, keyPredicates);
+        } else if (segmentCount == 2) { // navigation
+            UriResource navSegment = resourceParts.get(1); // in our example we don't support more complex URIs
+            if (navSegment instanceof UriResourceNavigation) {
+                UriResourceNavigation uriResourceNavigation = (UriResourceNavigation) navSegment;
+                EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
+                responseEdmEntityType = edmNavigationProperty.getType();
+                // contextURL displays the last segment
+                responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
+
+                // 2nd: fetch the data from backend.
+                // e.g. for the URI: Products(1)/Category we have to find the correct Category entity
+                List<UriParameter> keyPredicates = uriResourceEntitySet.getKeyPredicates();
+                // e.g. for Products(1)/Category we have to find first the Products(1)
+                Entity sourceEntity = storage.readEntityData(startEdmEntitySet, keyPredicates);
+
+                // now we have to check if the navigation is
+                // a) to-one: e.g. Products(1)/Category
+                // b) to-many with key: e.g. Categories(3)/Products(5)
+                // the key for nav is used in this case: Categories(3)/Products(5)
+                List<UriParameter> navKeyPredicates = uriResourceNavigation.getKeyPredicates();
+
+                if (navKeyPredicates.isEmpty()) { // e.g. DemoService.svc/Products(1)/Category
+                    responseEntity = storage.getRelatedEntity(sourceEntity, responseEdmEntityType);
+                } else { // e.g. DemoService.svc/Categories(3)/Products(5)
+                    responseEntity = storage.getRelatedEntity(sourceEntity, responseEdmEntityType, navKeyPredicates);
+                }
+            }
+        } else {
+            // this would be the case for e.g. Products(1)/Category/Products(1)/Category
+            throw new ODataApplicationException("Not supported", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
+        }
+
+        if (responseEntity == null) {
+            // this is the case for e.g. DemoService.svc/Categories(4) or DemoService.svc/Categories(3)/Products(999)
+            throw new ODataApplicationException("Nothing found.", HttpStatusCode.NOT_FOUND.getStatusCode(), Locale.ROOT);
+        }
 
         // 3. serialize
-        EdmEntityType entityType = edmEntitySet.getEntityType();
+        ContextURL contextUrl = ContextURL.with().entitySet(responseEdmEntitySet).suffix(Suffix.ENTITY).build();
+        EntitySerializerOptions opts = EntitySerializerOptions.with().contextURL(contextUrl).build();
 
-        ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).build();
-        // expand and select currently not supported
-        EntitySerializerOptions options = EntitySerializerOptions.with().contextURL(contextUrl).build();
+        ODataSerializer serializer = this.odata.createSerializer(responseFormat);
+        SerializerResult serializerResult = serializer.entity(this.srvMetadata,
+            responseEdmEntityType, responseEntity, opts);
 
-        ODataSerializer serializer = odata.createSerializer(responseFormat);
-        SerializerResult serializerResult = serializer.entity(serviceMetadata, entityType, entity, options);
-        InputStream entityStream = serializerResult.getContent();
-
-        //4. configure the response object
-        response.setContent(entityStream);
+        // 4. configure the response object
+        response.setContent(serializerResult.getContent());
         response.setStatusCode(HttpStatusCode.OK.getStatusCode());
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
     }
 
-    @Override
-    public void createEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType, ContentType contentType1) throws ODataApplicationException, ODataLibraryException {
+    /*
+     * These processor methods are not handled in this tutorial
+     */
 
+    public void createEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo,
+                             ContentType requestFormat, ContentType responseFormat)
+        throws ODataApplicationException {
+        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
 
-    @Override
-    public void updateEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType, ContentType contentType1) throws ODataApplicationException, ODataLibraryException {
-
+    public void updateEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo,
+                             ContentType requestFormat, ContentType responseFormat)
+        throws ODataApplicationException {
+        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
 
-    @Override
-    public void deleteEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo) throws ODataApplicationException, ODataLibraryException {
-
+    public void deleteEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo)
+        throws ODataApplicationException {
+        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
 }

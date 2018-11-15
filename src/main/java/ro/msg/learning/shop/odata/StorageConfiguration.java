@@ -1,19 +1,17 @@
 package ro.msg.learning.shop.odata;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ro.msg.learning.shop.repositories.ProductRepository;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Configuration
 public class StorageConfiguration {
 
-    private final ProductRepository productRepository;
-    private final DemoEdmProvider demoEdmProvider;
+//    private final ProductRepository productRepository;
+//    private final DemoEdmProvider demoEdmProvider;
 
     @Bean
     public Storage storage() {
-        return new Storage(productRepository);
+        return new Storage();
     }
 }

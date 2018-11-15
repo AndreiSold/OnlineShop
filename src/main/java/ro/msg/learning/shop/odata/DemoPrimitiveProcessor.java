@@ -13,6 +13,7 @@ import org.apache.olingo.server.api.*;
 import org.apache.olingo.server.api.processor.PrimitiveProcessor;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.PrimitiveSerializerOptions;
+import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.uri.*;
 
@@ -35,8 +36,18 @@ public class DemoPrimitiveProcessor implements PrimitiveProcessor {
         this.serviceMetadata = serviceMetadata;
     }
 
-    @Override
-    public void readPrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat) throws ODataApplicationException, ODataLibraryException {
+    /*
+     * In our example, the URL would be: http://localhost:8080/DemoService/DemoService.svc/Products(1)/Name
+     * and the response:
+     * {
+     *
+     * @odata.context: "$metadata#Products/Name",
+     * value: "Notebook Basic 15"
+     * }
+     */
+    public void readPrimitive(ODataRequest request, ODataResponse response,
+                              UriInfo uriInfo, ContentType responseFormat)
+        throws ODataApplicationException, SerializerException {
 
         // 1. Retrieve info from URI
         // 1.1. retrieve the info about the requested entity set
@@ -86,19 +97,25 @@ public class DemoPrimitiveProcessor implements PrimitiveProcessor {
             response.setContent(propertyStream);
             response.setStatusCode(HttpStatusCode.OK.getStatusCode());
             response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
-        } else {
+        }else{
             // in case there's no value for the property, we can skip the serialization
             response.setStatusCode(HttpStatusCode.NO_CONTENT.getStatusCode());
         }
-    }
-
-    @Override
-    public void updatePrimitive(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType, ContentType contentType1) throws ODataApplicationException, ODataLibraryException {
 
     }
 
-    @Override
-    public void deletePrimitive(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo) throws ODataApplicationException, ODataLibraryException {
+    /*
+     * These processor methods are not handled in this tutorial
+     */
 
+    public void updatePrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType requestFormat,
+                                ContentType responseFormat)
+        throws ODataApplicationException {
+        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
+    }
+
+    public void deletePrimitive(ODataRequest request, ODataResponse response, UriInfo uriInfo)
+        throws ODataApplicationException {
+        throw new ODataApplicationException("Not supported.", HttpStatusCode.NOT_IMPLEMENTED.getStatusCode(), Locale.ROOT);
     }
 }

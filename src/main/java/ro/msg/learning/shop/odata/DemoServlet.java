@@ -27,11 +27,8 @@ public class DemoServlet {
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
         HttpSession session = request.getSession(true);
-//        Storage storage = (Storage) session.getAttribute(Storage.class.getName());
-//        if (storage == null) {
-//            storage = new Storage();
+
         session.setAttribute(Storage.class.getName(), storage);
-//        }
 
         OData odata = OData.newInstance();
         ServiceMetadata edm = odata.createServiceMetadata(demoEdmProvider, new ArrayList<>());
