@@ -1,0 +1,1 @@
+insert into customer_roles (customers_id, roles_id) values (1, 3);

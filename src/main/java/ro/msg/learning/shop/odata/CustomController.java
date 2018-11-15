@@ -14,14 +14,14 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(DemoServlet.URI)
+@RequestMapping(CustomController.URI)
 @RequiredArgsConstructor
-public class DemoServlet {
+public class CustomController {
 
     public static final String URI = "/odata";
 
     private final Storage storage;
-    private final DemoEdmProvider demoEdmProvider;
+    private final CustomEdmProvider customEdmProvider;
 
     @RequestMapping(value = "**")
     public void process(HttpServletRequest request, HttpServletResponse response) {
@@ -31,12 +31,12 @@ public class DemoServlet {
         session.setAttribute(Storage.class.getName(), storage);
 
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(demoEdmProvider, new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(customEdmProvider, new ArrayList<>());
 
         ODataHttpHandler handler = odata.createHandler(edm);
-        handler.register(new DemoEntityCollectionProcessor(storage));
-        handler.register(new DemoEntityProcessor(storage));
-        handler.register(new DemoPrimitiveProcessor(storage));
+        handler.register(new CustomEntityCollectionProcessor(storage));
+        handler.register(new CustomEntityProcessor(storage));
+        handler.register(new CustomPrimitiveProcessor(storage));
         handler.process(new HttpServletRequestWrapper(request) {
             // Spring MVC matches the whole path as the servlet path
             // Olingo wants just the prefix, ie upto /odata, so that it
@@ -44,7 +44,7 @@ public class DemoServlet {
             // getServletPath()
             @Override
             public String getServletPath() {
-                return DemoServlet.URI;
+                return CustomController.URI;
             }
         }, response);
     }

@@ -2,6 +2,8 @@ package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 
@@ -23,7 +25,8 @@ public class OrderDetail {
     private Product product;
 
     @JsonIgnore
-    @ManyToOne
+    @Fetch(FetchMode.SELECT)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Order order;
 
     private Integer quantity;

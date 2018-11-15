@@ -1,6 +1,8 @@
 package ro.msg.learning.shop.entities;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ro.msg.learning.shop.embeddables.Address;
 
 import javax.persistence.*;
@@ -26,7 +28,8 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 
     @Embedded

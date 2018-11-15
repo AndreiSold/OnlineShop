@@ -20,13 +20,13 @@ import org.apache.olingo.server.api.uri.*;
 import java.util.List;
 import java.util.Locale;
 
-public class DemoEntityProcessor implements EntityProcessor {
+public class CustomEntityProcessor implements EntityProcessor {
 
     private OData odata;
     private ServiceMetadata srvMetadata;
     private Storage storage;
 
-    public DemoEntityProcessor(Storage storage) {
+    public CustomEntityProcessor(Storage storage) {
         this.storage = storage;
     }
 
@@ -35,16 +35,6 @@ public class DemoEntityProcessor implements EntityProcessor {
         this.srvMetadata = serviceMetadata;
     }
 
-    /**
-     * This method is invoked when a single entity has to be read.
-     * In our example, this can be either a "normal" read operation, or a navigation:
-     * <p>
-     * Example for "normal" read operation:
-     * http://localhost:8080/DemoService/DemoService.svc/Products(1)
-     * <p>
-     * Example for navigation
-     * http://localhost:8080/DemoService/DemoService.svc/Products(1)/Category
-     */
     public void readEntity(ODataRequest request, ODataResponse response, UriInfo uriInfo, ContentType responseFormat)
         throws ODataApplicationException, SerializerException {
 
@@ -80,7 +70,7 @@ public class DemoEntityProcessor implements EntityProcessor {
                 EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
                 responseEdmEntityType = edmNavigationProperty.getType();
                 // contextURL displays the last segment
-                responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
+                responseEdmEntitySet = CustomUtil.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
 
                 // 2nd: fetch the data from backend.
                 // e.g. for the URI: Products(1)/Category we have to find the correct Category entity

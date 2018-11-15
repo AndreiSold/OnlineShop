@@ -20,14 +20,13 @@ import org.apache.olingo.server.api.uri.*;
 import java.util.List;
 import java.util.Locale;
 
-public class DemoEntityCollectionProcessor implements EntityCollectionProcessor {
+public class CustomEntityCollectionProcessor implements EntityCollectionProcessor {
 
     private OData odata;
     private ServiceMetadata srvMetadata;
-    // our database-mock
     private Storage storage;
 
-    public DemoEntityCollectionProcessor(Storage storage) {
+    public CustomEntityCollectionProcessor(Storage storage) {
         this.storage = storage;
     }
 
@@ -36,16 +35,6 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
         this.srvMetadata = serviceMetadata;
     }
 
-    /*
-     * This method is invoked when a collection of entities has to be read.
-     * In our example, this can be either a "normal" read operation, or a navigation:
-     *
-     * Example for "normal" read entity set operation:
-     * http://localhost:8080/DemoService/DemoService.svc/Categories
-     *
-     * Example for navigation
-     * http://localhost:8080/DemoService/DemoService.svc/Categories(3)/Products
-     */
     public void readEntityCollection(ODataRequest request, ODataResponse response,
                                      UriInfo uriInfo, ContentType responseFormat)
         throws ODataApplicationException, SerializerException {
@@ -79,7 +68,7 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
                 EdmNavigationProperty edmNavigationProperty = uriResourceNavigation.getProperty();
                 EdmEntityType targetEntityType = edmNavigationProperty.getType();
                 // from Categories(1) to Products
-                responseEdmEntitySet = Util.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
+                responseEdmEntitySet = CustomUtil.getNavigationTargetEntitySet(startEdmEntitySet, edmNavigationProperty);
 
                 // 2nd: fetch the data from backend
                 // first fetch the entity where the first segment of the URI points to
@@ -93,7 +82,7 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
                 }
                 // then fetch the entity collection where the entity navigates to
                 // note: we don't need to check uriResourceNavigation.isCollection(),
-                // because we are the EntityCollectionProcessor
+                // because we are the CustomEntityCollectionProcessor
                 responseEntityCollection = storage.getRelatedEntityCollection(sourceEntity, targetEntityType);
             }
         } else { // this would be the case for e.g. Products(1)/Category/Products

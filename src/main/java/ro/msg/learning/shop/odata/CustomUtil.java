@@ -10,7 +10,7 @@ import org.apache.olingo.server.api.uri.UriParameter;
 import java.util.List;
 import java.util.Locale;
 
-public class Util {
+public class CustomUtil {
 
     public static Entity findEntity(EdmEntityType edmEntityType, EntityCollection entitySet,
                                     List<UriParameter> keyParams) {
@@ -85,21 +85,6 @@ public class Util {
         return true;
     }
 
-    /**
-     * Example:
-     * For the following navigation: DemoService.svc/Categories(1)/Products
-     * we need the EdmEntitySet for the navigation property "Products"
-     *
-     * This is defined as follows in the metadata:
-     * <code>
-     *
-     * <EntitySet Name="Categories" EntityType="OData.Demo.Category">
-     * <NavigationPropertyBinding Path="Products" Target="Products"/>
-     * </EntitySet>
-     * </code>
-     * The "Target" attribute specifies the target EntitySet
-     * Therefore we need the startEntitySet "Categories" in order to retrieve the target EntitySet "Products"
-     */
     public static EdmEntitySet getNavigationTargetEntitySet(EdmEntitySet startEntitySet,
                                                             EdmNavigationProperty edmNavigationProperty)
         throws ODataApplicationException {

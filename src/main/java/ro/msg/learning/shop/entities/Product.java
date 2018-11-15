@@ -2,6 +2,8 @@ package ro.msg.learning.shop.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,7 +33,7 @@ public class Product {
     private List<ProductCategory> productCategories;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "products")
     private List<Supplier> suppliers;
 
     @JsonIgnore
@@ -39,7 +41,8 @@ public class Product {
     private List<Stock> stocks;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails;
 
 }
