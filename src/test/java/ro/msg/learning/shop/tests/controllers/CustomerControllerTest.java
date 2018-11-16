@@ -36,6 +36,9 @@ import static java.util.Arrays.asList;
 @ActiveProfiles(profiles = "dev")
 public class CustomerControllerTest {
 
+    private OAuth2RestTemplate oAuth2RestTemplateAdmin;
+    private OAuth2RestTemplate oAuth2RestTemplateUser;
+
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -55,9 +58,6 @@ public class CustomerControllerTest {
         flyway.clean();
         flyway.migrate();
     }
-
-    private OAuth2RestTemplate oAuth2RestTemplateAdmin;
-    private OAuth2RestTemplate oAuth2RestTemplateUser;
 
     @Before
     public void init() {

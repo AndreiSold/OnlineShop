@@ -46,7 +46,6 @@ public class StockControllerTest {
     public void init() {
         basePath = "http://localhost:" + port + "/stock";
 
-        HttpHeaders headers = new HttpHeaders();
         ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
         resourceDetails.setPassword("1234");
         resourceDetails.setUsername("admin");

@@ -26,6 +26,8 @@ import static java.util.Arrays.asList;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReportControllerTest {
 
+    private static final String FILE_AS_STRING = "12";
+
     @Autowired
     private ReportRepository reportRepository;
 
@@ -53,8 +55,6 @@ public class ReportControllerTest {
 
         oAuth2RestTemplate = new OAuth2RestTemplate(resourceDetails, clientContext);
     }
-
-    private static final String FILE_AS_STRING = "12";
 
     @Test
     public void testReportRetrievalAfterMonthAndYear() {
