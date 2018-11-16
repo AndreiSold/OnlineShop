@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.security;
+package ro.msg.learning.shop.configurations.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.security;
+package ro.msg.learning.shop.configurations.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

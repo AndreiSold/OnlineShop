@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.odata;
+package ro.msg.learning.shop.processors;
 
 import org.apache.olingo.commons.api.data.ContextURL;
 import org.apache.olingo.commons.api.data.ContextURL.Suffix;
@@ -16,6 +16,8 @@ import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
 import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.uri.*;
+import ro.msg.learning.shop.odata.CustomUtil;
+import ro.msg.learning.shop.odata.Storage;
 
 import java.util.List;
 import java.util.Locale;

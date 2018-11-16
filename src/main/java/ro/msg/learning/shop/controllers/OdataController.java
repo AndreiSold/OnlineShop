@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.odata;
+package ro.msg.learning.shop.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.olingo.server.api.OData;
@@ -6,6 +6,11 @@ import org.apache.olingo.server.api.ODataHttpHandler;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ro.msg.learning.shop.odata.CustomEdmProvider;
+import ro.msg.learning.shop.odata.Storage;
+import ro.msg.learning.shop.processors.CustomEntityCollectionProcessor;
+import ro.msg.learning.shop.processors.CustomEntityProcessor;
+import ro.msg.learning.shop.processors.CustomPrimitiveProcessor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -14,9 +19,9 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(CustomController.URI)
+@RequestMapping(OdataController.URI)
 @RequiredArgsConstructor
-public class CustomController {
+public class OdataController {
 
     public static final String URI = "/odata";
 
@@ -38,13 +43,14 @@ public class CustomController {
         handler.register(new CustomEntityProcessor(storage));
         handler.register(new CustomPrimitiveProcessor(storage));
         handler.process(new HttpServletRequestWrapper(request) {
+
             // Spring MVC matches the whole path as the servlet path
             // Olingo wants just the prefix, ie upto /odata, so that it
             // can parse the rest of it as an OData path. So we need to override
             // getServletPath()
             @Override
             public String getServletPath() {
-                return CustomController.URI;
+                return OdataController.URI;
             }
         }, response);
     }
