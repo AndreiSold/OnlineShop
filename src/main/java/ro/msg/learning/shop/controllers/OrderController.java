@@ -23,9 +23,9 @@ public class OrderController {
     private final CsvConverter csvConverter;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create-order")
-    public Order createOrder(@RequestBody OrderDto orderDto) {
-        return orderService.createOrder(orderDto);
+    @PostMapping("/create-order/{customerUsername}")
+    public Order createOrder(@RequestBody OrderDto orderDto, @PathVariable String customerUsername) {
+        return orderService.createOrder(orderDto, customerUsername);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

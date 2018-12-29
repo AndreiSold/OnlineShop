@@ -2,8 +2,6 @@ package ro.msg.learning.shop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.CustomerDto;
 import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
@@ -21,19 +19,18 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public Customer registerCustomer(CustomerDto customerDto) {
         return customerRepository.save(Customer.builder().firstName(customerDto.getFirstName())
             .lastName(customerDto.getLastName())
             .username(customerDto.getUsername())
             .roles(Collections.singletonList(roleRepository.findByNameEquals("ROLE_CUSTOMER")))
-            .password(passwordEncoder.encode(customerDto.getPassword()))
+            .password(customerDto.getPassword())
             .build());
     }
 
-    public CustomerDtoNoPassword customerDtoNoPasswordFromLoggedCustomer() {
-        Customer customer = customerRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+    public CustomerDtoNoPassword customerDtoNoPasswordFromCustomerUsername(String customerUsername) {
+        Customer customer = customerRepository.findByUsername(customerUsername);
 
         if (customer == null) {
             log.error("Customer username not found!");

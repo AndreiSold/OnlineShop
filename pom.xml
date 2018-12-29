@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>shop</name>
-    <description>Online Shop Application for Spring Training</description>
+    <description>Online Shop for School Project (SSD)</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -30,10 +30,6 @@
         <jackson.datatype.version>2.9.7</jackson.datatype.version>
         <jackson.dataformat.version>2.8.8</jackson.dataformat.version>
         <jdbc.version>5.1.0.RELEASE</jdbc.version>
-        <oauth2.version>2.3.4.RELEASE</oauth2.version>
-        <spring.security.test.version>5.1.1.RELEASE</spring.security.test.version>
-        <odata.version>4.0.0</odata.version>
-        <olingo.version>2.0.10</olingo.version>
         <javax.version>2.5</javax.version>
     </properties>
 
@@ -41,23 +37,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>${oauth2.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <version>${spring.security.test.version}</version>
         </dependency>
 
         <dependency>
@@ -102,11 +81,6 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
@@ -135,36 +109,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.olingo</groupId>
-            <artifactId>olingo-odata2-api</artifactId>
-            <version>${olingo.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.olingo</groupId>
-            <artifactId>olingo-odata2-core</artifactId>
-            <version>${olingo.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>${javax.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.olingo</groupId>
-            <artifactId>odata-server-api</artifactId>
-            <version>${odata.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.olingo</groupId>
-            <artifactId>odata-server-core</artifactId>
-            <version>${odata.version}</version>
-            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
