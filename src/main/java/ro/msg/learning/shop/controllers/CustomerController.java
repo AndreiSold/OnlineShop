@@ -20,6 +20,11 @@ public class CustomerController {
         return customerService.registerCustomer(customerDto);
     }
 
+    @GetMapping("/customer/isAdmin/{customerUsername}")
+    public boolean isAdmin(@PathVariable String customerUsername){
+        return customerService.isAdmin(customerUsername);
+    }
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/profile/{customerUsername}")
     public CustomerDtoNoPassword showCustomerProfile(@PathVariable String customerUsername) {

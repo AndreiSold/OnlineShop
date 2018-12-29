@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.CustomerDto;
 import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
 import ro.msg.learning.shop.entities.Customer;
+import ro.msg.learning.shop.entities.Role;
 import ro.msg.learning.shop.exceptions.CustomerIdNotFoundException;
 import ro.msg.learning.shop.repositories.CustomerRepository;
 import ro.msg.learning.shop.repositories.RoleRepository;
@@ -53,5 +54,15 @@ public class CustomerService {
         }
 
         customerRepository.deleteById(idToDelete);
+    }
+
+    public boolean isAdmin(String customerUsername) {
+        Customer customer = customerRepository.findByUsername(customerUsername);
+
+        for (Role role : customer.getRoles())
+            if (role.getName().equals("ROLE_ADMINISTRATOR"))
+                return true;
+
+        return false;
     }
 }
