@@ -51,8 +51,9 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/add")
-    public void addProduct(@RequestBody Product product) {
+    public Integer addProduct(@RequestBody Product product) {
         productService.saveProduct(product);
+        return product.getId();
     }
 
     @Transactional
@@ -77,4 +78,5 @@ public class ProductController {
     public void deleteProductById(@PathVariable Integer productId) {
         productService.deleteProductById(productId);
     }
+
 }
