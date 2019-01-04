@@ -29,6 +29,24 @@ public class OrderController {
         return orderService.createOrder(orderDto, customerUsername);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{orderId}")
+    public Order getOrderById(@PathVariable Integer orderId) {
+        return orderService.getOrderById(orderId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customer-by-id/{customerId}")
+    public List<Order> getAllOrdersOfCustomerById(@PathVariable Integer customerId) {
+        return orderService.getAllOrdersOfCustomerById(customerId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customer-by-username/{customerUsername}")
+    public List<Order> getAllOrdersOfCustomerByUsername(@PathVariable String customerUsername) {
+        return orderService.getAllOrdersOfCustomerByUsername(customerUsername);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @SneakyThrows
     @PostMapping("/csv-from-file")

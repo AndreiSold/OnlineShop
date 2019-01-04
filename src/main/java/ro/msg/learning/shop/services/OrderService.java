@@ -92,4 +92,15 @@ public class OrderService {
 
     }
 
+    public Order getOrderById(Integer orderId) {
+        return orderRepository.getById(orderId);
+    }
+
+    public List<Order> getAllOrdersOfCustomerById(Integer customerId) {
+        return orderRepository.getAllOrdersOfCustomerById(customerId);
+    }
+
+    public List<Order> getAllOrdersOfCustomerByUsername(String customerUsername) {
+        return orderRepository.getAllOrdersOfCustomerByUsername(customerUsername);
+    }
 }

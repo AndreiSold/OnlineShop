@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.dtos.CustomerDto;
 import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
+import ro.msg.learning.shop.dtos.UserDto;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.services.CustomerService;
 
@@ -15,6 +16,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customer/login")
+    public boolean checkIfCredentialsAreCorrect(@RequestBody UserDto userDto) {
+        return customerService.checkIfCredentialsAreCorrect(userDto.getUsername(), userDto.getPassword());
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/customer/register")
     public Customer registerCustomer(@RequestBody CustomerDto customerDto) {
@@ -22,7 +29,7 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/isAdmin/{customerUsername}")
-    public boolean isAdmin(@PathVariable String customerUsername){
+    public boolean isAdmin(@PathVariable String customerUsername) {
         return customerService.isAdmin(customerUsername);
     }
 

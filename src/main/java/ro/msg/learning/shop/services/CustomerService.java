@@ -12,6 +12,7 @@ import ro.msg.learning.shop.repositories.CustomerRepository;
 import ro.msg.learning.shop.repositories.RoleRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -64,5 +65,14 @@ public class CustomerService {
                 return true;
 
         return false;
+    }
+
+    public boolean checkIfCredentialsAreCorrect(String username, String password) {
+        Optional<Customer> customerOptional = customerRepository.findByUsernameAndPassword(username, password);
+
+        if (customerOptional.isPresent())
+            return true;
+        else
+            return false;
     }
 }
