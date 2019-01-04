@@ -17,7 +17,7 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/customer/login")
+    @PostMapping("/customer/login")
     public boolean checkIfCredentialsAreCorrect(@RequestBody UserDto userDto) {
         return customerService.checkIfCredentialsAreCorrect(userDto.getUsername(), userDto.getPassword());
     }
