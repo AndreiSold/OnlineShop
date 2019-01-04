@@ -6,6 +6,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.util.List;
 
 @Entity
@@ -28,9 +29,11 @@ public class Product {
 
     private Double weight;
 
+    private Blob image;
+
     @JsonIgnore
-    @ManyToMany(mappedBy = "products")
-    private List<ProductCategory> productCategories;
+    @ManyToOne
+    private ProductCategory category;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "products")

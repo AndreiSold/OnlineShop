@@ -17,18 +17,17 @@ alter table order__shipped_from add constraint FK_ORDER_FROM_ORDER_SHIPPED_FROM 
 alter table order_detail modify id integer auto_increment;
 
 alter table order_detail drop foreign key FK_PRODUCT_FROM_ORDER_DETAIL, modify product_id integer;
-alter table product_category_products drop foreign key FK_PRODUCT_FROM_PRODUCT_CATEGORY_PRODUCTS, modify products_id integer;
 alter table stock drop foreign key FK_PRODUCT_FROM_STOCK, modify product_id integer;
 alter table supplier_products drop foreign key FK_PRODUCT_FROM_SUPPLIER_PRODUCTS, modify products_id integer;
 alter table product modify id integer auto_increment;
 alter table order_detail add constraint FK_PRODUCT_FROM_ORDER_DETAIL foreign key (product_id) references product (id);
-alter table product_category_products add constraint FK_PRODUCT_FROM_PRODUCT_CATEGORY_PRODUCTS foreign key (products_id) references product (id);
 alter table stock add constraint FK_PRODUCT_FROM_STOCK foreign key (product_id) references product (id);
 alter table supplier_products add constraint FK_PRODUCT_FROM_SUPPLIER_PRODUCTS foreign key (products_id) references product (id);
 
-alter table product_category_products drop foreign key FK_PRODUCT_CATEGORY_FROM_PRODUCT_CATEGORY_PRODUCTS, modify product_categories_id integer;
+alter table product drop foreign key FK_CATEGORY_FROM_PRODUCT, modify category_id integer;
 alter table product_category modify id integer auto_increment;
-alter table product_category_products add constraint FK_PRODUCT_CATEGORY_FROM_PRODUCT_CATEGORY_PRODUCTS foreign key (product_categories_id) references product_category (id);
+alter table product add constraint FK_CATEGORY_FROM_PRODUCT foreign key (category_id) references product_category (id);
+
 
 alter table stock modify id integer auto_increment;
 

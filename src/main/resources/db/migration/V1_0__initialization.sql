@@ -58,6 +58,7 @@ create table product (
   name varchar(255),
   price double precision,
   weight double precision,
+  category_id integer,
   primary key (id)
 ) engine=InnoDB;
 
@@ -66,11 +67,6 @@ create table product_category (
   description varchar(255),
   name varchar(255),
   primary key (id)
-) engine=InnoDB;
-
-create table product_category_products (
-  product_categories_id integer not null,
-  products_id integer not null
 ) engine=InnoDB;
 
 create table stock (
@@ -93,12 +89,11 @@ create table supplier_products (
 ) engine=InnoDB;
 
 alter table order_ add constraint FK_CUSTOMER_FROM_ORDER foreign key (customer_id) references customer (id);
+alter table product add constraint FK_CATEGORY_FROM_PRODUCT foreign key (category_id) references product_category (id);
 alter table order__shipped_from add constraint FK_SHIPPED_FROM_FROM_ORDER_SHIPPED_FROM foreign key (shipped_from_id) references location (id);
 alter table order__shipped_from add constraint FK_ORDER_FROM_ORDER_SHIPPED_FROM foreign key (orders_id) references order_ (id);
 alter table order_detail add constraint FK_ORDER_FROM_ORDER_DETAIL foreign key (order_id) references order_ (id);
 alter table order_detail add constraint FK_PRODUCT_FROM_ORDER_DETAIL foreign key (product_id) references product (id);
-alter table product_category_products add constraint FK_PRODUCT_FROM_PRODUCT_CATEGORY_PRODUCTS foreign key (products_id) references product (id);
-alter table product_category_products add constraint FK_PRODUCT_CATEGORY_FROM_PRODUCT_CATEGORY_PRODUCTS foreign key (product_categories_id) references product_category (id);
 alter table stock add constraint FK_LOCATION_FROM_STOCK foreign key (location_id) references location (id);
 alter table stock add constraint FK_PRODUCT_FROM_STOCK foreign key (product_id) references product (id);
 alter table supplier_products add constraint FK_PRODUCT_FROM_SUPPLIER_PRODUCTS foreign key (products_id) references product (id);

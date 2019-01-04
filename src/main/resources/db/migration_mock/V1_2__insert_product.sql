@@ -1,8 +1,8 @@
-insert into product (id, description, name, price, weight) values (1, 'Pita traditional romaneasca', 'Paine', 5, 1);
-insert into product (id, description, name, price, weight) values (2, 'Bere aferenta timisoareana la pet', 'Bere', 10, 2);
-insert into product (id, description, name, price, weight) values (3, 'Duis aliquam convallis nunc.', 'Benton', 953, 98);
-insert into product (id, description, name, price, weight) values (4, 'Morbi quis tortor id nulla ultrices aliquet.', 'Chaney', 281, 17);
-insert into product (id, description, name, price, weight) values (5, 'Duis bibendum.', 'Ramsell', 676, 67);
+insert into product (id, description, name, price, weight, category_id) values (1, 'Pita traditional romaneasca', 'Paine', 5, 1, 1);
+insert into product (id, description, name, price, weight, category_id) values (2, 'Bere aferenta timisoareana la pet', 'Bere', 10, 2, 2);
+insert into product (id, description, name, price, weight, category_id) values (3, 'Duis aliquam convallis nunc.', 'Benton', 953, 98, 3);
+insert into product (id, description, name, price, weight, category_id) values (4, 'Morbi quis tortor id nulla ultrices aliquet.', 'Chaney', 281, 17, 3);
+insert into product (id, description, name, price, weight, category_id) values (5, 'Duis bibendum.', 'Ramsell', 676, 67, 3);
 insert into product (id, description, name, price, weight) values (6, 'Integer non velit.', 'Cessford', 40, 63);
 insert into product (id, description, name, price, weight) values (7, 'Morbi non quam nec dui luctus rutrum.', 'Alyutin', 2, 59);
 insert into product (id, description, name, price, weight) values (8, 'In congue.', 'Curteis', 394, 73);

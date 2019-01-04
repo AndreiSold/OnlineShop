@@ -29,5 +29,19 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
         return getQuantitySoldInLastMonthByProductIdQuery(productId, afterDateEquals, beforeDateEquals);
     }
+
+    Product getById(Integer id);
+
+    @Query(value = "SELECT * FROM Product p WHERE p.price >= ?1 AND p.price <= ?2", nativeQuery = true)
+    List<Product> getProductsInRange(Double startPrice, Double endPrice);
+
+    @Query(value = "SELECT * FROM Product p WHERE p.category_id = ?1", nativeQuery = true)
+    List<Product> getProductsFromCategory(Integer categoryId);
+
+    @Query(value = "SELECT * FROM Product p WHERE p.price >= ?1 and p.price <= ?2 and p.category_id = ?3", nativeQuery = true)
+    List<Product> getProductsInRangeFromCategory(Double startPrice, Double endPrice, Integer categoryId);
+
+    @Query(value = "SELECT p FROM Product p WHERE p.name LIKE CONCAT('%', ?1, '%')")
+    List<Product> getProductsThatContainString(String string);
 }
 

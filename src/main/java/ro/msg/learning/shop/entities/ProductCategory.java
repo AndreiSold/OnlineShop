@@ -17,7 +17,7 @@ public class ProductCategory {
     private Integer id;
 
     @JsonIgnore
-    @ManyToMany
+    @OneToMany(mappedBy = "category")
     private List<Product> products;
 
     private String name;
