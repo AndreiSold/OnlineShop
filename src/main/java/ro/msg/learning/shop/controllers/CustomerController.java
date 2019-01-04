@@ -8,6 +8,7 @@ import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.services.CustomerService;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class CustomerController {

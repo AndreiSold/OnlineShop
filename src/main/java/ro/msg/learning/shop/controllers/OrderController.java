@@ -14,6 +14,7 @@ import ro.msg.learning.shop.utilities.CsvConverter;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor

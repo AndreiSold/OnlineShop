@@ -8,6 +8,7 @@ import ro.msg.learning.shop.services.StockService;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/stock")
 @RequiredArgsConstructor
