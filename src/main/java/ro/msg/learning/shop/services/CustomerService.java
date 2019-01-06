@@ -8,6 +8,7 @@ import ro.msg.learning.shop.dtos.CustomerDtoNoPassword;
 import ro.msg.learning.shop.entities.Customer;
 import ro.msg.learning.shop.entities.Role;
 import ro.msg.learning.shop.exceptions.CustomerIdNotFoundException;
+import ro.msg.learning.shop.exceptions.UsernameAlreadyExistsException;
 import ro.msg.learning.shop.repositories.CustomerRepository;
 import ro.msg.learning.shop.repositories.RoleRepository;
 
@@ -23,6 +24,10 @@ public class CustomerService {
     private final RoleRepository roleRepository;
 
     public Customer registerCustomer(CustomerDto customerDto) {
+
+        if (customerRepository.findByUsername(customerDto.getUsername()) != null)
+            throw new UsernameAlreadyExistsException(customerDto.getUsername() + " exists already!");
+
         return customerRepository.save(Customer.builder().firstName(customerDto.getFirstName())
             .lastName(customerDto.getLastName())
             .username(customerDto.getUsername())
