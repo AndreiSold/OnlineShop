@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = {"productCategories", "suppliers", "stocks", "orderDetails"})
+@ToString(exclude = {"suppliers", "stocks", "orderDetails"})
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
@@ -29,9 +29,9 @@ public class Product {
 
     private Double weight;
 
+    @JsonIgnore
     private Blob image;
 
-    @JsonIgnore
     @ManyToOne
     private ProductCategory category;
 

@@ -49,4 +49,8 @@ public class ProductService {
     public void deleteProductById(Integer productId) {
         productRepository.deleteById(productId);
     }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
 }

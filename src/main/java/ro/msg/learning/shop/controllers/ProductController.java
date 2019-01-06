@@ -20,6 +20,12 @@ public class ProductController {
     private final ProductService productService;
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/all")
+    public List<Product> getAllProducts(){
+        return productService.getAllProducts();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable Integer id) {
         return productService.getProductById(id);
@@ -47,6 +53,44 @@ public class ProductController {
     @GetMapping("/contains/{string}")
     public List<Product> getProductsThatContainString(@PathVariable String string) {
         return productService.getProductsThatContainString(string);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/from/{startPrice}/to/{endPrice}/contains/{string}")
+    public List<Product> getProductsInRangeContainsString(@PathVariable Double startPrice, @PathVariable Double endPrice, @PathVariable String string) {
+        List<Product> productsInRange = productService.getProductsInRange(startPrice, endPrice);
+        List<Product> productsThatContainString = productService.getProductsThatContainString(string);
+
+        List<Product> filteredProducts = productsInRange;
+        filteredProducts.retainAll(productsThatContainString);
+
+        return filteredProducts;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/category/{category}/contains/{string}")
+    public List<Product> getProductsFromCategoryContainsString(@PathVariable Integer category, @PathVariable String string) {
+        List<Product> productsFromCategory = productService.getProductsFromCategory(category);
+        List<Product> productsThatContainString = productService.getProductsThatContainString(string);
+
+        List<Product> filteredProducts = productsFromCategory;
+        filteredProducts.retainAll(productsThatContainString);
+
+        return filteredProducts;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/from/{startPrice}/to/{endPrice}/category/{categoryId}/contains/{string}")
+    public List<Product> getProductsInRangeFromCategoryThatContainString(@PathVariable Double startPrice, @PathVariable Double endPrice, @PathVariable Integer categoryId, @PathVariable String string) {
+        List<Product> productsInRange = productService.getProductsInRange(startPrice, endPrice);
+        List<Product> productsFromCategory = productService.getProductsFromCategory(categoryId);
+        List<Product> productsThatContainString = productService.getProductsThatContainString(string);
+
+        List<Product> filteredProducts = productsInRange;
+        filteredProducts.retainAll(productsFromCategory);
+        filteredProducts.retainAll(productsThatContainString);
+
+        return filteredProducts;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
