@@ -80,4 +80,13 @@ public class CustomerService {
         else
             return false;
     }
+
+    public boolean checkIfUsernameIsAvailable(String username) {
+
+        if (customerRepository.findByUsername(username) == null) {
+            return true;
+        }
+
+        return false;
+    }
 }

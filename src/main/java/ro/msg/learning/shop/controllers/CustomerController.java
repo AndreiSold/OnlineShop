@@ -17,6 +17,12 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customer/available/{username}")
+    public boolean checkIfUsernameIsAvailable(@PathVariable String username) {
+        return customerService.checkIfUsernameIsAvailable(username);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/customer/login")
     public boolean checkIfCredentialsAreCorrect(@RequestBody UserDto userDto) {
         return customerService.checkIfCredentialsAreCorrect(userDto.getUsername(), userDto.getPassword());
