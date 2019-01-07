@@ -1,2 +1,2 @@
 alter table product
-	add image longblob;
+	add image varchar(255);

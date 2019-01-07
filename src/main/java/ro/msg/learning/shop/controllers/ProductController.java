@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ro.msg.learning.shop.entities.Product;
 import ro.msg.learning.shop.services.ProductService;
 
@@ -104,14 +103,10 @@ public class ProductController {
     @Modifying
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/add-picture/{productId}")
-    public void addPicture(@RequestBody MultipartFile image, @PathVariable Integer productId) {
-
+    public void addPicture(@RequestBody String imageUrl, @PathVariable Integer productId) {
         Product product = productService.getProductById(productId);
-        try {
-            product.setImage(new javax.sql.rowset.serial.SerialBlob(image.getBytes()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        product.setImage(imageUrl);
+
         productService.saveProduct(product);
     }
 

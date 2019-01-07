@@ -6,7 +6,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.List;
 
 @Entity
@@ -29,8 +28,7 @@ public class Product {
 
     private Double weight;
 
-    @JsonIgnore
-    private Blob image;
+    private String image;
 
     @ManyToOne
     private ProductCategory category;
