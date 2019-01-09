@@ -19,7 +19,7 @@ public class ExcelFileCreator {
     @SneakyThrows
     public byte[] createExcelForProducts(List<ProductDto> productList) {
 
-        String[] columns = {"ID", "NAME", "DESCRIPTION", "PRICE", "WEIGHT"};
+        String[] columns = {"ID", "NAME","PRICE"};
 
         // Create a Workbook
         Workbook workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
@@ -59,13 +59,7 @@ public class ExcelFileCreator {
                 .setCellValue(product.getName());
 
             row.createCell(2)
-                .setCellValue(product.getDescription());
-
-            row.createCell(3)
                 .setCellValue(product.getPrice());
-
-            row.createCell(4)
-                .setCellValue(product.getWeight());
         }
 
         // Resize all columns to fit the content size

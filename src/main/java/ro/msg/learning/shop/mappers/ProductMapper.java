@@ -22,9 +22,7 @@ public class ProductMapper {
         return productList.parallelStream().map(product -> ProductDto.builder()
             .id(product.getId())
             .name(product.getName())
-            .description(product.getDescription())
             .price(product.getPrice())
-            .weight(product.getWeight())
             .build())
             .collect(Collectors.toList());
     }
@@ -40,9 +38,7 @@ public class ProductMapper {
             monthlyProductWrapperList.add(MonthlyProductWrapper.builder()
                 .id(product.getId())
                 .name(product.getName())
-                .description(product.getDescription())
                 .price(product.getPrice())
-                .weight(product.getWeight())
                 .monthlyQuantity(monthlyQuantity)
                 .monthlyEarnings(monthlyQuantity * product.getPrice())
                 .build());

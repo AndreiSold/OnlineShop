@@ -1,100 +1,35 @@
-create table customer (
-  id integer not null,
-  first_name varchar(255),
-  last_name varchar(255),
-  username varchar(255) unique,
-  primary key (id)
-) engine=InnoDB;
-
-create table hibernate_sequence (
-  next_val bigint
-) engine=InnoDB;
-
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-insert into hibernate_sequence values ( 1002 );
-
-create table location (
-  id integer not null,
-  city varchar(255),
-  country varchar(255),
-  county varchar(255),
-  street_address varchar(255),
-  name varchar(255),
-  primary key (id)
-) engine=InnoDB;
-
-create table order_ (
-  id integer not null,
-  city varchar(255),
-  country varchar(255),
-  county varchar(255),
-  street_address varchar(255),
-  customer_id integer,
-  primary key (id)
-) engine=InnoDB;
-
-create table order__shipped_from (
-  orders_id integer not null,
-  shipped_from_id integer not null
-) engine=InnoDB;
-
-create table order_detail (
-  id integer not null,
-  quantity integer,
-  order_id integer,
-  product_id integer,
-  primary key (id)
-) engine=InnoDB;
-
-create table product (
-  id integer not null,
-  description varchar(255),
-  name varchar(255),
-  price double precision,
-  weight double precision,
-  category_id integer,
-  primary key (id)
-) engine=InnoDB;
-
-create table product_category (
-  id integer not null,
-  description varchar(255),
-  name varchar(255),
-  primary key (id)
-) engine=InnoDB;
-
-create table stock (
-  id integer not null,
-  quantity integer,
-  location_id integer,
-  product_id integer,
-  primary key (id)
-) engine=InnoDB;
-
-create table supplier (
-  id integer not null,
-  name varchar(255),
-  primary key (id)
-) engine=InnoDB;
-
-create table supplier_products (
-  suppliers_id integer not null,
-  products_id integer not null
-) engine=InnoDB;
-
-alter table order_ add constraint FK_CUSTOMER_FROM_ORDER foreign key (customer_id) references customer (id);
-alter table product add constraint FK_CATEGORY_FROM_PRODUCT foreign key (category_id) references product_category (id);
-alter table order__shipped_from add constraint FK_SHIPPED_FROM_FROM_ORDER_SHIPPED_FROM foreign key (shipped_from_id) references location (id);
-alter table order__shipped_from add constraint FK_ORDER_FROM_ORDER_SHIPPED_FROM foreign key (orders_id) references order_ (id);
-alter table order_detail add constraint FK_ORDER_FROM_ORDER_DETAIL foreign key (order_id) references order_ (id);
-alter table order_detail add constraint FK_PRODUCT_FROM_ORDER_DETAIL foreign key (product_id) references product (id);
-alter table stock add constraint FK_LOCATION_FROM_STOCK foreign key (location_id) references location (id);
-alter table stock add constraint FK_PRODUCT_FROM_STOCK foreign key (product_id) references product (id);
-alter table supplier_products add constraint FK_PRODUCT_FROM_SUPPLIER_PRODUCTS foreign key (products_id) references product (id);
-alter table supplier_products add constraint FK_SUPPLIER_FROM_SUPPLIER_PRODUCTS foreign key (suppliers_id) references supplier (id);
+drop table if exists customer;
+drop table if exists customer_roles;
+drop table if exists location;
+drop table if exists order_;
+drop table if exists order__shipped_from;
+drop table if exists order_detail;
+drop table if exists product;
+drop table if exists product_category;
+drop table if exists revenue;
+drop table if exists role;
+drop table if exists stock;
+create table customer (id integer not null auto_increment, first_name varchar(255), last_name varchar(255), password varchar(255), username varchar(255), primary key (id)) engine=InnoDB;
+create table customer_roles (customers_id integer not null, roles_id integer not null) engine=InnoDB;
+create table location (id integer not null auto_increment, city varchar(255), country varchar(255), county varchar(255), street_address varchar(255), name varchar(255), primary key (id)) engine=InnoDB;
+create table order_ (id integer not null auto_increment, city varchar(255), country varchar(255), county varchar(255), street_address varchar(255), timestamp datetime, customer_id integer, primary key (id)) engine=InnoDB;
+create table order__shipped_from (orders_id integer not null, shipped_from_id integer not null) engine=InnoDB;
+create table order_detail (id integer not null auto_increment, quantity integer, location_id integer, order_id integer, product_id integer, primary key (id)) engine=InnoDB;
+create table product (id integer not null auto_increment, image varchar(255), name varchar(255), price double precision, category_id integer, primary key (id)) engine=InnoDB;
+create table product_category (id integer not null auto_increment, name varchar(255), primary key (id)) engine=InnoDB;
+create table revenue (id integer not null auto_increment, sum double precision, timestamp datetime, location_id integer, primary key (id)) engine=InnoDB;
+create table role (id integer not null auto_increment, name varchar(255), primary key (id)) engine=InnoDB;
+create table stock (id integer not null auto_increment, quantity integer, location_id integer, product_id integer, primary key (id)) engine=InnoDB;
+alter table customer add constraint UK_irnrrncatp2fvw52vp45j7rlw unique (username);
+alter table customer_roles add constraint FK9wysh84mlpiyev0bct0th03rf foreign key (roles_id) references role (id);
+alter table customer_roles add constraint FKgx0xh5rqsbfawfo100n32o6p foreign key (customers_id) references customer (id);
+alter table order_ add constraint FKbcqs50rf794der0iy0h6c0mgd foreign key (customer_id) references customer (id);
+alter table order__shipped_from add constraint FKm00x3iibc8wvdju2rdame7a3i foreign key (shipped_from_id) references location (id);
+alter table order__shipped_from add constraint FKjoo365gouv5imbmj7j9lnucrx foreign key (orders_id) references order_ (id);
+alter table order_detail add constraint FKdhpishbu87vx5jopqb3st2ud8 foreign key (location_id) references location (id);
+alter table order_detail add constraint FK4u34rkhbehcj1jbb1mc5m8ccs foreign key (order_id) references order_ (id);
+alter table order_detail add constraint FKb8bg2bkty0oksa3wiq5mp5qnc foreign key (product_id) references product (id);
+alter table product add constraint FK5cypb0k23bovo3rn1a5jqs6j4 foreign key (category_id) references product_category (id);
+alter table revenue add constraint FK6xukepd8ssa1ok6iakkhp83p7 foreign key (location_id) references location (id);
+alter table stock add constraint FK6t3m0kaf6fubuus331gf7xmn8 foreign key (location_id) references location (id);
+alter table stock add constraint FKjghkvw2snnsr5gpct0of7xfcf foreign key (product_id) references product (id);

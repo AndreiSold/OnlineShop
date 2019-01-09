@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
-@ToString(exclude = {"suppliers", "stocks", "orderDetails"})
+@ToString(exclude = {"stocks", "orderDetails"})
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
@@ -22,20 +22,12 @@ public class Product {
 
     private String name;
 
-    private String description;
-
     private Double price;
-
-    private Double weight;
 
     private String image;
 
     @ManyToOne
     private ProductCategory category;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "products")
-    private List<Supplier> suppliers;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")

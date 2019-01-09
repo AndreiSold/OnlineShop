@@ -1,0 +1,1 @@
+insert into location (id, city, country, county, street_address, name) values (1, 'Timisoara', 'Romania', 'Timis', 'Aleea Studentilor', 'Main deposit');

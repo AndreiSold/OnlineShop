@@ -21,6 +21,4 @@ public class ProductCategory {
     private List<Product> products;
 
     private String name;
-
-    private String description;
 }
