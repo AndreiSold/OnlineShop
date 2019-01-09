@@ -10,6 +10,7 @@ import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.ResultedStockListEmptyException;
 import ro.msg.learning.shop.mappers.StockDtoMapper;
 import ro.msg.learning.shop.repositories.LocationRepository;
+import ro.msg.learning.shop.repositories.ProductRepository;
 import ro.msg.learning.shop.repositories.StockRepository;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class StockService {
     private final LocationRepository locationRepository;
     private final StockRepository stockRepository;
     private final StockDtoMapper stockDtoMapper;
+    private final ProductRepository productRepository;
 
     public List<StockDto> getAllStocksByLocationId(int locationId) {
         Optional<Location> givenOptionalLocation = locationRepository.findById(locationId);
@@ -41,5 +43,13 @@ public class StockService {
 
         log.error("Given location id does not exist. This is the given value: ", locationId);
         throw new LocationNotFoundException(locationId, "Try another location id!");
+    }
+
+    public void addStock(String productName, int quantity) {
+        Stock createdStock = new Stock();
+        createdStock.setProduct(productRepository.findByName(productName));
+        createdStock.setQuantity(quantity);
+        createdStock.setLocation(locationRepository.findById(1).get());
+        stockRepository.save(createdStock);
     }
 }

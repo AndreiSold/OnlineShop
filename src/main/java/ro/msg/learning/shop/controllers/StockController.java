@@ -22,4 +22,10 @@ public class StockController {
         return stockService.getAllStocksByLocationId(locationId);
     }
 
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/add/{productName}/quantity/{quantity}")
+    public void addStockByNameAndQuantity(@PathVariable String productName, @PathVariable int quantity){
+        stockService.addStock(productName, quantity);
+    }
 }
