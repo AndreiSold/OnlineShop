@@ -36,6 +36,8 @@ public class OrderService {
     @Transactional
     public Order createOrder(OrderDto orderDto, String customerUsername) {
 
+        orderDto.setOrderTimestamp(LocalDateTime.now());
+
         checkIfOrderDtoCorrectlyFormatted(orderDto);
 
         List<OrderDetail> orderDetailList = orderDetailMapper.orderDetailDtoListToOrderDetailList(orderDto.getOrderDetails());
