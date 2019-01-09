@@ -1,5 +1,5 @@
 insert into product (id, name, price, category_id, image) values (1, 'Samsung Galaxy S8', 500, 1, 'https://drop.ndtv.com/TECH/product_database/images/329201783846PM_635_samsung_galaxy_s8.jpeg?downsize=770:*&output-quality=70&output-format=webp');
-insert into product (id, name, price, category_id, image) values (2, 'Iphone X', 850, 1, 'asd');
+insert into product (id, name, price, category_id, image) values (2, 'Iphone X', 850, 1, 'https://target.scene7.com/is/image/Target/GUEST_dc44fab6-84eb-4016-86f0-09e69cb742bc?wid=488&hei=488&fmt=pjpeg');
 insert into product (id, name, price, category_id, image) values (3, 'One Plus 6T', 650, 1, 'https://gloimg.gbtcdn.com/soa/gb/pdm-product-pic/Electronic/2018/11/02/goods_img_big-v1/20181102113847_24111.jpg');
 insert into product (id, name, price, category_id, image) values (4, 'HP Pavilion', 800, 2, 'https://img.purch.com/o/aHR0cHM6Ly93d3cubGFwdG9wbWFnLmNvbS9pbWFnZXMvdXBsb2Fkcy80Njk4L2cvcGF2aWxpb24tMTUtZ2FtaW5nLWxlYWQuanBn');
 insert into product (id, name, price, category_id, image) values (5, 'Asus ROG', 1000, 2, 'https://www.excaliberpc.com/images/675442_1/large.jpg');
