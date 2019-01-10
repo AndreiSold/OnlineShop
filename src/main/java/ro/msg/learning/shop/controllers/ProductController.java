@@ -96,6 +96,7 @@ public class ProductController {
     @PostMapping("/add")
     public Integer addProduct(@RequestBody Product product) {
         productService.saveProduct(product);
+
         return product.getId();
     }
 

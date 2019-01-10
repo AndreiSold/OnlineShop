@@ -7,6 +7,7 @@ import ro.msg.learning.shop.entities.Product;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
@@ -44,6 +45,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "SELECT p FROM Product p WHERE p.name LIKE CONCAT('%', ?1, '%')")
     List<Product> getProductsThatContainString(String string);
 
-     Product findByName(String productName);
+    Optional<Product> findByName(String productName);
 }
 

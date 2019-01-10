@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.dtos.StockDto;
 import ro.msg.learning.shop.entities.Location;
+import ro.msg.learning.shop.entities.Product;
 import ro.msg.learning.shop.entities.Stock;
 import ro.msg.learning.shop.exceptions.LocationNotFoundException;
 import ro.msg.learning.shop.exceptions.ResultedStockListEmptyException;
@@ -46,10 +47,15 @@ public class StockService {
     }
 
     public void addStock(String productName, int quantity) {
-        Stock createdStock = new Stock();
-        createdStock.setProduct(productRepository.findByName(productName));
-        createdStock.setQuantity(quantity);
-        createdStock.setLocation(locationRepository.findById(1).get());
-        stockRepository.save(createdStock);
+
+        Optional<Product> product = productRepository.findByName(productName);
+
+        if (product.isPresent()) {
+            Stock createdStock = new Stock();
+            createdStock.setProduct(product.get());
+            createdStock.setQuantity(quantity);
+            createdStock.setLocation(locationRepository.findById(1).get());
+            stockRepository.save(createdStock);
+        }
     }
 }

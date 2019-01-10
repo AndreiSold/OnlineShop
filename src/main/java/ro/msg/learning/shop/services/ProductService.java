@@ -9,6 +9,7 @@ import ro.msg.learning.shop.mappers.ProductMapper;
 import ro.msg.learning.shop.repositories.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -43,7 +44,10 @@ public class ProductService {
     }
 
     public void saveProduct(Product product) {
-        productRepository.save(product);
+
+        Optional<Product> existentProduct = productRepository.findByName(product.getName());
+        if (! existentProduct.isPresent())
+            productRepository.save(product);
     }
 
     public void deleteProductById(Integer productId) {
