@@ -30,6 +30,13 @@ public class OrderController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/totalSum/{orderId}")
+    public Double getOrderTotalSumById(@PathVariable Integer orderId) {
+        return orderService.getOrderTotalSumById(orderId);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{orderId}")
     public Order getOrderById(@PathVariable Integer orderId) {
         return orderService.getOrderById(orderId);

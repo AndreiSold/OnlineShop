@@ -105,4 +105,16 @@ public class OrderService {
     public List<Order> getAllOrdersOfCustomerByUsername(String customerUsername) {
         return orderRepository.getAllOrdersOfCustomerByUsername(customerUsername);
     }
+
+    public Double getOrderTotalSumById(Integer orderId) {
+
+        Order order = orderRepository.getById(orderId);
+        double totalSum = 0;
+
+        for (OrderDetail orderDetail : order.getOrderDetails()){
+            totalSum+=orderDetail.getQuantity()*orderDetail.getProduct().getPrice();
+        }
+
+        return totalSum;
+    }
 }
