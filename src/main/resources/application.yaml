@@ -1,6 +1,6 @@
 spring:
     profiles.active: dev
-proxy:
-    host: proxy.msg.de
-    port: 3128
-    used: true
+#proxy:
+#    host: proxy.msg.de
+#    port: 3128
+#    used: true

@@ -13,22 +13,17 @@ spring:
     jpa:
         properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         hibernate.ddl-auto: validate
-        show-sql: true
+        show-sql: false
 initial-strategy: SINGLE_LOCATION
 distance-api: GOOGLE_DISTANCE_MATRIX
 google-api-key: AIzaSyC19ZDeu_knnKSr15mFt_c1uwTeJHnE0xY
 client_id: my-trusted-client
 client_secret: secret
-grant_type: password
+authorized_grant_types: password,authorization_code,refresh_token
 authorization_code: authorization_code
 refresh_token: refresh_token
 implicit: implicit
-scope_read: read
-scope_write: write
-scope_trust: trust
-access_token_validity_seconds: 300
-refresh_token_validity_seconds: 600
-product_manager: ROLE_PRODUCT_MANAGER
-customer: false
-administrator: false
+scope: read,write,trust
+access_token_validity_seconds: 36000
+refresh_token_validity_seconds: 36000
 server.port: 8090

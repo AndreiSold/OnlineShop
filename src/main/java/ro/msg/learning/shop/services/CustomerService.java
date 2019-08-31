@@ -22,8 +22,12 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OauthClientDetailsService oauthClientDetailsService;
 
     public Customer registerCustomer(CustomerDto customerDto) {
+
+        oauthClientDetailsService.addNewOauthClient(customerDto);
+
         return customerRepository.save(Customer.builder().firstName(customerDto.getFirstName())
             .lastName(customerDto.getLastName())
             .username(customerDto.getUsername())
@@ -41,6 +45,7 @@ public class CustomerService {
         }
 
         return CustomerDtoNoPassword.builder().firstName(customer.getFirstName())
+            .id(customer.getId())
             .lastName(customer.getLastName())
             .orders(customer.getOrders())
             .roles(customer.getRoles())

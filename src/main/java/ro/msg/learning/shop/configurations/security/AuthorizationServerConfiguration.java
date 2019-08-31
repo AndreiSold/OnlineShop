@@ -2,9 +2,10 @@ package ro.msg.learning.shop.configurations.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,9 +17,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 @EnableAuthorizationServer
 @RequiredArgsConstructor
@@ -28,70 +26,18 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private final UserApprovalHandler userApprovalHandler;
     @Qualifier("authenticationManagerBean")
     private final AuthenticationManager authenticationManager;
-
-    @Value("${client_id}")
-    private String clientId;
-
-    @Value("${client_secret}")
-    private String clientSecret;
-
-    @Value("${grant_type}")
-    private String grantType;
-
-    @Value("${authorization_code}")
-    private String authorizationCode;
-
-    @Value("${refresh_token}")
-    private String refreshToken;
-
-    @Value("${implicit}")
-    private String implicit;
-
-    @Value("${scope_read}")
-    private String scopeRead;
-
-    @Value("${scope_write}")
-    private String scopeWrite;
-
-    @Value("${scope_trust}")
-    private String scopeTrust;
-
-    @Value("${access_token_validity_seconds}")
-    private int accessTokenValiditySeconds;
-
-    @Value("${refresh_token_validity_seconds}")
-    private int refreshTokenValiditySeconds;
-
-    @Value("${product_manager}")
-    private String productManager;
-
-    @Value("${customer}")
-    private String customer;
-
-    @Value("${administrator}")
-    private String administrator;
-
-    private static final String FALSE = "false";
+    private final Environment env;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
-        List<String> authoritiesList = new ArrayList<>();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-        if (!FALSE.equals(productManager)) authoritiesList.add(productManager);
-        if (!FALSE.equals(customer)) authoritiesList.add(customer);
-        if (!FALSE.equals(administrator)) authoritiesList.add(administrator);
-
-        String[] authoritiesArray = authoritiesList.toArray(new String[0]);
-
-        clients.inMemory()
-            .withClient(clientId)
-            .secret(clientSecret)
-            .authorizedGrantTypes(grantType, authorizationCode, refreshToken, implicit)
-            .authorities(authoritiesArray)
-            .scopes(scopeRead, scopeWrite, scopeWrite)
-            .accessTokenValiditySeconds(accessTokenValiditySeconds)
-            .refreshTokenValiditySeconds(refreshTokenValiditySeconds);
+        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setUrl(env.getProperty("spring.datasource.url"));
+        dataSource.setUsername(env.getProperty("spring.datasource.username"));
+        dataSource.setPassword(env.getProperty("spring.datasource.password"));
+        clients.jdbc(dataSource);
     }
 
     @Override

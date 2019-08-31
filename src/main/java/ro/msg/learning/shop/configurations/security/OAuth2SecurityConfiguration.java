@@ -44,7 +44,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(s -> {
             final Customer customer = customerRepository.findByUsername(s);
             if (customer == null) {
-                log.error("Given customer username does not exist!");
+                log.error("`Given customer username does not exist!");
                 throw new CustomerIdNotFoundException("This username does not exist!");
             }
             return new UserDetails() {
