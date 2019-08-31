@@ -24,7 +24,7 @@ public class OauthClientDetailsService {
         List<Role> roles = customer.getRoles();
         if (!roles.isEmpty()) {
             for (Role role : roles) {
-                if (authorities.toString().length() == 0) {
+                if (!authorities.toString().equals("")) {
                     authorities.append(',');
                 }
                 authorities.append(role.getName());
