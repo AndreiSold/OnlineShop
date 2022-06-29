@@ -24,7 +24,7 @@
         <java.version>1.8</java.version>
         <jackson.csv.version>2.8.8</jackson.csv.version>
         <flyway.version>3.0</flyway.version>
-        <apache.poi.version>3.17</apache.poi.version>
+        <apache.poi.version>4.1.1</apache.poi.version>
         <open.csv.version>3.3</open.csv.version>
         <lombok.version>1.18.2</lombok.version>
         <jackson.datatype.version>2.9.7</jackson.datatype.version>
